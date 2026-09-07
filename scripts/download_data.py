@@ -225,7 +225,10 @@ def get_mpd_df():
     todo = [f for f in wanted if not (out / f["name"]).exists()]
     print(f"  전체 {len(wanted)}개 중 {len(todo)}개 남음")
     for i, f in enumerate(todo, 1):
-        download(f["download_url"], out / f["name"], md5=f["computed_md5"])
+        # API가 알려주는 ndownloader.figshare.com은 403을 낸다.
+        # figstatic.com이 같은 파일을 서명된 S3 주소로 넘겨주고 이어받기도 된다.
+        url = f["download_url"].replace("ndownloader.figshare.com", "ndownloader.figstatic.com")
+        download(url, out / f["name"], md5=f["computed_md5"])
         print(f"  [{i}/{len(todo)}] {f['name']}")
 
 
