@@ -31,6 +31,9 @@ RAW = Path(__file__).resolve().parents[1] / "data" / "raw"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 HEADERS = {"User-Agent": UA, "Accept": "*/*"}
 RETRIES = 5
+# 같은 파일을 두 프로세스가 동시에 받으면 내용이 섞인다. .part가 최근에
+# 수정됐으면 다른 프로세스가 쓰는 중으로 보고 건드리지 않는다.
+BUSY_SEC = 120
 # Zenodo 연결이 자주 끊긴다. IncompleteRead는 OSError가 아니라 HTTPException이라 따로 잡아야 한다.
 NET_ERRORS = (urllib.error.URLError, http.client.HTTPException, OSError, EOFError)
 
@@ -105,6 +108,11 @@ def finalize(part, dest):
             time.sleep(0.5 * attempt)
 
 
+def in_progress(part):
+    """다른 프로세스가 이 .part를 쓰고 있는가."""
+    return part.exists() and time.time() - part.stat().st_mtime < BUSY_SEC
+
+
 def advitam_wanted(names):
     """Exp4.zip에서 실제로 쓰는 항목만 고른다.
 
@@ -128,8 +136,12 @@ def fetch_members(url, wanted, out_dir):
         dest = out_dir / name
         if name.endswith(".txt") and zf.getinfo(name).file_size > 10_000_000:
             dest = dest.with_suffix(".txt.gz")
-        if not dest.exists():
-            todo.append((name, dest))
+        if dest.exists():
+            continue
+        if in_progress(dest.with_suffix(dest.suffix + ".part")):
+            print(f"  [건너뜀] {name} — 다른 프로세스가 받는 중")
+            continue
+        todo.append((name, dest))
     print(f"  전체 {len(names)}개 중 {len(todo)}개 남음")
 
     for i, (name, dest) in enumerate(todo, 1):
@@ -158,6 +170,9 @@ def download(url, dest, check_zip=False, md5=None):
     """이어받기와 재시도. 서버가 크기를 알려주면 다 받았는지 확인한 뒤 이름을 바꾼다."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_suffix(dest.suffix + ".part")
+    if in_progress(part):
+        raise RuntimeError(
+            f"{dest.name}을 다른 프로세스가 받는 중이다. 그 쪽이 끝나기를 기다린다.")
 
     for attempt in range(1, RETRIES + 1):
         done = part.stat().st_size if part.exists() else 0
