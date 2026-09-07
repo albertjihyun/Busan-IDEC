@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# 데이터 / 산출물
+data/raw/
+*.csv
+*.npy
+*.pkl
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
