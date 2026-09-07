@@ -89,6 +89,22 @@ class HttpFile(io.RawIOBase):
         return len(data)
 
 
+def finalize(part, dest):
+    """.part를 최종 이름으로 바꾼다.
+
+    윈도우에서는 방금 닫은 파일을 백신·인덱서가 잠시 잡고 있어
+    바로 이름을 바꾸면 WinError 32가 난다. 몇 번 다시 시도한다.
+    """
+    for attempt in range(1, 11):
+        try:
+            part.replace(dest)
+            return
+        except PermissionError:
+            if attempt == 10:
+                raise
+            time.sleep(0.5 * attempt)
+
+
 def advitam_wanted(names):
     """Exp4.zip에서 실제로 쓰는 항목만 고른다.
 
@@ -132,7 +148,7 @@ def fetch_members(url, wanted, out_dir):
                     raise
                 time.sleep(5 * attempt)
                 zf = zipfile.ZipFile(io.BufferedReader(HttpFile(url), buffer_size=1 << 20))
-        part.replace(dest)
+        finalize(part, dest)
         print(f"  [{i}/{len(todo)}] {name}  ({size/1e6:.1f} MB)")
 
 
@@ -186,7 +202,7 @@ def download(url, dest, check_zip=False, md5=None):
                 print("  zip이 깨졌다. 처음부터 다시 받는다.")
                 part.unlink()
                 continue
-        part.replace(dest)
+        finalize(part, dest)
         return
     raise RuntimeError(f"{dest.name} 내려받기 실패")
 
