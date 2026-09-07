@@ -1,15 +1,12 @@
-# Python
+# 파이썬
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 .ipynb_checkpoints/
 
-# 데이터 / 산출물
-data/raw/
-*.csv
-*.npy
-*.pkl
+# 데이터 (원본·중간 산출물 모두 용량이 커서 제외. scripts/download_data.py로 다시 받는다)
+data/
 
 # OS / 에디터
 .DS_Store
