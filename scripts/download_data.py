@@ -14,8 +14,10 @@ HTTP Range로 골라 받는다(2.6GB). 쓰지 않는 .acq 원본과 주행 로�
 
 import argparse
 import gzip
+import hashlib
 import http.client
 import io
+import json
 import shutil
 import sys
 import time
@@ -35,6 +37,7 @@ NET_ERRORS = (urllib.error.URLError, http.client.HTTPException, OSError, EOFErro
 ADVITAM_EXP4 = "https://zenodo.org/api/records/7319612/files/Exp4.zip/content"
 ADVITAM_FILE = "https://zenodo.org/api/records/7319612/files/{}/content"
 PPG_DALIA = "https://archive.ics.uci.edu/static/public/495/ppg+dalia.zip"
+MPD_DF_API = "https://api.figshare.com/v2/articles/28455737"
 
 
 # --- 원격 zip: 파일 전체를 받지 않고 필요한 항목만 읽는다 -------------------
@@ -135,7 +138,7 @@ def fetch_members(url, wanted, out_dir):
 
 # --- 통짜 파일 받기 ---------------------------------------------------------
 
-def download(url, dest, check_zip=False):
+def download(url, dest, check_zip=False, md5=None):
     """이어받기와 재시도. 서버가 크기를 알려주면 다 받았는지 확인한 뒤 이름을 바꾼다."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_suffix(dest.suffix + ".part")
@@ -167,6 +170,15 @@ def download(url, dest, check_zip=False):
         if total and done < total:
             print(f"  {done/1e6:.1f} / {total/1e6:.1f} MB 만 받음. 이어서 받는다.")
             continue
+        if md5:
+            digest = hashlib.md5()
+            with open(part, "rb") as fh:
+                while chunk := fh.read(1 << 20):
+                    digest.update(chunk)
+            if digest.hexdigest() != md5:
+                print("  md5가 다르다. 처음부터 다시 받는다.")
+                part.unlink()
+                continue
         if check_zip:
             try:
                 zipfile.ZipFile(part).namelist()
@@ -198,9 +210,29 @@ def get_ppg_dalia():
     download(PPG_DALIA, dest, check_zip=True)
 
 
+def get_mpd_df():
+    """figshare에서 심전도(PSG)와 30초 단위 라벨만 받는다.
+
+    전체는 13.1GB지만 그중 11.9GB가 32채널 뇌파라 쓰지 않는다.
+    """
+    req = urllib.request.Request(MPD_DF_API, headers=HEADERS)
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        files = json.load(resp)["files"]
+
+    wanted = [f for f in files
+              if f["name"].endswith(("_PSG.edf", "_Annotation.txt", ".xlsx"))]
+    out = RAW / "mpd_df"
+    todo = [f for f in wanted if not (out / f["name"]).exists()]
+    print(f"  전체 {len(wanted)}개 중 {len(todo)}개 남음")
+    for i, f in enumerate(todo, 1):
+        download(f["download_url"], out / f["name"], md5=f["computed_md5"])
+        print(f"  [{i}/{len(todo)}] {f['name']}")
+
+
 DATASETS = {
     "advitam": get_advitam,      # Exp4에서 필요한 항목만, 약 2.6GB
     "ppg-dalia": get_ppg_dalia,  # 약 2.7GB
+    "mpd-df": get_mpd_df,        # 심전도와 라벨만, 약 1.2GB
 }
 
 
