@@ -14,6 +14,7 @@ HTTP Range로 골라 받는다(2.6GB). 쓰지 않는 .acq 원본과 주행 로�
 
 import argparse
 import gzip
+import http.client
 import io
 import shutil
 import sys
@@ -28,6 +29,8 @@ RAW = Path(__file__).resolve().parents[1] / "data" / "raw"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 HEADERS = {"User-Agent": UA, "Accept": "*/*"}
 RETRIES = 5
+# Zenodo 연결이 자주 끊긴다. IncompleteRead는 OSError가 아니라 HTTPException이라 따로 잡아야 한다.
+NET_ERRORS = (urllib.error.URLError, http.client.HTTPException, OSError, EOFError)
 
 ADVITAM_EXP4 = "https://zenodo.org/api/records/7319612/files/Exp4.zip/content"
 ADVITAM_FILE = "https://zenodo.org/api/records/7319612/files/{}/content"
@@ -60,8 +63,17 @@ class HttpFile(io.RawIOBase):
             return b""
         end = min(self.pos + n, self.size) - 1
         req = urllib.request.Request(self.url, headers={**HEADERS, "Range": f"bytes={self.pos}-{end}"})
-        with urllib.request.urlopen(req, timeout=180) as resp:
-            data = resp.read()
+        for attempt in range(1, RETRIES + 1):
+            try:
+                with urllib.request.urlopen(req, timeout=180) as resp:
+                    data = resp.read()
+                    if len(data) != end - self.pos + 1:
+                        raise http.client.IncompleteRead(data, end - self.pos + 1 - len(data))
+                break
+            except NET_ERRORS:
+                if attempt == RETRIES:
+                    raise
+                time.sleep(3 * attempt)
         self.pos += len(data)
         return data
 
@@ -111,7 +123,7 @@ def fetch_members(url, wanted, out_dir):
                 with zf.open(name) as src, opener(part, "wb") as dst:
                     shutil.copyfileobj(src, dst, 1 << 20)
                 break
-            except (urllib.error.URLError, OSError, zipfile.BadZipFile) as exc:
+            except NET_ERRORS + (zipfile.BadZipFile,) as exc:
                 print(f"    {name} 실패({attempt}/{RETRIES}): {exc}")
                 if attempt == RETRIES:
                     raise
@@ -146,7 +158,7 @@ def download(url, dest, check_zip=False):
                         print(f"\r  {dest.name}  {done/1e6:8.1f}"
                               + (f" / {total/1e6:.1f} MB" if total else " MB"), end="", flush=True)
             print()
-        except (urllib.error.URLError, OSError) as exc:
+        except NET_ERRORS as exc:
             print(f"\n  끊김({attempt}/{RETRIES}): {exc}")
             time.sleep(5 * attempt)
             continue
