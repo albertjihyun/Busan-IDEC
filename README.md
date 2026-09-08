@@ -26,9 +26,17 @@ PPG 센서(BPW34) → AFE(OPA333) → ADC(MCP3421, 12bit / 240 SPS)
 
 ## 접근
 
-PPG와 졸음 라벨이 함께 있는 공개 데이터는 없습니다. **RR 간격이라는 공통 표현으로 ECG 데이터(AdVitam)에서 학습하고, ECG와 PPG를 동시 기록한 PPG-DaLiA로 둘의 차이를 정량화**하는 구조를 택했습니다.
+PPG와 졸음 라벨이 함께 있는 공개 데이터는 없습니다. 그래서 **RR 간격이라는 공통 표현으로 ECG 데이터에서 학습하고, ECG와 PPG를 동시 기록한 데이터로 둘의 차이를 정량화**하는 구조를 택했습니다.
 
-모델은 미리 정하지 않고 규칙 기반부터 소형 MLP까지 비교해 정확도-하드웨어비용 표로 고릅니다. 평가는 피험자 단위 분할(leave-one-subject-out)로만 합니다.
+| 데이터 | 역할 | 라벨 |
+|---|---|---|
+| MPD-DF (50명) | 주 학습·평가 | 30초 단위 뇌파 판독 5단계 |
+| AdVitam Exp4 (63명) | 외부 검증 | 30분 단위 KSS 자기보고 |
+| PPG-DaLiA (15명) | ECG↔PPG 차이 정량화, 움직임 게이팅 기준 | 졸음 라벨 없음 |
+
+MPD-DF는 라벨이 30초 단위라 "언제 졸렸는지"를 학습하고 평가할 수 있습니다. AdVitam은 라벨이 성겨 시점 평가는 못 하지만 장비·인구·주행 방식이 전부 다르고 **수면부족을 실험적으로 조작한 유일한 공개 데이터**라, 확정한 모델을 손대지 않고 적용하는 일반화 검증에 씁니다.
+
+모델은 미리 정하지 않습니다. 규칙 기반 단일 임계값(기준선)부터 결정트리·로지스틱 회귀·SVM·랜덤포레스트·소형 MLP까지 **scikit-learn으로 전부 돌려** 정확도-하드웨어비용 표로 고릅니다. 평가는 피험자 단위 분할(leave-one-subject-out)로만 합니다.
 
 단계별 계획과 참고 문헌은 [docs/ml-plan.md](./docs/ml-plan.md)에 있습니다.
 
@@ -47,7 +55,7 @@ data/raw/                 원본 데이터 (git 제외)
 python -m venv .venv
 .venv/Scripts/activate          # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/download_data.py   # AdVitam Exp4 + PPG-DaLiA, 약 5.6GB
+python scripts/download_data.py   # MPD-DF + AdVitam Exp4 + PPG-DaLiA, 약 6.5GB
 ```
 
 ## 진행 상황
