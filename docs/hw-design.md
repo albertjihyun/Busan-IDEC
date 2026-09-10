@@ -107,8 +107,31 @@ SDNN 식의 좌변은 최대 200 × 25.9 M ≈ 5.2 G로 33비트, 우변은 T가
 |---|---|---|
 | 시뮬레이션 | Icarus Verilog + GTKWave | OSS CAD Suite 2026-09-09판, `C:\oss-cad-suite` (9/10 설치, 동작 확인) |
 | 자원 추정 (초기) | Yosys `synth_xilinx -family xc7` | 위 묶음에 포함. 동작 확인 |
-| 공식 합성·구현 리포트 | Vivado ML Standard (무료, xc7a35t 지원) | 미설치. AMD 계정 필요, Artix-7만 선택해 20~30 GB |
+| 공식 합성·구현 리포트 | Vivado 2026.1 BASIC 티어 (무료) | `C:\AMDDesignTools\2026.1\Vivado`, Artix-7만 설치 (9/10 설치, xc7a35t 배치 합성 확인) |
 | 기존 설치 | Quartus II 9.1sp2 | Altera 전용이라 Artix-7 합성 불가. 쓰지 않음 |
+
+Vivado 라이선스. 2026.1부터 무료 BASIC 티어도 라이선스 파일이 있어야 실행된다. 발급은 License Manager의 Connect Now로 amd.entitlenow.com에 들어가 "Vivado Basic Tier License, Node Locked License"를 고르고 이 PC의 와이파이 MAC을 Host ID로 넣으면 이메일로 온다. 1년마다 같은 절차로 재발급한다.
+
+- 기본 검색 위치 `C:\Users\<사용자>\.Xilinx`는 한글 경로라 인식되지 않았다. 파일을 `C:\Xilinx\Xilinx.lic`에 두고 사용자 환경변수 `XILINXD_LICENSE_FILE`로 그 경로를 지정해 해결했다.
+- 배치 실행 예. 임시 폴더 설정은 OSS CAD Suite와 같은 이유로 필요하다.
+
+```bash
+export TMP=C:/tmp TEMP=C:/tmp
+/c/AMDDesignTools/2026.1/Vivado/bin/vivado.bat -mode batch -nolog -nojournal -source run.tcl
+```
+
+```tcl
+# run.tcl
+read_verilog C:/path/rtl/drowsy_top.v
+synth_design -top drowsy_top -part xc7a35tcpg236-1
+opt_design
+place_design
+route_design
+report_utilization -file util.rpt
+report_timing_summary -file timing.rpt
+```
+
+`util.rpt`의 Slice LUTs, Slice Registers, DSPs, Block RAM Tile 줄이 서류에 넣을 자원 숫자다. 칩 전체는 LUT 20,800개, 레지스터 41,600개, DSP 90개, BRAM 50개다.
 
 OSS CAD Suite 실행 조건. 이 PC는 사용자 폴더 이름에 한글이 있어서 기본 설정으로는 yosys가 실패한다.
 
