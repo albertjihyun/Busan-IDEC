@@ -105,10 +105,32 @@ SDNN 식의 좌변은 최대 200 × 25.9 M ≈ 5.2 G로 33비트, 우변은 T가
 
 | 용도 | 도구 | 상태 |
 |---|---|---|
-| 시뮬레이션 | Icarus Verilog + GTKWave | 미설치. OSS CAD Suite 묶음으로 설치 |
-| 자원 추정 (초기) | Yosys `synth_xilinx` | OSS CAD Suite에 포함. 계정 불필요 |
-| 공식 합성·구현 리포트 | Vivado ML Standard (무료, xc7a35t 지원) | 미설치. AMD 계정 필요, 30 GB 이상 |
-| 기존 설치 | Quartus II 9.1sp2 | Altera 전용이라 Artix-7 합성 불가. 문법 확인용으로만 |
+| 시뮬레이션 | Icarus Verilog + GTKWave | OSS CAD Suite 2026-09-09판, `C:\oss-cad-suite` (9/10 설치, 동작 확인) |
+| 자원 추정 (초기) | Yosys `synth_xilinx -family xc7` | 위 묶음에 포함. 동작 확인 |
+| 공식 합성·구현 리포트 | Vivado ML Standard (무료, xc7a35t 지원) | 미설치. AMD 계정 필요, Artix-7만 선택해 20~30 GB |
+| 기존 설치 | Quartus II 9.1sp2 | Altera 전용이라 Artix-7 합성 불가. 쓰지 않음 |
+
+OSS CAD Suite 실행 조건. 이 PC는 사용자 폴더 이름에 한글이 있어서 기본 설정으로는 yosys가 실패한다.
+
+- `bin`과 `lib`를 둘 다 PATH에 넣는다. `lib`가 없으면 yosys가 DLL을 못 찾는다.
+- 임시 폴더를 한글 없는 경로로 바꾼다. 기본값 `AppData\Local\Temp`는 한글 경로라 abc9 단계가 파일을 못 연다.
+- 프로젝트 파일도 한글 없는 경로에 두는 게 안전하다.
+
+Git Bash에서 한 번에 설정하는 줄:
+
+```bash
+mkdir -p /c/tmp
+export TMP=C:/tmp TEMP=C:/tmp PATH="/c/oss-cad-suite/bin:/c/oss-cad-suite/lib:$PATH"
+```
+
+확인용 명령과 기대 출력:
+
+```bash
+iverilog -o sim.vvp rtl/*.v sim/tb.v && vvp -n sim.vvp
+yosys -p "read_verilog rtl/*.v; synth_xilinx -top drowsy_top -family xc7; stat"
+```
+
+두 번째 명령 끝에 LUT, FDRE, CARRY4, DSP48E1, RAMB 개수가 표로 나온다. Vivado 리포트가 나오기 전까지 이 숫자를 자원 추정치로 쓴다.
 
 ## 일정 (2026-09-30 완성 기준)
 
