@@ -44,7 +44,9 @@ MPD-DF는 라벨이 30초 단위라 "언제 졸렸는지"를 학습하고 평가
 
 ```
 docs/ml-plan.md           ML 파트 구현 계획 (0~7단계)
+docs/hw-design.md         Verilog 구현 설계: 경계 신호, 비트 폭, 검증 흐름, 일정
 docs/data-notes.md        데이터셋 포맷 조사 결과
+rtl/, sim/                Verilog 모듈과 테스트벤치 (예정)
 scripts/download_data.py  데이터셋 내려받기
 data/raw/                 원본 데이터 (git 제외)
 ```
@@ -62,8 +64,8 @@ python scripts/download_data.py   # MPD-DF + AdVitam Exp4 + PPG-DaLiA, 약 6.5GB
 
 | 단계 | 상태 |
 |---|---|
-| 0. 환경 준비·데이터 확보 | 진행 중 |
-| 1. RR 간격 추출 | 대기 |
+| 0. 환경 준비·데이터 확보 | 완료 (9/7) |
+| 1. RR 간격 추출 | 진행 중 |
 | 2~7 | 대기 |
 
-하드웨어 파트는 아날로그 프론트엔드·ADC 설계와 브레드보드 실측(심박 82 bpm, dicrotic notch 확인)을 마쳤고 통합 프로토타입 PCB 아트웍이 진행 중입니다. 일정은 예선 서류 마감 9/30, 발표 10/29입니다.
+하드웨어 파트는 아날로그 프론트엔드·ADC 설계와 브레드보드 실측(심박 82 bpm, dicrotic notch 확인)을 마쳤고 통합 프로토타입 PCB 아트웍이 진행 중입니다. 일정은 예선 서류 마감 9/30, 발표 10/29이며, **Verilog 구현까지 포함해 9/30에 완성**하는 것을 목표로 합니다. 보드 없이 시뮬레이션과 합성 리포트로 완성을 정의합니다.
