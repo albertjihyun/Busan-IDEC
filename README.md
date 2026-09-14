@@ -14,15 +14,15 @@
 PPG 센서(KT-0805G LED + TEMD6200 PD) → AFE(OPA2333) → ADC(MCP3421, 12bit / 240 SPS)
   → [FPGA: Cmod A7-35T]
        FIR 대역통과 필터
-       → SQI (신호 품질 검사)                              <<
-       → 피크 검출 → RR 간격                               <<
+       → SQI → 피크 검출 → RR → 5초 블록 누산            (규칙은 ML이 정함) <<
+       → 재료 5개 (N, ΣRR, ΣRR², Σd, Σd²)
        → 시간영역 HRV 특징 (후보 15종, 3단계에서 선택)      <<
        → 분류기 (모델 비교 후 확정, 고정소수점 이식)         <<
        → IMU(ICM-42670-P) 규칙 결합 → 판정                  <<
   → UART 출력
 ```
 
-이 구간을 파이썬으로 먼저 구현·검증한 뒤, 고정소수점으로 옮겨 **Verilog로 구현**합니다. 하드웨어 팀에는 **테스트 벡터 · IMU 결합 규칙 · 인터페이스 명세**를 함께 넘깁니다.
+이 구간을 파이썬으로 먼저 구현·검증합니다. 피크 검출과 누산 Verilog는 하드웨어 팀이 짜고 ML은 **규칙과 테스트 벡터**를 넘기며, 재료 5개를 받아 특징·분류·판정을 내는 **추론 Verilog는 ML이 구현**합니다. 인계 명세는 `docs/datapath-request.md`.
 
 ## 접근
 
@@ -47,7 +47,8 @@ docs/design-overview.md        제출용 설계 개요 초안 (배경·타깃·�
 docs/background-trucking.md    설계 개요의 타깃 근거 자료조사 (화물차·자율주행·규제)
 docs/ml-plan.md                ML 파트 구현 계획 (0~7단계), 문제 정의와 평가 지표
 docs/feature-rationale.md      특징 후보 15종의 선정 기준과 문헌 근거, 뺀 것의 이유
-docs/hw-design.md              Verilog 구현 설계: 경계 신호, 비트 폭, 검증 흐름, 도구, 일정
+docs/datapath-request.md       하드웨어 팀 인계 명세: 재료 5개, 5초 블록 구조, 신호, 날짜별 인계
+docs/hw-design.md              Verilog 구현 설계: 비트 폭, 부등식 변형, 검증 흐름, 도구, 일정
 docs/data-notes.md             데이터셋 포맷 조사, 라벨 통계, 졸음 사건 통계
 rtl/, sim/                     Verilog 모듈과 테스트벤치 (예정)
 scripts/download_data.py       데이터셋 내려받기
@@ -72,7 +73,8 @@ python scripts/download_data.py   # MPD-DF + AdVitam Exp4 + PPG-DaLiA, 약 6.5GB
 | 0. 환경 준비·데이터 확보 | 완료 (9/7) |
 | 도구 (iverilog, yosys, Vivado 2026.1) | 완료 (9/10) |
 | 문제 정의·평가 지표·특징 후보 확정 | 완료 (9/12~13) |
-| 1. RR 간격 추출 | 진행 중 |
+| 데이터패스 요청서 (하드웨어 팀 인계) | 완료 (9/14) |
+| 1. RR 간격 추출 | 진행 중, 9/15 |
 | 2~7 | 대기 |
 
 하드웨어 파트는 아날로그 프론트엔드·ADC 회로 설계와 손가락 부위 브레드보드 측정(심박 82 bpm, dicrotic notch 확인), PCB 아트웍까지 마쳤습니다. PCB 제작과 이마 실측은 제출 범위 밖이며 후속 과제입니다. 일정은 예선 서류 마감 9/30, 발표 10/29이며, **Verilog 구현까지 포함해 9/30에 완성**하는 것을 목표로 합니다. 보드 없이 시뮬레이션과 합성 리포트로 완성을 정의합니다.
