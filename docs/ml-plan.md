@@ -63,8 +63,8 @@ PPG에서 추출한 심박 간격(RR) 특징으로 각성도 저하를 판정하
 
 ### 2단계. 특징 추출
 - 판정 주기 30초. 창 길이는 30초와 60초 두 가지를 만들어 3단계에서 비교한다. 60초는 직전 30초와 겹친다
-- 특징 후보 15개를 전부 계산한다. 선정 근거와 뺀 것의 이유는 [feature-rationale.md](./feature-rationale.md)
-  - 1차 9개: mean NN, median NN, SDNN, RMSSD, SDSD, CVNN, CVSD, SD2, SD1/SD2
+- 특징 후보 14개를 전부 계산한다(median NN은 파이썬 비교용으로만 추가). 선정 근거와 뺀 것의 이유는 [feature-rationale.md](./feature-rationale.md)
+  - 1차 8개: mean NN, SDNN, RMSSD, SDSD, CVNN, CVSD, SD2, SD1/SD2
   - 파생 6개: mean NN·SDNN·RMSSD 각각의 개인 기준선 대비값과 직전 창 대비 변화량
   - pNN50·pNN20은 표준 문서와 샘플링 연구가 통계적 성질을 이유로 비권장해 제외
 - 라벨 붙이기: 30초 창은 에폭과 1:1. 60초 창은 에폭 두 개에 걸치므로 매핑 규칙(둘 중 하나라도 피로면 피로)을 정하고 기록한다. 아티팩트 에폭에 걸친 창은 버린다
