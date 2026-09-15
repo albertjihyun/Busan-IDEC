@@ -20,7 +20,7 @@ import numpy as np
 import neurokit2 as nk
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.mpd_io import load_ecg, load_labels, resample_to, subject_ids, EPOCH_SEC  # noqa: E402
+from src.mpd_io import load_ecg, load_labels, load_ecg_as_ppg_chain, subject_ids, EPOCH_SEC  # noqa: E402
 from src.peak_simple import detect, FS  # noqa: E402
 from src.peak_eval import summarize  # noqa: E402
 
@@ -44,7 +44,7 @@ def run(sid):
     x1k, fs = load_ecg(sid)
     gt1k, method = reference_peaks(x1k, fs)
     gt = np.round(gt1k * FS / fs).astype(int)
-    x = resample_to(x1k, fs, FS)
+    x = load_ecg_as_ppg_chain(sid, FS)          # AFE 대역(0.16~16 Hz) 흉내 후 240 Hz
     peaks, rr, ok = detect(x)
     n_epochs = len(x) // (FS * EPOCH_SEC)
     labels = np.array([-1 if l is None else l for l in load_labels(sid, n_epochs)], dtype=np.int8)

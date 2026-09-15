@@ -18,7 +18,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.mpd_io import load_ecg, resample_to  # noqa: E402
+from src.mpd_io import load_ecg_as_ppg_chain  # noqa: E402
 from src.peak_simple import PeakDetector, SQI, to_codes, FS, DROP_WIN  # noqa: E402
 from src.window_acc import WindowAcc, FIELDS  # noqa: E402
 
@@ -29,8 +29,7 @@ def main(argv):
     sid = argv[0] if argv else "02"
     t0 = int(argv[1]) if len(argv) > 1 else 60
     dur = int(argv[2]) if len(argv) > 2 else 120
-    x1k, fs = load_ecg(sid)
-    x = resample_to(x1k, fs, FS)[t0 * FS:(t0 + dur) * FS]
+    x = load_ecg_as_ppg_chain(sid, FS)[t0 * FS:(t0 + dur) * FS]   # AFE 대역 흉내
     codes = to_codes(x)
     assert codes.min() >= -32768 and codes.max() <= 32767
 
@@ -59,8 +58,8 @@ def main(argv):
     (OUT / "windows.txt").write_text(hdr + "\n" + "\n".join(" ".join(map(str, w)) for w in windows) + "\n")
     (OUT / "README.md").write_text(f"""# 채점 파일
 
-출처: MPD-DF {sid}번 ECG, {t0}초부터 {dur}초. 1024 Hz → 240 Hz, mV × 400 → 정수 코드, 0 중심.
-실제 칩에서는 FIR 대역통과 출력이 `in`에 해당한다. DC가 제거된 신호여야 한다.
+출처: MPD-DF {sid}번 ECG, {t0}초부터 {dur}초. 아날로그 프론트엔드 대역(0.16~16 Hz, 1차 RC 두 개) 흉내 → 1024 Hz → 240 Hz → mV × 400 → 정수 코드.
+실제 칩에서는 ADC 출력(FPGA 노치 필터 뒤)이 `in`에 해당한다. AC 결합 덕에 0 중심이다.
 
 | 파일 | 내용 |
 |---|---|
