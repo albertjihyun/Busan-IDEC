@@ -5,3 +5,4 @@ scikit-learn
 matplotlib
 neurokit2
 openpyxl
+pyedflib

@@ -54,6 +54,14 @@ rtl/, sim/                     Verilog 모듈과 테스트벤치 (예정)
 scripts/download_data.py       데이터셋 내려받기
 scripts/inspect_mpd_labels.py  MPD-DF 라벨 에폭 집계
 scripts/inspect_mpd_events.py  MPD-DF 졸음 사건(연속 피로 구간) 통계
+scripts/extract_rr.py          1단계. 50명 ECG → 240 Hz → 봉우리 → RR, 정답 대비 평가
+scripts/make_vectors.py        하드웨어 팀 채점 파일 생성
+src/mpd_io.py                  MPD-DF 읽기, 리샘플, 라벨
+src/peak_simple.py             회로로 옮기는 봉우리 검출·SQI (정수 연산, 한 샘플씩)
+src/window_acc.py              5초 블록 누산기와 창 합산
+src/peak_eval.py               정답 대비 놓침·오검출 집계
+sim/vectors/                   채점 파일 (입력, 봉우리, RR, 블록, 창)
+sim/tb_peak_skeleton.v         테스트벤치 뼈대
 data/                          원본·논문·중간 산출물 (git 제외)
 ```
 
@@ -74,7 +82,7 @@ python scripts/download_data.py   # MPD-DF + AdVitam Exp4 + PPG-DaLiA, 약 6.5GB
 | 도구 (iverilog, yosys, Vivado 2026.1) | 완료 (9/10) |
 | 문제 정의·평가 지표·특징 후보 확정 | 완료 (9/12~13) |
 | 데이터패스 요청서 (하드웨어 팀 인계) | 완료 (9/14) |
-| 1. RR 간격 추출 | 진행 중, 9/15 |
+| 1. RR 간격 추출 | 완료 (9/15). 규칙과 채점 파일을 하드웨어 팀에 인계 |
 | 2~7 | 대기 |
 
 하드웨어 파트는 아날로그 프론트엔드·ADC 회로 설계와 손가락 부위 브레드보드 측정(심박 82 bpm, dicrotic notch 확인), PCB 아트웍까지 마쳤습니다. PCB 제작과 이마 실측은 제출 범위 밖이며 후속 과제입니다. 일정은 예선 서류 마감 9/30, 발표 10/29이며, **Verilog 구현까지 포함해 9/30에 완성**하는 것을 목표로 합니다. 보드 없이 시뮬레이션과 합성 리포트로 완성을 정의합니다.
