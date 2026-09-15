@@ -54,7 +54,10 @@ PPG에서 추출한 심박 간격(RR) 특징으로 각성도 저하를 판정하
 - 파이썬 환경: numpy, pandas, scipy, scikit-learn, neurokit2 (또는 heartpy), matplotlib
 - 데이터 포맷 확인 (샘플링 속도, 라벨 형식, 파일 구조)
 
-### 1단계. RR 간격 추출 파이프라인
+### 1단계. RR 간격 추출 파이프라인 (완료 2026-09-15)
+
+결과: `src/peak_simple.py`, `scripts/extract_rr.py`, `data/interim/rr/*.npz`(50명). 50명 pooled 놓침 1.0%·오검출 3.2%, 사람별 중앙값 0.33%·0.41%, SQI 통과 99.9%. 240 Hz 샘플링 RR 오차 SD 2.2 ms. 규칙과 근거는 `docs/datapath-request.md` ② 절.
+
 - ECG/PPG 원본 → 대역통과 필터 → 피크 검출 → RR 간격 배열
 - 처음엔 라이브러리(neurokit2)로 결과 확인, 이후 **단순 임계값 방식으로 직접 구현**하여 결과 비교
   - 이유: 하드웨어에 들어가는 건 단순 방식이므로, 라이브러리와 단순 방식의 차이를 알아야 함
