@@ -24,14 +24,17 @@ class WindowAcc:
         self.acc = dict.fromkeys(FIELDS, 0)
         self.rr_prev = None
         self.hist = []            # 최근 DEPTH벌. 끝이 최신
-        self.sample = -1
+        self.sample = 0           # 지금까지 처리한 샘플 수. 회로의 0..1199 카운터와 같음
         self.win30 = dict.fromkeys(FIELDS, 0)
         self.win60 = dict.fromkeys(FIELDS, 0)
 
     def push_sample(self):
-        """샘플마다 호출. 블록 경계면 True(창 갱신됨)."""
+        """샘플마다 호출(그 샘플의 RR 반영 뒤에). 1200번째마다 블록을 닫고 True.
+
+        블록 k는 샘플 [1200k, 1200k+1200). 그 안에서 확정된 RR이 그 블록에 들어간다.
+        """
         self.sample += 1
-        if self.sample > 0 and self.sample % BLOCK == 0:
+        if self.sample % BLOCK == 0:
             self._close_block()
             return True
         return False

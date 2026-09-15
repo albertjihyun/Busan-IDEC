@@ -73,10 +73,10 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 
 | 모듈 | 하는 일 | 담당 | 상태 |
 |---|---|---|---|
-| `sqi` | RR 72~360, 직전 대비 25% 이내, 첫 RR 탈락 | 하드웨어 | 규칙 확정 9/15. `src/peak_simple.py` |
-| `peak_detect` | 꺾임 + 문턱 3/5 + 불응기 96 + 급하강 확인 | 하드웨어 | 규칙 확정 9/15. `src/peak_simple.py` |
-| `rr_counter` | 봉우리 사이 샘플 수 | 하드웨어 | 확정 |
-| `window_acc` | 5초 블록 누산기, 12벌 보관, 6벌·12벌 합산 | 하드웨어 | 구조 확정 |
+| `sqi` | RR 72~360, 직전 대비 25% 이내, 첫 RR 탈락 | 하드웨어 | 참조 구현 `rtl/sqi.v` (9/15, 채점 통과) |
+| `peak_detect` | 꺾임 + 문턱 3/5 + 불응기 96 + 급하강 확인 | 하드웨어 | 참조 구현 `rtl/peak_detect.v` (9/15, 채점 통과) |
+| `rr_counter` | 봉우리 사이 샘플 수 | 하드웨어 | `rtl/sqi.v` 안에 포함 |
+| `window_acc` | 5초 블록 누산기, 12벌 보관, 6벌·12벌 합산 | 하드웨어 | 참조 구현 `rtl/window_acc.v` (9/15, 채점 통과) |
 | `classifier` | 3단계에서 선택된 모델. 트리면 부등식 비교, 선형이면 순차 MAC | ML | 9/17~18 |
 | `imu_rule` | 3축 가속도 임계값으로 고개 떨굼과 움직임 과다 | ML | 문헌값 환산 |
 | `combine` | 고개 떨굼 → 즉시, 움직임 과다 → 보류, 아니면 분류기. 상태 변화 시 `changed` | ML | 확정 |
@@ -93,7 +93,7 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 
 | 용도 | 도구 | 상태 |
 |---|---|---|
-| 시뮬레이션 | Icarus Verilog + GTKWave | OSS CAD Suite 2026-09-09판, `C:\oss-cad-suite` (9/10 설치, 동작 확인) |
+| 시뮬레이션 | Icarus Verilog + GTKWave | OSS CAD Suite 2026-09-09판, `C:\oss-cad-suite` (9/10 설치). `sim/tb_rr_frontend.v`로 실사용 확인 |
 | 자원 추정 (초기) | Yosys `synth_xilinx -family xc7` | 위 묶음에 포함. 동작 확인 |
 | 공식 합성·구현 리포트 | Vivado 2026.1 BASIC 티어 (무료) | `C:\AMDDesignTools\2026.1\Vivado`, Artix-7만 설치 (9/10 설치, xc7a35t 배치 합성 확인) |
 | 기존 설치 | Quartus II 9.1sp2 | Altera 전용이라 Artix-7 합성 불가. 쓰지 않음 |
@@ -150,7 +150,7 @@ yosys -p "read_verilog rtl/*.v; synth_xilinx -top drowsy_top -family xc7; stat"
 | 날짜 | 작업 | 준용에게 |
 |---|---|---|
 | 9/14 | 데이터패스 요청서. 1단계 착수(피험자 1명 RR, 봉우리 규칙 초안) | 요청서 |
-| 9/15 | 1단계 완료. 50명 놓침 1.0%·오검출 3.2%(pooled), 240 Hz 오차 2.2 ms | 피크·SQI 규칙, 채점 파일 (완료) |
+| 9/15 | 1단계 완료. 50명 놓침 1.0%·오검출 3.2%(pooled), 240 Hz 오차 2.2 ms. 봉우리·SQI·누산 Verilog 참조 구현, 4명 채점 통과, 합성 LUT 852 | 피크·SQI 규칙, 채점 파일, 참조 RTL (완료) |
 | 9/16 | 2단계: 특징 15개, 창 30/60, 라벨, 분포 | |
 | 9/17 | 3단계: 모델 6종 LOSO, 특징 선택, 비교 표, 창 확정 | 특징 목록(참고) |
 | 9/18 | 4단계: 정수 변환, 정답지. 추론 Verilog 착수 | 재료→판정 벡터 |

@@ -50,7 +50,10 @@ docs/feature-rationale.md      특징 후보 14종의 선정 기준과 문헌 �
 docs/datapath-request.md       하드웨어 팀 인계 명세: 재료 5개, 5초 블록 구조, 신호, 날짜별 인계
 docs/hw-design.md              Verilog 구현 설계: 비트 폭, 부등식 변형, 검증 흐름, 도구, 일정
 docs/data-notes.md             데이터셋 포맷 조사, 라벨 통계, 졸음 사건 통계
-rtl/, sim/                     Verilog 모듈과 테스트벤치 (예정)
+rtl/peak_detect.v, sqi.v, window_acc.v, rr_frontend.v   봉우리·SQI·누산 참조 구현 (채점 통과)
+sim/tb_rr_frontend.v           채점 파일로 rtl/ 을 비트 대조하는 테스트벤치
+sim/vivado_rr_frontend.tcl     Vivado 합성 스크립트
+sim/reports/                   합성 자원·타이밍·전력 리포트
 scripts/download_data.py       데이터셋 내려받기
 scripts/inspect_mpd_labels.py  MPD-DF 라벨 에폭 집계
 scripts/inspect_mpd_events.py  MPD-DF 졸음 사건(연속 피로 구간) 통계
@@ -61,7 +64,6 @@ src/peak_simple.py             회로로 옮기는 봉우리 검출·SQI (정수
 src/window_acc.py              5초 블록 누산기와 창 합산
 src/peak_eval.py               정답 대비 놓침·오검출 집계
 sim/vectors/                   채점 파일 (입력, 봉우리, RR, 블록, 창)
-sim/tb_peak_skeleton.v         테스트벤치 뼈대
 data/                          원본·논문·중간 산출물 (git 제외)
 ```
 
@@ -82,7 +84,7 @@ python scripts/download_data.py   # MPD-DF + AdVitam Exp4 + PPG-DaLiA, 약 6.5GB
 | 도구 (iverilog, yosys, Vivado 2026.1) | 완료 (9/10) |
 | 문제 정의·평가 지표·특징 후보 확정 | 완료 (9/12~13) |
 | 데이터패스 요청서 (하드웨어 팀 인계) | 완료 (9/14) |
-| 1. RR 간격 추출 | 완료 (9/15). 규칙과 채점 파일을 하드웨어 팀에 인계 |
+| 1. RR 간격 추출 | 완료 (9/15). 규칙·채점 파일·Verilog 참조 구현(LUT 852) 인계 |
 | 2~7 | 대기 |
 
 하드웨어 파트는 아날로그 프론트엔드·ADC 회로 설계와 손가락 부위 브레드보드 측정(심박 82 bpm, dicrotic notch 확인), PCB 아트웍까지 마쳤습니다. PCB 제작과 이마 실측은 제출 범위 밖이며 후속 과제입니다. 일정은 예선 서류 마감 9/30, 발표 10/29이며, **Verilog 구현까지 포함해 9/30에 완성**하는 것을 목표로 합니다. 보드 없이 시뮬레이션과 합성 리포트로 완성을 정의합니다.

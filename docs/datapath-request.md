@@ -123,7 +123,15 @@
 
 **결과.** 50명 pooled 놓침 1.0%, 오검출 3.2%. 사람별 중앙값은 놓침 0.33%, 오검출 0.41%, SQI 통과 99.9%. 정답으로 쓴 neurokit2가 느린 심박에서 가짜 봉우리를 끼워 넣는 사례가 확인돼(38번) 실제 오차는 이보다 낮다. 240 Hz 샘플링이 RR에 주는 오차는 표준편차 2.2 ms로 RR 자체 변동(40~100 ms)의 2~5%다. 보간은 필요 없다.
 
-**채점 파일.** `sim/vectors/` 안. 02번 60~180초, 28,800샘플, 봉우리 147개, 5초 블록 23개. 파일 형식은 그 폴더의 README.
+**채점 파일.** `sim/vectors/` 안. 02번 60~180초, 28,800샘플, 봉우리 147개, 5초 블록 24개. 파일 형식은 그 폴더의 README. 다른 사람·구간은 `python scripts/make_vectors.py 16 1800 120` 식으로 뽑는다.
+
+**Verilog 참조 구현 (9/15 추가).** `rtl/peak_detect.v`, `rtl/sqi.v`, `rtl/window_acc.v`, 묶은 것 `rtl/rr_frontend.v`. 파이썬을 한 줄씩 옮긴 것이고, 채점 파일로 02·16·26·47번 네 명 전부 봉우리·RR·창 합이 비트 단위로 일치했다(`sim/tb_rr_frontend.v`). 그대로 써도 되고 참고만 해도 된다. 인터페이스는 3절 이름 그대로다.
+
+```
+iverilog -g2012 -o sim/rr.vvp rtl/*.v sim/tb_rr_frontend.v && vvp -n sim/rr.vvp   # PASS
+```
+
+Vivado 합성(xc7a35t, out-of-context): LUT 852 (4.1%), FF 746 (1.8%), DSP 2 (RR²과 d²), BRAM 0. 12 MHz에서 타이밍 여유 66 ns. 리포트는 `sim/reports/`.
 
 ## 확인해 달라는 것
 
