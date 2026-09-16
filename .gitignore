@@ -13,3 +13,10 @@ data/
 Thumbs.db
 .vscode/
 .idea/
+
+# Verilog 시뮬레이션·합성 산출물
+*.vvp
+*.vcd
+.Xil/
+vivado*.log
+vivado*.jou
