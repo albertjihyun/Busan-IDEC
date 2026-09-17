@@ -20,3 +20,6 @@ Thumbs.db
 .Xil/
 vivado*.log
 vivado*.jou
+
+# 세션 인계 노트 (메모리 대용, 개인용)
+CLAUDE.md
