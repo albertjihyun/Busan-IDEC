@@ -5,6 +5,7 @@
   - 재료 5개는 src.window_acc.WindowAcc 로 5초 블록 누산 (회로와 같은 절차)
   - 1차 특징은 src.features.primary, median은 RR 배열에서 (비교용)
   - 기준선 = 첫 3분 창 특징값 평균 (라벨 무관). 첫 3분은 판정 보류
+  - 기준선(칩 방식) = 첫 3분 ΣRR ÷ N. 열 mean_rb_chip, base_ok_chip (9/19 추가, 4단계 정수 구현과 일치)
   - 직전 창 대비 = 30초 전 창과의 차
   - 무효: no_window(60초 표 에폭 0) > baseline(에폭 0~5) > low_n(N30<15, N60<30) > artifact(라벨 −1)
 
@@ -122,6 +123,17 @@ def subject_rows(sid, wlen, wins, labels):
     if base_ok and any(not (base[f] > 0) for f in BASE_FEATS):
         base_ok = False
     df["base_ok"] = int(base_ok)
+
+    # 칩 방식 기준선: 첫 3분(30초 창 6개 = 5초 블록 36개)의 ΣRR ÷ N. 창 길이와 무관.
+    # 칩은 3분 동안 두 누산기(N, ΣRR)만 더하고 끝에 한 번 나눈다. 라벨은 보지 않는다.
+    # base_ok_chip: N(3분) >= 45 (30초당 유효 박동 하한 15의 절반 × 6창, 기존 base_ok의 '절반' 기준과 같은 취지)
+    n_chip = sum(int(w[0]["n"]) for w in wins[:BASELINE_EPOCHS] if w[0] is not None)
+    s_chip = sum(int(w[0]["sum_rr"]) for w in wins[:BASELINE_EPOCHS] if w[0] is not None)
+    base_ok_chip = n_chip >= 45
+    df["base_ok_chip"] = int(base_ok_chip)
+    df["base_n_chip"] = n_chip
+    df["base_sum_rr_chip"] = s_chip
+    df["mean_rb_chip"] = (df["mean_nn"] * n_chip / s_chip) if base_ok_chip else 1.0
     for f in BASE_FEATS:
         short = f.split("_")[0]
         if base_ok:
@@ -136,6 +148,7 @@ def subject_rows(sid, wlen, wins, labels):
         df[f"{short}_dp"] = np.where(prev_ok & computed, df[f] - prev, 0.0)
     # 기준선 구간·계산 불가 행의 파생 열은 중립값
     neutral = ~computed
+    df.loc[neutral, "mean_rb_chip"] = 1.0
     for f in BASE_FEATS:
         short = f.split("_")[0]
         df.loc[neutral, [f"{short}_rb"]] = 1.0
@@ -145,7 +158,8 @@ def subject_rows(sid, wlen, wins, labels):
 
 COLS = (["sid", "epoch", "t_end_s", "label", "y", "valid", "judged", "reason", "in_baseline", "base_ok"]
         + list(MATERIALS) + list(NAMES) + ["median_nn", "sd2_clipped"]
-        + [f"{s}_{k}" for k in ("rb", "db", "dp") for s in ("mean", "sdnn", "rmssd")])
+        + [f"{s}_{k}" for k in ("rb", "db", "dp") for s in ("mean", "sdnn", "rmssd")]
+        + ["base_ok_chip", "base_n_chip", "base_sum_rr_chip", "mean_rb_chip"])
 
 
 def summarize(df, wlen):

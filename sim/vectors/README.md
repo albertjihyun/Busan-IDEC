@@ -14,3 +14,14 @@
 규칙과 상수는 `src/peak_simple.py`, `src/window_acc.py`. 회로가 이 파일들과 같은 값을 내면 통과.
 
 검증 순서: `peaks.txt`의 `peak_i`가 맞는지 → `rr.txt` → `blocks.txt` → `windows.txt`. 앞에서 틀리면 뒤는 볼 필요 없다.
+
+## `infer/` — 판정 블록 채점 파일 (9/20)
+
+출처: `data/interim/rr/*.npz`(50명 RR)에 `src/window_acc.py`를 돌려 5초 블록마다 60초 창 합을 뽑고, `src/infer_ref.py`(정수 판정 기준 모델)로 정답을 붙였다. 만드는 스크립트 `scripts/make_infer_vectors.py`, 설계 `docs/integer-inference-design.md`.
+
+| 파일 | 내용 |
+|---|---|
+| `NN.txt` (01~50) | `block n60 sum_rr60 hold drowsy`. 사람마다 리셋부터 시작. 앞 셋이 입력, 뒤 둘이 정답 |
+| `edge.txt` | `case block n60 sum_rr60 hold drowsy`. 경계 사례 4벌. `case`가 바뀌면 리셋 |
+
+`sim/tb_classifier.v`가 51개 파일을 전부 읽어 대조한다. 정답은 라벨이 아니라 파이썬 정수 판정이다.
