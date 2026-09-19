@@ -82,6 +82,8 @@ PPG에서 추출한 심박 간격(RR) 특징으로 각성도 저하를 판정하
 - **주파수영역(LF/HF)은 제외.** 30초 창에서 계산이 성립하지 않는다(표준 문서 2~5분 요구)
 
 ### 3단계. 모델 학습 및 비교
+
+> **완료 2026-09-19.** 결과 [model-results.md](./model-results.md), 설계·결정 기록 [model-comparison-design.md](./model-comparison-design.md) 11·12절, 근거 문헌 [stage3-literature.md](./stage3-literature.md). 확정: 로지스틱 회귀 특징 1개(`mean_rb`), 창 60초, 동작점 헛경보 4회/h(2회/h 보조). RBF SVM·MLP는 근거 있는 생략. 재료는 N·ΣRR 둘만 사용([datapath-request.md](./datapath-request.md) ⑥).
 - 후보 모델을 전부 돌려서 비교 (하나로 미리 정하지 않음)
   - 규칙 기반 단일 임계값 (기준선)
   - 결정트리 (깊이·노드 수 제한)
@@ -164,7 +166,7 @@ PPG에서 추출한 심박 간격(RR) 특징으로 각성도 저하를 판정하
 
 기존:
 
-- PPG-HRV 졸음 감지, AdVitam 활용 — Scientific Reports 2025, https://www.nature.com/articles/s41598-025-08582-2
+- PPG-HRV 졸음 감지 — AlArnaout et al., Scientific Reports 2025, https://www.nature.com/articles/s41598-025-08582-2 (2026-09-18 원문 확인: AdVitam 아님. 10명 시뮬레이터 스트레스 데이터 재활용, 라벨은 심박수 문턱, 사람 분리 없음. 비교 대상 아님. `stage3-literature.md` A5)
 - PPG-HRV + SVM 95% / 단일 임계값 68.8% — https://pmc.ncbi.nlm.nih.gov/articles/PMC3892817/ (피험자 독립 평가였는지 확인 필요. 아니면 우리 수치와 직접 비교 불가)
 - AdVitam 데이터셋 — Data in Brief 2023, https://doi.org/10.5281/zenodo.7214953
 - PPG-DaLiA — https://archive.ics.uci.edu/dataset/495/ppg+dalia
