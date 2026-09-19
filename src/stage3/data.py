@@ -24,10 +24,16 @@ EPOCH_SEC = 30.0
 CORR_LIMIT = 0.95
 
 
-def load_table(win: int) -> pd.DataFrame:
-    """창 길이(30/60)의 표 전체를 (sid, epoch) 순으로 읽는다. valid==0 행도 포함한다(사건 정의에 필요)."""
+def load_table(win: int, chip_baseline: bool = False) -> pd.DataFrame:
+    """창 길이(30/60)의 표 전체를 (sid, epoch) 순으로 읽는다. valid==0 행도 포함한다(사건 정의에 필요).
+
+    chip_baseline=True 이면 mean_rb 를 칩 방식 기준선(첫 3분 ΣRR÷N)으로 만든 mean_rb_chip 으로 바꿔 넣는다.
+    4단계 정수 구현과 표를 일치시키는 확인용(설계서 10절). 나머지 열은 그대로.
+    """
     df = pd.read_csv(PROCESSED / f"features_{win}s.csv")
     df = df.sort_values(["sid", "epoch"]).reset_index(drop=True)
+    if chip_baseline:
+        df["mean_rb"] = df["mean_rb_chip"]
     # 무효 행의 특징값은 학습에 안 쓰므로 NaN이어도 상관없다. valid==1 행은 NaN이 없어야 한다.
     v = df[df.valid == 1]
     assert not v[FEATURES].isna().any().any(), "valid 행에 NaN 특징"
