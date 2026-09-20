@@ -42,8 +42,13 @@ ICM-42670-P (I2C) → [하드웨어 팀] I2C 마스터 → [ML 파트] 고개 �
 | 연속 차 d = RR[i] − RR[i−1] | ±288 | 10 signed |
 | Σd | ±199 × 288 = ±57,312 | 17 signed |
 | Σd² | 199 × 288² = 16.5 M | 24 unsigned |
+| 기준선 N_base (첫 3분) | 180 s / 0.3 s = 594 | 10 unsigned |
+| 기준선 ΣRR_base | 180 s × 240 + 360 = 43,560 | 16 unsigned |
+| T_FIX (T × 1024, 헛경보 4회/h 이하 최소 정수) | 1086 | 11 unsigned |
+| 판정 좌변 (ΣRR60 × N_base) << 10 | 17 + 10 + 10 | 37 unsigned |
+| 판정 우변 (T_FIX × ΣRR_base) × N60 | 11 + 16 + 8 | 35 unsigned |
 
-창이 30초로 확정되면 N 최대는 100이고 위 폭은 1비트씩 줄어든다. 여유를 두고 60초 기준으로 잡는다.
+창은 60초로 확정됐다(9/19). 위 폭은 60초 기준.
 
 ## 제곱근과 나눗셈을 없애는 방법
 
@@ -77,15 +82,15 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 | `peak_detect` | 꺾임 + 문턱 3/5 + 불응기 96 + 급하강 확인 | 하드웨어 | 참조 구현 `rtl/peak_detect.v` (9/15, 채점 통과) |
 | `rr_counter` | 봉우리 사이 샘플 수 | 하드웨어 | `rtl/sqi.v` 안에 포함 |
 | `window_acc` | 5초 블록 누산기, 12벌 보관, 6벌·12벌 합산 | 하드웨어 | 참조 구현 `rtl/window_acc.v` (9/15, 채점 통과) |
-| `classifier` | 3단계에서 선택된 모델. 트리면 부등식 비교, 선형이면 순차 MAC | ML | 9/17~18 |
-| `imu_rule` | 3축 가속도 임계값으로 고개 떨굼과 움직임 과다 | ML | 문헌값 환산 |
-| `combine` | 고개 떨굼 → 즉시, 움직임 과다 → 보류, 아니면 분류기. 상태 변화 시 `changed` | ML | 확정 |
-| `infer_top` | ML 블록 최상위. 재료 5개 입력, 판정 출력 | ML | 9/18~19 |
+| `classifier` | `mean_rb ≥ T` 를 교차 곱셈으로. 워밍업 3분 기준선, hold, 5초 판정 | ML | `rtl/classifier.v` (9/20, 50명 채점 통과). 설계 [integer-inference-design.md](./integer-inference-design.md) |
+| `imu_rule` | 3축 가속도 임계값으로 고개 떨굼과 움직임 과다 | ML | 6단계. 문헌값 환산 |
+| `combine` | 고개 떨굼 → 즉시, 움직임 과다 → 보류, 아니면 분류기. 상태 변화 시 `changed` | ML | 규칙 확정. `changed` 는 `infer_top` 에 구현, IMU 결합은 6단계 |
+| `infer_top` | ML 블록 최상위. 재료 2개(`n60`, `sum_rr60`) 입력, `drowsy`·`hold`·`changed` 출력 | ML | `rtl/infer_top.v` (9/20). IMU 결합은 6단계 |
 
 ## 검증 흐름
 
 1. 4단계에서 고정소수점 파이썬 정답지를 **정수 연산만으로** 짠다. numpy float를 쓰지 않는다. RTL과 한 줄씩 대응돼야 한다.
-2. 정답지가 MPD-DF 파형(240 Hz 다운샘플)을 처리하면서 두 종류 벡터를 떨군다. ① 파형 → 봉우리 위치 → 재료 5개 (하드웨어 팀 검증용, 9/15) ② 재료 5개 → 판정 (ML 블록 검증용, 9/18). `sim/vectors/`.
+2. 정답지가 MPD-DF 파형(240 Hz 다운샘플)을 처리하면서 두 종류 벡터를 떨군다. ① 파형 → 봉우리 위치 → 재료 5개 (하드웨어 팀 검증용, 9/15, `sim/vectors/`) ② 재료 2개 → 판정 (ML 블록 검증용, 9/20, `sim/vectors/infer/`, 50명 전부 + 경계 사례).
 3. Verilog 테스트벤치가 `$readmemh`로 입력을 읽어 240 SPS 간격으로 밀어 넣고, 출력을 기대값과 비교해 불일치를 세어 출력한다.
 4. 중간값까지 대조하므로 틀리면 어느 블록에서 갈라졌는지 바로 보인다.
 
@@ -95,7 +100,7 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 |---|---|---|
 | 시뮬레이션 | Icarus Verilog + GTKWave | OSS CAD Suite 2026-09-09판, `C:\oss-cad-suite` (9/10 설치). `sim/tb_rr_frontend.v`로 실사용 확인 |
 | 자원 추정 (초기) | Yosys `synth_xilinx -family xc7` | 위 묶음에 포함. 동작 확인 |
-| 공식 합성·구현 리포트 | Vivado 2026.1 BASIC 티어 (무료) | `C:\AMDDesignTools\2026.1\Vivado`, Artix-7만 설치 (9/10 설치, xc7a35t 배치 합성 확인) |
+| 공식 합성·구현 리포트 | Vivado 2026.1 BASIC 티어 (무료) | `C:\AMDDesignTools\2026.1\Vivado`, Artix-7만 설치 (9/10 설치, xc7a35t 배치 합성 확인). **한글 경로에서 돌리면 죽는다**(9/20, 힙 손상 0xC0000374). `rtl/`·`sim/`을 `C:\tmp` 아래에 복사해 돌리고 리포트만 가져온다 |
 | 기존 설치 | Quartus II 9.1sp2 | Altera 전용이라 Artix-7 합성 불가. 쓰지 않음 |
 
 Vivado 라이선스. 2026.1부터 무료 BASIC 티어도 라이선스 파일이 있어야 실행된다. 발급은 License Manager의 Connect Now로 amd.entitlenow.com에 들어가 "Vivado Basic Tier License, Node Locked License"를 고르고 이 PC의 와이파이 MAC을 Host ID로 넣으면 이메일로 온다. 1년마다 같은 절차로 재발급한다.
@@ -154,6 +159,7 @@ yosys -p "read_verilog rtl/*.v; synth_xilinx -top drowsy_top -family xc7; stat"
 | 9/16 | 2단계: 특징 15개, 창 30/60, 라벨, 분포 | |
 | 9/17 | 3단계: 모델 6종 LOSO, 특징 선택, 비교 표, 창 확정 | 특징 목록(참고) |
 | 9/18 | 4단계: 정수 변환, 정답지. 추론 Verilog 착수 | 재료→판정 벡터 |
-| 9/19 | 추론 Verilog 완성, 시뮬레이션, 문서 정리 | 추론 모듈 + 테스트벤치 |
+| 9/19 | 3단계 완료(PR #10). 로지스틱 특징 1개·창 60초 확정 | ⑥ 절(재료 둘, 인터페이스 선택지) |
+| 9/20 | 4단계 정수 변환·정답지, 7단계 판정 Verilog·시뮬·합성 | 추론 모듈 + 테스트벤치 + 검증 파일 |
 
 9/30 범위에서 뺀 것: PPG-DaLiA 5단계(여유 시), AdVitam 외부 검증, IMU 착용 검증, Vivado 전력 리포트는 준용 통합 후.

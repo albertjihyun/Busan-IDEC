@@ -194,12 +194,12 @@ def summarize(df: pd.DataFrame, preds: pd.DataFrame, infos: list[dict], out: Pat
     return summ
 
 
-def run_model(model: str, win: int, n_jobs: int, sids: list[int] | None) -> None:
+def run_model(model: str, win: int, n_jobs: int, sids: list[int] | None, chip_baseline: bool = False) -> None:
     spec = MODELS[model]
-    df = load_table(win)
+    df = load_table(win, chip_baseline)
     all_sids = sorted(df.sid.unique())
     test_sids = sids or all_sids
-    out = OUT_DIR / f"{model}_{win}s"
+    out = OUT_DIR / (f"{model}_{win}s" + ("_chipbase" if chip_baseline else ""))
     log(f"== {model} {win}s: {len(test_sids)} folds, n_jobs={n_jobs}")
     t0 = time.time()
     res = Parallel(n_jobs=n_jobs, verbose=0)(delayed(run_fold)(model, win, s, df) for s in test_sids)
@@ -231,11 +231,12 @@ def main(argv=None):
     ap.add_argument("--wins", nargs="+", type=int, default=[30, 60])
     ap.add_argument("--n-jobs", type=int, default=8)
     ap.add_argument("--sids", nargs="*", type=int, default=None)
+    ap.add_argument("--chip-baseline", action="store_true", help="mean_rb 를 칩 방식 기준선(3분 ΣRR÷N)으로 바꿔 돌린다. 출력 폴더에 _chipbase")
     a = ap.parse_args(argv)
     for m in a.models:
         for w in a.wins:
             try:
-                run_model(m, w, a.n_jobs, a.sids)
+                run_model(m, w, a.n_jobs, a.sids, a.chip_baseline)
             except Exception as e:  # 한 모델이 죽어도 다음 모델은 돈다
                 log(f"!! {m} {w}s FAILED: {e!r}")
                 import traceback; traceback.print_exc()
