@@ -1,6 +1,6 @@
 // 봉우리 검출. src/peak_simple.py 의 PeakDetector 를 그대로 옮긴 것.
 //
-// 입력: AFE를 지난 0 중심 부호 있는 샘플. i_valid 는 240 SPS 로 1클럭 펄스.
+// 입력: AFE를 지난 0 중심 부호 있는 샘플(보드 ADC 는 12비트, 폭은 파라미터 W). i_valid 는 240 SPS 로 1클럭 펄스.
 // 출력: o_peak 는 봉우리 확정 1클럭 펄스. o_delay 는 확정 시점이 봉우리보다 몇 샘플 늦은지.
 //        봉우리 위치 = (지금 샘플 번호) - o_delay.
 //
@@ -16,7 +16,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 module peak_detect #(
-    parameter W          = 16,   // 샘플 폭
+    parameter W          = 12,   // 샘플 폭. MCP3421 240 SPS = 12비트
     parameter REFRACT    = 96,
     parameter THR_NUM    = 3,
     parameter THR_DEN    = 5,
