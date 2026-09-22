@@ -27,7 +27,7 @@ ICM-42670-P (I2C) → [하드웨어 팀] I2C 마스터 → [ML 파트] 고개 �
 
 ## 경계 신호
 
-[datapath-request.md](./datapath-request.md) 3절이 정본이다. 요지: 하드웨어 팀이 5초마다 `o_win_valid`와 함께 30초·60초 창의 재료 5개(N, ΣRR, ΣRR², Σd, Σd²)와 `o_sqi_bad`, IMU 3축을 준다. ML 블록은 `drowsy`, `hold`, `head_nod`, `changed`를 낸다.
+[datapath-request.md](./datapath-request.md) 3절이 정본이다. 요지: 하드웨어 팀이 5초마다 `o_win_valid`와 함께 30초·60초 창의 재료 5개(N, ΣRR, ΣRR², Σd, Σd²)와 `o_sqi_bad`, IMU 3축을 준다. ML 블록은 `alert` 펄스 하나를 낸다(9/22, 같은 문서 ⑧ 절. 그전에는 `drowsy`·`hold`·`head_nod`·`changed` 넷).
 
 ## 숫자 표현
 
@@ -84,8 +84,8 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 | `window_acc` | 5초 블록 누산기, 12벌 보관, 6벌·12벌 합산 | 하드웨어 | 참조 구현 `rtl/window_acc.v` (9/15, 채점 통과) |
 | `classifier` | `mean_rb ≥ T` 를 교차 곱셈으로. 워밍업 3분 기준선, hold, 5초 판정 | ML | `rtl/classifier.v` (9/20, 50명 채점 통과). 설계 [integer-inference-design.md](./integer-inference-design.md) |
 | `imu_rule` | 3축 가속도 임계값으로 고개 떨굼과 움직임 과다 | ML | 6단계. 문헌값 환산 |
-| `combine` | 고개 떨굼 → 즉시, 움직임 과다 → 보류, 아니면 분류기. 상태 변화 시 `changed` | ML | 규칙 확정. `changed` 는 `infer_top` 에 구현, IMU 결합은 6단계 |
-| `infer_top` | ML 블록 최상위. 재료 2개(`n60`, `sum_rr60`) 입력, `drowsy`·`hold`·`changed` 출력 | ML | `rtl/infer_top.v` (9/20). IMU 결합은 6단계 |
+| `combine` | 세 재료(판정·보류·떨굼)를 모아 `alert` 펄스 하나로. 떨굼 → 즉시, 보류 → 삼킴, 아니면 분류기 | ML | `infer_top` 안 한 줄 (9/22). IMU 항은 6단계 |
+| `infer_top` | ML 블록 최상위. 재료 2개(`n60`, `sum_rr60`) 입력, `alert` 펄스·`ready` 출력 | ML | `rtl/infer_top.v` (9/20, 포트 정리 9/22). IMU 결합은 6단계 |
 
 ## 검증 흐름
 

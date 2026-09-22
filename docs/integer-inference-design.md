@@ -132,21 +132,21 @@ mean_rb = (창 60초 평균 RR) ÷ (첫 3분 평균 RR) ≥ T   →   drowsy
 
 파라미터 `T_FIX=1086`, `FRAC=10`, `WARM_BLOCKS=36`, `MIN_N60=30`, `MIN_BASE_N=45`.
 
-`rtl/infer_top.v`는 `classifier`를 감싸고 `datapath-request.md`의 지현→UART 신호(`drowsy`, `hold`, `changed`)를 낸다. `head_nod`는 6단계(IMU) 전까지 0으로 묶는다.
+`rtl/infer_top.v`는 `classifier`를 감싸고 지현→UART 신호를 낸다. ~~`drowsy`, `hold`, `changed`, `head_nod`(6단계 전까지 0)~~ **9/22 변경: `alert` 펄스 하나**(`o_valid & o_drowsy & ~o_hold`, IMU 항은 6단계). 근거는 `datapath-request.md` ⑧ 절. `o_ready`는 그대로 나간다.
 
 ## 11. 결과 (9/20 밤)
 
-**시뮬레이션** (`sim/tb_classifier.v`, Icarus Verilog): 50명 75,186블록 + 경계 196블록 = 75,382블록 전부 `hold`·`drowsy`가 파이썬 정수 정답과 일치, `changed` 펄스도 전부 일치. 테스트벤치가 오류를 잡는지는 상수를 일부러 틀려 확인했다(`infer_top`의 `T_FIX` 1086→1087: 309블록 불일치, `MIN_N60` 30→31: 불일치 검출). 실행 2초.
+**시뮬레이션** (`sim/tb_classifier.v`, Icarus Verilog): 50명 75,186블록 + 경계 196블록 = 75,382블록 전부 `hold`·`drowsy`가 파이썬 정수 정답과 일치, `changed` 펄스도 전부 일치(9/22부터는 `alert` 펄스 수 = `drowsy`로 대조, 역시 불일치 0). 테스트벤치가 오류를 잡는지는 상수를 일부러 틀려 확인했다(`infer_top`의 `T_FIX` 1086→1087: 309블록 불일치, `MIN_N60` 30→31: 불일치 검출). 실행 2초.
 
 **Vivado 2026.1 합성·구현** (xc7a35t, out-of-context, 12 MHz, `sim/reports/infer_top_*.rpt`):
 
 | 항목 | 값 | 비고 |
 |---|---|---|
-| LUT | 117 (0.56%) | 준용 프론트엔드 852의 1/7 |
-| FF | 65 (0.16%) | 곱 결과 레지스터는 DSP 안으로 흡수됨 |
+| LUT | 117 (0.56%) → 115 (`alert` 포트 정리 후, 9/22) | 준용 프론트엔드 852의 1/7 |
+| FF | 65 (0.16%) → 63 | 곱 결과 레지스터는 DSP 안으로 흡수됨 |
 | DSP48E1 | 3 | R = T_FIX × ΣRR_base, 좌변 17×10, 우변 27×8 |
 | BRAM | 0 | |
-| 타이밍 | WNS 75.1 ns / 주기 83.3 ns | 임계 경로 약 8 ns. 12 MHz에서 10배 여유 |
+| 타이밍 | WNS 75.1 ns → 75.4 ns / 주기 83.3 ns | 임계 경로 약 8 ns. 12 MHz에서 10배 여유 |
 | 전력 | 동적 1 mW, 정적 68 mW | 정적은 칩 전체 값이라 이 블록 몫이 아님. 준용 통합 후 다시 |
 
 3단계 예산(파라미터 4 KB) 대비 파라미터 1개(11비트)라 비교가 무의미할 정도로 작다. 곱셈기를 공유하면 DSP 1개로 줄지만 자원이 남아 그대로 뒀다(9절 4항).
