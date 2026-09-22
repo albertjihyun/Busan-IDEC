@@ -129,7 +129,7 @@ PPG에서 추출한 심박 간격(RR) 특징으로 각성도 저하를 판정하
 
 ### 7단계. Verilog 구현과 하드웨어 팀 인계
 
-> **판정 블록 완료 2026-09-20.** `rtl/classifier.v`(워밍업 누산·R 계산·비교), `rtl/infer_top.v`(준용 신호 받기, `drowsy`·`hold`·`changed`, `head_nod`는 6단계까지 0). 테스트벤치 `sim/tb_classifier.v`가 50명 75,186블록 + 경계 사례 196블록을 파이썬 정수 정답과 대조해 불일치 0(`changed`도 대조). Vivado 합성 결과는 [integer-inference-design.md](./integer-inference-design.md) 11절. 남은 것: `imu_rule`·`combine`(6단계와 함께).
+> **판정 블록 완료 2026-09-20.** `rtl/classifier.v`(워밍업 누산·R 계산·비교), `rtl/infer_top.v`(준용 신호 받기, ~~`drowsy`·`hold`·`changed`, `head_nod`는 6단계까지 0~~ 9/22부터 `alert` 펄스 하나, `datapath-request.md` ⑧ 절). 테스트벤치 `sim/tb_classifier.v`가 50명 75,186블록 + 경계 사례 196블록을 파이썬 정수 정답과 대조해 불일치 0(`changed`도 대조). Vivado 합성 결과는 [integer-inference-design.md](./integer-inference-design.md) 11절. 남은 것: `imu_rule`·`combine`(6단계와 함께).
 - 재료 5개 → 특징 → 분류기 → IMU 결합 → 판정 구간을 Verilog로 구현한다. 피크 검출·RR·누산은 하드웨어 팀. 설계는 [hw-design.md](./hw-design.md), 인계는 [datapath-request.md](./datapath-request.md)
 - 4단계 정수 정답지에서 뽑은 테스트 벡터로 시뮬레이션을 통과시키고, Vivado로 xc7a35t 합성·구현 리포트를 뽑는다
 - 확정 모델의 파라미터를 고정소수점으로 변환하여 파일로 전달

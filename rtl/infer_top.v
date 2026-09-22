@@ -1,10 +1,11 @@
-// 추론 최상위. 준용 블록(rr_frontend)의 창 합을 받아 판정하고 UART/BLE 제어로 넘길 신호를 만든다.
-// 인터페이스는 docs/datapath-request.md "신호" 절. IMU(head_nod) 는 6단계까지 0 으로 묶는다.
+// 추론 최상위. 준용 블록(rr_frontend)의 창 합을 받아 판정하고 UART 로 넘길 경보 펄스 하나를 만든다.
+// 인터페이스는 docs/datapath-request.md ⑧ 절. 9/22 에 출력을 drowsy/hold/head_nod/changed 넷에서 alert 하나로 바꿨다.
 //
-//   drowsy  : 각성도 저하 판정. 5초마다 갱신. hold 면 0
-//   hold    : 워밍업 중이거나 창 안 박동이 30개 미만 (신호 불량)
-//   head_nod: 고개 떨굼. 아직 0
-//   changed : 위 셋 중 하나라도 바뀐 클럭에 1펄스. UART 전송 트리거
+//   alert : 1클럭 펄스. 5초 판정이 졸림이고 보류 사유가 없을 때 1회, 고개 떨굼이 잡힌 순간 1회.
+//           UART 는 이 펄스마다 바이트 하나를 보낸다. 상태는 밖으로 안 낸다.
+//   ready : 기준선 확정됨. 보드 LED 등 상태 표시용. UART 로는 안 나간다.
+//
+// IMU 쪽(m_nod, m_busy)은 6단계 전까지 0 으로 묶는다. combine 논리는 alert 한 줄이 전부다.
 
 `timescale 1ns/1ps
 `default_nettype none
@@ -17,11 +18,8 @@ module infer_top #(
     input  wire        i_win_valid,
     input  wire [7:0]  i_n60,
     input  wire [16:0] i_sum_rr60,
-    output wire        drowsy,
-    output wire        hold,
-    output wire        head_nod,
-    output reg         changed,
-    output wire        ready           // 기준선 확정됨 (상태 표시용)
+    output reg         alert,
+    output wire        ready
 );
     wire c_valid, c_hold, c_drowsy;
 
@@ -31,22 +29,16 @@ module infer_top #(
         .o_valid(c_valid), .o_hold(c_hold), .o_drowsy(c_drowsy), .o_ready(ready)
     );
 
-    assign drowsy   = c_drowsy;
-    assign hold     = c_hold;
-    assign head_nod = 1'b0;
+    // imu_rule 자리 (6단계). m_nod: 떨굼 펄스, m_busy: 움직임 과다 상태
+    wire m_nod  = 1'b0;
+    wire m_busy = 1'b0;
 
-    // 판정이 갱신된 클럭에 이전 값과 비교
-    reg prev_drowsy, prev_hold;
+    // combine: 판정 갱신 클럭에 졸림이고 보류 아니면 1펄스, 떨굼은 그 순간 1펄스
     always @(posedge clk) begin
-        changed <= 1'b0;
-        if (!rst_n) begin
-            prev_drowsy <= 1'b0;
-            prev_hold   <= 1'b1;
-        end else if (c_valid) begin
-            prev_drowsy <= c_drowsy;
-            prev_hold   <= c_hold;
-            changed     <= (c_drowsy != prev_drowsy) || (c_hold != prev_hold);
-        end
+        if (!rst_n)
+            alert <= 1'b0;
+        else
+            alert <= (c_valid & c_drowsy & ~c_hold & ~m_busy) | m_nod;
     end
 endmodule
 `default_nettype wire
