@@ -1,9 +1,9 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
-| Date             : Tue Sep 15 17:50:33 2026
+| Date             : Tue Sep 22 12:21:15 2026
 | Host             : Jihyun running 64-bit major release  (build 9200)
-| Command          : report_power -file C:/tmp/vivado_rr/power.rpt
+| Command          : report_power -file sim/reports/rr_frontend_power.rpt
 | Design           : rr_frontend
 | Device           : xc7a35tcpg236-1
 | Design State     : routed
@@ -53,13 +53,13 @@ Table of Contents
 | On-Chip                 | Power (W) | Used     | Available | Utilization (%) |
 +-------------------------+-----------+----------+-----------+-----------------+
 | Clocks                  |     0.001 |        3 |       --- |             --- |
-| Slice Logic             |    <0.001 |     2063 |       --- |             --- |
-|   LUT as Logic          |    <0.001 |      670 |     20800 |            3.22 |
-|   CARRY4                |    <0.001 |      121 |      8150 |            1.48 |
-|   Register              |    <0.001 |      746 |     41600 |            1.79 |
+| Slice Logic             |    <0.001 |     1975 |       --- |             --- |
+|   LUT as Logic          |    <0.001 |      619 |     20800 |            2.98 |
+|   CARRY4                |    <0.001 |      112 |      8150 |            1.37 |
+|   Register              |    <0.001 |      730 |     41600 |            1.75 |
 |   Others                |     0.000 |       10 |       --- |             --- |
 |   LUT as Shift Register |     0.000 |      182 |      9600 |            1.90 |
-| Signals                 |    <0.001 |     1281 |       --- |             --- |
+| Signals                 |    <0.001 |     1225 |       --- |             --- |
 | DSPs                    |    <0.001 |        2 |        90 |            2.22 |
 | Static Power            |     0.068 |          |           |                 |
 | Total                   |     0.071 |          |           |                 |

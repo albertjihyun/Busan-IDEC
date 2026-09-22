@@ -11,7 +11,8 @@ module tb_rr_frontend;
     localparam GAP = 8;
 
     reg clk = 0, rst_n = 0, i_valid = 0;
-    reg signed [15:0] i_sample = 0;
+    localparam W = 12;                      // ADC 12비트. in.hex 는 3자리 2의 보수
+    reg signed [W-1:0] i_sample = 0;
     always #5 clk = ~clk;
 
     wire        o_peak, o_rr_valid, o_rr_ok, o_win_valid;
@@ -23,7 +24,7 @@ module tb_rr_frontend;
     wire signed [16:0] o_sum_d30, o_sum_d60;
     wire [23:0] o_sum_d2_30, o_sum_d2_60;
 
-    rr_frontend dut (
+    rr_frontend #(.W_SAMPLE(W)) dut (
         .clk(clk), .rst_n(rst_n), .i_valid(i_valid), .i_sample(i_sample),
         .o_peak(o_peak), .o_peak_delay(o_peak_delay),
         .o_rr_valid(o_rr_valid), .o_rr(o_rr), .o_rr_ok(o_rr_ok),
@@ -32,7 +33,7 @@ module tb_rr_frontend;
         .o_n60(o_n60), .o_sum_rr60(o_sum_rr60), .o_sum_rr2_60(o_sum_rr2_60), .o_sum_d60(o_sum_d60), .o_sum_d2_60(o_sum_d2_60)
     );
 
-    reg [15:0] mem [0:N_SAMPLES-1];
+    reg [W-1:0] mem [0:N_SAMPLES-1];
     integer sample_idx = -1;
     integer f_pk, f_rr, f_win, rc;
     reg [8*200:1] line;

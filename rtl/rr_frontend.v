@@ -1,13 +1,18 @@
 // 봉우리 검출 → SQI → 5초 누산을 묶은 것. 하드웨어 팀 블록의 참조 구현.
 // 입력은 AFE 를 지난 0 중심 샘플, 출력은 datapath-request.md 3절의 재료 5개 × 2창.
+//
+// 샘플 폭 W_SAMPLE 은 보드 ADC(MCP3421, 240 SPS 에서 12비트, ±2047) 에 맞춰 12 가 기본이다 (9/22, 요청서 ⑨절 A).
+// 앞단 노치 필터 출력이 12비트를 넘으면 이 파라미터만 올리면 된다. 검출 규칙은 상대 문턱이라 폭에 무관하다.
 
 `timescale 1ns/1ps
 `default_nettype none
-module rr_frontend (
-    input  wire               clk,
-    input  wire               rst_n,
-    input  wire               i_valid,
-    input  wire signed [15:0] i_sample,
+module rr_frontend #(
+    parameter W_SAMPLE = 12
+)(
+    input  wire                       clk,
+    input  wire                       rst_n,
+    input  wire                       i_valid,
+    input  wire signed [W_SAMPLE-1:0] i_sample,
     // 디버그·검증용
     output wire               o_peak,
     output wire [4:0]         o_peak_delay,
@@ -32,7 +37,7 @@ module rr_frontend (
     reg valid_d;
     always @(posedge clk) valid_d <= rst_n & i_valid;
 
-    peak_detect u_pk (
+    peak_detect #(.W(W_SAMPLE)) u_pk (
         .clk(clk), .rst_n(rst_n), .i_valid(i_valid), .i_sample(i_sample),
         .o_peak(o_peak), .o_delay(o_peak_delay)
     );
