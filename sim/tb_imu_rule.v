@@ -1,7 +1,8 @@
 // imu_rule 채점. sim/vectors/imu/cases.txt (scripts/make_imu_vectors.py, 정답은 src/imu_ref.py)와 비트 단위로 대조.
 //
 //   iverilog -g2012 -o sim/imu.vvp rtl/imu_rule.v sim/tb_imu_rule.v && vvp -n sim/imu.vvp
-//   iverilog -g2012 -Ptb_imu_rule.FWD_SIGN=1 -Ptb_imu_rule.VERT_AXIS=0 -o sim/imu_chest.vvp rtl/imu_rule.v sim/tb_imu_rule.v\n//   vvp -n sim/imu_chest.vvp +vec=data/processed/stage6/imu_dalia_S1.txt      (DaLiA 가슴 축: 앞=+Z 세로=X)
+//   iverilog -g2012 -Ptb_imu_rule.FWD_SIGN=1 -Ptb_imu_rule.VERT_AXIS=0 -o sim/imu_chest.vvp rtl/imu_rule.v sim/tb_imu_rule.v
+//   vvp -n sim/imu_chest.vvp +vec=data/processed/stage6/imu_dalia_S1.txt      (DaLiA 가슴 축: 앞=+Z 세로=X)
 //
 // 줄 형식: case k ax ay az nod lp_f lp_v cnt.  case 가 바뀌면 리셋. 샘플 간격은 실제 12만 클럭 대신 8클럭.
 // 샘플마다 필터·카운터 레지스터(계층 참조)와 그 샘플 뒤 4클럭 안의 o_nod 펄스 수를 정답과 비교한다.
