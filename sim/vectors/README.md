@@ -26,3 +26,13 @@
 | `edge.txt` | `case block n60 sum_rr60 hold drowsy`. 경계 사례 4벌. `case`가 바뀌면 리셋 |
 
 `sim/tb_classifier.v`가 51개 파일을 전부 읽어 대조한다. 정답은 라벨이 아니라 파이썬 정수 판정이다.
+
+## `imu/` — 고개 떨굼 규칙 채점 파일 (9/23)
+
+출처: `scripts/make_imu_vectors.py`가 만든 합성 가속도(100 Hz, ±2 g 정수) 16 시나리오. 정답은 `src/imu_ref.py`(정수 규칙). 설계 `docs/imu-rule-design.md` 8절.
+
+| 파일 | 내용 |
+|---|---|
+| `cases.txt` | `case k ax ay az nod lp_f lp_v cnt`. `case`가 바뀌면 리셋. 앞 넷이 입력, `nod`는 그 샘플의 펄스, 뒤 셋은 필터·카운터 레지스터 정답 |
+
+`sim/tb_imu_rule.v`가 샘플마다 레지스터와 펄스 수를 대조한다. `+vec=파일`로 다른 파일(예: `data/processed/stage6/imu_dalia_S1.txt`, PPG-DaLiA 가슴 가속도 92만 샘플)도 돌릴 수 있다.

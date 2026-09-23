@@ -1,6 +1,6 @@
 // infer_top(classifier) 채점. sim/vectors/infer/ 의 파이썬 정수 정답(src/infer_ref.py)과 비트 단위로 대조.
 //
-//   iverilog -g2012 -o sim/infer.vvp rtl/classifier.v rtl/infer_top.v sim/tb_classifier.v && vvp -n sim/infer.vvp
+//   iverilog -g2012 -o sim/infer.vvp rtl/classifier.v rtl/imu_rule.v rtl/infer_top.v sim/tb_classifier.v && vvp -n sim/infer.vvp
 //
 // 50명 파일(NN.txt)은 사람마다 리셋하고 블록 75,186개를 전부 넣는다. edge.txt 는 case 이름이 바뀔 때 리셋.
 // 블록 간격은 실제 6만 클럭 대신 8클럭. 설계가 간격에 의존하지 않는다.
@@ -16,6 +16,8 @@ module tb_classifier;
     wire alert, ready;
     infer_top dut (
         .clk(clk), .rst_n(rst_n), .i_win_valid(i_win_valid), .i_n60(i_n60), .i_sum_rr60(i_sum_rr60),
+        .i_imu_valid(1'b0), .i_accel_x(16'sd0), .i_accel_y(16'sd0), .i_accel_z(16'sd0),
+        .i_nod_event(1'b0), .i_nod_sustained(1'b0),
         .alert(alert), .ready(ready)
     );
     wire drowsy = dut.c_drowsy;
