@@ -32,8 +32,8 @@ TABLE = ROOT / "data" / "processed" / "features_60s.csv"
 OUT_KEY = ROOT / "data" / "processed" / "stage4"
 OUT_VEC = ROOT / "sim" / "vectors" / "infer"
 EPOCH_BLOCKS = 6
-T_FLOAT_4 = 1.067202691345673      # 50명 전체 mean_rb_chip 에서 헛경보 4회/h 실수 문턱 (scripts/calib_t_float.py, 준용 v14 검출기 기준 9/23)
-T_FLOAT_2 = 1.105804472236118      # 2회/h. 칩에는 안 넣고 참고용
+T_FLOAT_4 = 1.0601714757378689     # 50명 전체 mean_rb_chip 에서 헛경보 4회/h 실수 문턱 (설계서 2절, scripts/calib_t_float.py 로 재현 가능)
+T_FLOAT_2 = 1.0999238569284642     # 2회/h. 칩에는 안 넣고 참고용
 
 
 def block_materials(sid):

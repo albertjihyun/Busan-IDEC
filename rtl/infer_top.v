@@ -14,7 +14,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 module infer_top #(
-    parameter T_FIX = 1093,
+    parameter T_FIX = 1086,
     parameter FRAC  = 10
 )(
     input  wire        clk,
