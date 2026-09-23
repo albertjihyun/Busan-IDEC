@@ -171,10 +171,10 @@ iverilog -g2012 -o sim/infer.vvp rtl/classifier.v rtl/infer_top.v sim/tb_classif
 ML 블록 안의 규칙(`combine`, 한 줄):
 
 ```
-alert = (판정 갱신 클럭 AND 졸림 AND 보류 아님 AND 움직임 과다 아님)  OR  떨굼 펄스
+alert = (판정 갱신 클럭 AND 졸림 AND 보류 아님)  OR  떨굼 펄스
 ```
 
-보류(워밍업 3분·박동 30개 미만·움직임 과다)는 안에서 삼켜진다. 떨굼은 심박 판정이 아니라 IMU가 직접 본 것이라 보류와 무관하게 낸다. 6단계 전까지 IMU 항은 0.
+보류(워밍업 3분·박동 30개 미만)는 안에서 삼켜진다. 떨굼은 심박 판정이 아니라 IMU가 직접 본 것이라 보류와 무관하게 낸다. ~~6단계 전까지 IMU 항은 0.~~ 9/23: 떨굼 펄스 = 우리 자세 규칙 + 준용 `imu_feature` 출력, ⑩ 절. "움직임 과다" 항은 뺐다(준용 SQI의 모션 게이트가 이미 그 일을 함).
 
 **UART가 할 일.**
 
@@ -191,7 +191,30 @@ alert = (판정 갱신 클럭 AND 졸림 AND 보류 아님 AND 움직임 과다 
 
 **검증.** `sim/tb_classifier.v`가 50명 75,186블록 + 경계 196블록에서 `alert` 펄스 수가 정답 `drowsy`와 같음을 확인(불일치 0). 펄스 대신 상태로 내면 17,864 불일치로 잡힌다.
 
-**IMU 쪽 물어볼 것.** 이마 장착 시 **축 방향**(앞·세로가 x/y/z 중 어느 것), 풀스케일(±2/±4 g), ODR, 내장 LPF 설정값. 이 넷이 와야 떨굼 임계값을 확정한다.
+~~**IMU 쪽 물어볼 것.** 이마 장착 시 축 방향, 풀스케일, ODR, 내장 LPF.~~ 9/23 v13 문서에서 답 확인, ⑩ 절.
+
+## ⑩ IMU 결합 (9/23, 준용 v14 기준)
+
+우리 블록(`rtl/infer_top.v`)이 `ppg_soc_top`에서 받는 IMU 신호와, 떨굼을 어떻게 내는지. 설계 `docs/imu-rule-design.md`.
+
+**받는 것 (전부 `ppg_soc_top` 출력 그대로, 변경 없음)**
+
+| 신호 | 폭 | 우리 쪽 이름 | 쓰임 |
+|---|---|---|---|
+| `o_accel_x/y/z` | 16 signed ×3 | `i_accel_x/y/z` | 자세 규칙 입력 |
+| `o_imu_valid` | 1 | `i_imu_valid` | 100 Hz 갱신 펄스 |
+| `o_nod_event` | 1 (1클럭 펄스) | `i_nod_event` | 준용 자이로 끄덕임(25°). 그대로 `alert`에 OR |
+| `o_nod_sustained` | 1 (상태) | `i_nod_sustained` | 준용 "떨군 채 유지". 상승 에지에서 한 번 `alert` |
+
+`o_pitch_sign_ok`는 안 받는다. 확정 전 `o_nod_event`가 틀릴 수 있다는 건 알지만(v13 13-4절), 그 구간은 짧고(실주행 수 초) 우리 자세 규칙이 따로 돌기 때문이다. 필요해지면 `i_nod_event & o_pitch_sign_ok`로 한 줄.
+
+**우리 자세 규칙 (`rtl/imu_rule.v`).** 센서 Z(앞, 숙이면 음 → 부호 반전)와 Y(이마-턱, 절댓값)에 2 Hz IIR → `앞축 ≥ sin35°(9397) AND |세로축| ≤ cos35°(13420)`가 0.5 s(50샘플) 연속이면 펄스, 숙인 채 있으면 5 s마다 반복. 급제동은 앞축만 키우고 세로축은 1 g 그대로라 안 울린다. 곱셈 0. 축·부호는 네 v13 11절 도출값을 파라미터로 넣었다(`FWD_AXIS=2, FWD_SIGN=-1, VERT_AXIS=1`). **실물 10초 확인 결과가 다르면 이 셋만 바꾸면 된다.**
+
+**합친 식.** `alert = (판정 졸림 & 보류 아님) | 우리 펄스 | o_nod_event | rise(o_nod_sustained)`. 네 것은 꾸벅(빨리 떨어졌다 옴)과 급제동 면역, 우리 것은 천천히 처져서 그대로 있는 것과 5 s 반복을 맡는다.
+
+**검증.** `sim/tb_imu_rule.v`: 합성 16 시나리오 11,590샘플(정지·진동·급제동 0.5/0.7 g·계기판 20°·꾸벅 0.3 s·떨굼·잠듦·요철·좌우 흔들기·뒤로 젖힘·제동+계기판·천천히 처짐·부호 반대·포화) 파이썬 정수 모델과 불일치 0. PPG-DaLiA 가슴 가속도 S1 921,200샘플 RTL 대조 불일치 0. 가슴 15명 운전 3.8 h에서 자세 규칙 펄스 0회. Vivado: `infer_top` LUT 271, FF 107, DSP 3, WNS 72 ns.
+
+**파일.** `rtl/imu_rule.v`, `rtl/infer_top.v`(포트 6개 추가), `src/imu_ref.py`, `scripts/make_imu_vectors.py`, `sim/vectors/imu/cases.txt`, `sim/tb_imu_rule.v`.
 
 ## ⑨ 회로도 검토 (9/22, `SCH_Schematic1_2_2026-09-21`)
 

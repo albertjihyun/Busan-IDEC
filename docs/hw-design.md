@@ -84,9 +84,9 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 | `rr_counter` | 봉우리 사이 샘플 수 | 하드웨어 | `rtl/sqi.v` 안에 포함 |
 | `window_acc` | 5초 블록 누산기, 12벌 보관, 6벌·12벌 합산 | 하드웨어 | 참조 구현 `rtl/window_acc.v` (9/15, 채점 통과) |
 | `classifier` | `mean_rb ≥ T` 를 교차 곱셈으로. 워밍업 3분 기준선, hold, 5초 판정 | ML | `rtl/classifier.v` (9/20, 50명 채점 통과). 설계 [integer-inference-design.md](./integer-inference-design.md) |
-| `imu_rule` | 3축 가속도 임계값으로 고개 떨굼과 움직임 과다 | ML | 6단계. 문헌값 환산 |
-| `combine` | 세 재료(판정·보류·떨굼)를 모아 `alert` 펄스 하나로. 떨굼 → 즉시, 보류 → 삼킴, 아니면 분류기 | ML | `infer_top` 안 한 줄 (9/22). IMU 항은 6단계 |
-| `infer_top` | ML 블록 최상위. 재료 2개(`n60`, `sum_rr60`) 입력, `alert` 펄스·`ready` 출력 | ML | `rtl/infer_top.v` (9/20, 포트 정리 9/22). IMU 결합은 6단계 |
+| `imu_rule` | 가속도 앞축·세로축 저역 필터 → 35° 이상 0.5 s 숙임 → 펄스, 5 s 반복 | ML | `rtl/imu_rule.v` (9/23, 벡터 11,590샘플 + DaLiA 92만 샘플 대조 통과). 설계 [imu-rule-design.md](./imu-rule-design.md). 움직임 과다 보류는 안 넣음 |
+| `combine` | 판정·우리 떨굼·준용 끄덕임(`o_nod_event`, `o_nod_sustained` 상승 에지)을 OR 해 `alert` 펄스 하나로 | ML | `infer_top` 안 한 줄 (9/22, IMU 항 9/23) |
+| `infer_top` | ML 블록 최상위. 창 합 2개 + IMU 4축·펄스 2개 입력, `alert` 펄스·`ready` 출력 | ML | `rtl/infer_top.v` (9/20, 포트 정리 9/22, IMU 결합 9/23). Vivado LUT 271·FF 107·DSP 3 |
 
 ## 검증 흐름
 
