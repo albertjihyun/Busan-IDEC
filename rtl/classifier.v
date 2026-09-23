@@ -15,7 +15,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 module classifier #(
-    parameter T_FIX       = 1086,   // T = T_FIX / 2^FRAC = 1.0605 (헛경보 4회/h)
+    parameter T_FIX       = 1093,   // T = T_FIX / 2^FRAC = 1.0674 (헛경보 4회/h, 준용 v14 검출기 RR 기준)
     parameter FRAC        = 10,
     parameter WARM_BLOCKS = 36,     // 3분
     parameter WIN_BLOCKS  = 12,     // 60초 창 = 블록 12개

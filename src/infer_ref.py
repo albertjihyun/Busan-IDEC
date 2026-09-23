@@ -15,7 +15,7 @@
 """
 
 FRAC = 10                # T 의 소수 비트 수. T = T_FIX / 2**FRAC
-T_FIX = 1086             # T = 1.0605. 50명 헛경보 4회/h 이하 최소 정수 (scripts/make_infer_vectors.py --calib)
+T_FIX = 1093             # T = 1.0674. 50명 헛경보 4회/h 이하 최소 정수 (scripts/make_infer_vectors.py --calib). 준용 v14 검출기 RR 기준(9/23)
 WARM_BLOCKS = 36         # 3분
 WIN_BLOCKS = 12          # 60초 창 = 블록 12개
 MIN_N60 = 30             # 창 안 유효 박동 하한. 미만이면 hold (2단계 표의 low_n 과 같음)
