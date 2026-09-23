@@ -35,9 +35,9 @@ boundary 32 80 19200 1 0
 boundary 33 80 19200 1 0
 boundary 34 80 19200 1 0
 boundary 35 80 19200 1 0
-boundary 36 80 20494 0 1
-boundary 37 80 20493 0 0
-boundary 38 80 20495 0 1
+boundary 36 80 20363 0 1
+boundary 37 80 20362 0 0
+boundary 38 80 20364 0 1
 boundary 39 29 7000 1 0
 boundary 40 30 7000 0 0
 boundary 41 30 8000 0 1
