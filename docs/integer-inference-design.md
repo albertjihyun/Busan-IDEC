@@ -134,7 +134,7 @@ mean_rb = (창 60초 평균 RR) ÷ (첫 3분 평균 RR) ≥ T   →   drowsy
 | out | `o_drowsy` | 1 | 판정. `o_hold=1`이면 0 |
 | out | `o_ready` | 1 | 기준선 확정됨(디버그·UART 상태용) |
 
-파라미터 `T_FIX=1086`, `FRAC=10`, `WARM_BLOCKS=36`, `MIN_N60=30`, `MIN_BASE_N=45`.
+파라미터 `T_FIX=1086`, `FRAC=10`, `WARM_BLOCKS=36`, `MIN_N60=30`, `MIN_BASE_N=45`. **9/24 변경:** 기준선을 "좋은 1분 창 3개 모으기"로, 탈락 25% 넘는 창은 hold(`i_bad60` 입력, `KEEP_K=3`, `BASE_WINS=3`). `WARM_BLOCKS`·`MIN_BASE_N`은 없어졌다. 근거와 결과는 `docs/stage5-ppg-transfer.md`.
 
 `rtl/infer_top.v`는 `classifier`를 감싸고 지현→UART 신호를 낸다. ~~`drowsy`, `hold`, `changed`, `head_nod`(6단계 전까지 0)~~ **9/22 변경: `alert` 펄스 하나**(`o_valid & o_drowsy & ~o_hold`, IMU 항은 6단계). 근거는 `datapath-request.md` ⑧ 절. `o_ready`는 그대로 나간다.
 

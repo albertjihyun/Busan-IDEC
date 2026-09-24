@@ -38,12 +38,12 @@
 
 **목적.** PPG 생체신호로 졸음에 수반되는 각성도 저하를 감지하고, 센싱 이후의 신호 처리·품질 검증·특징 추출·추론 경로 전체를 범용 프로세서 없이 전용 하드웨어 데이터패스로 구현한 온디바이스 졸음 감지 SoC를 설계·검증한다.
 
-**타깃.** 야간·장거리 사업용 운전 종사자를 관리하는 기업·플랫폼을 대상으로 하며, 두 세그먼트로 나눈다.
+**타깃.** 장거리 사업용 운전 종사자를 관리하는 기업·플랫폼을 대상으로 한다.
 
-- **1차: 장거리 간선 화물.** 사고 통계가 가장 크고(2.1.1), 고속도로 연속 주행이라는 운행 조건이 생체신호 측정에 가장 유리하며, 레벨 2 주행보조가 먼저 적용되는 환경이다(2.1.2). 보급 채널은 운수사·화주 직영 차량에 대한 기업 단위 도입과, 지입 개인 차주에 대한 정부 보조다. 사업용 차량 안전장치는 정부 보조와 기관 단위 도입이 표준 경로로, 차로이탈경고장치 설치비 80% 지원[24]과 페달오조작 방지장치 보급[25] 선례가 있다.
-- **2차: 새벽배송.** 플랫폼이 배송 구역·시간·장비를 통제하고 안전 책임 압박이 커 도입 동기가 가장 명확하다. 야간 배송기사 설문에서 졸음운전 34.1%, 교통사고 위험 62.3%가 보고되었고[26], 2025년 11월 새벽 배송 중 졸음운전 추정 사망 사고가 발생하였다[27]. 다만 도심 배송 구간은 정차·하차·운반이 반복되어 생체신호가 운동 부하를 반영하므로, 적용 범위는 캠프와 담당 구역 사이의 간선 이동 구간으로 한정한다.
+- **장거리 간선 화물.** 사고 통계가 가장 크고(2.1.1), 고속도로 연속 주행이라는 운행 조건이 생체신호 측정에 가장 유리하며, 레벨 2 주행보조가 먼저 적용되는 환경이다(2.1.2). 보급 채널은 운수사·화주 직영 차량에 대한 기업 단위 도입과, 지입 개인 차주에 대한 정부 보조다. 사업용 차량 안전장치는 정부 보조와 기관 단위 도입이 표준 경로로, 차로이탈경고장치 설치비 80% 지원[24]과 페달오조작 방지장치 보급[25] 선례가 있다.
+판정은 운행 시작 직후의 심박을 개인 기준선으로 삼으므로 **출발 시점에 깨어 있는 운전**을 전제한다. 교대 근무 직후처럼 출발부터 졸린 상태면(야간 근무 뒤 장거리 통근 운전자의 19%[26], 교대 근무 트럭 운전자 첫 야간의 37.8%가 KSS 7 이상[27]) 기준선이 졸음 상태로 잡혀 감지하지 못하며, 이는 방식의 구조적 한계로 명시한다. 새벽배송은 사회적 필요는 크지만 야간 출발이 기본이고 도심 구간의 정차·하차·운반으로 신호 조건도 맞지 않아 대상에서 제외하였다.
 
-두 세그먼트 모두 기관 단위 대량 보급을 전제하므로 초저전력·저단가·상시 독립 동작이 선호 사항이 아닌 도입 조건이 되며, 이것이 본 설계의 요구사항을 규정한다.
+기관 단위 대량 보급을 전제하므로 초저전력·저단가·상시 독립 동작이 선호 사항이 아닌 도입 조건이 되며, 이것이 본 설계의 요구사항을 규정한다.
 
 **범위.** 구현 범위는 FPGA(Artix-7) 상의 기능·성능 검증까지이며, 회로 및 모델 구조는 ASIC 수준의 자원 제약(곱셈기·온칩 메모리 최소화)을 설계 기준으로 삼아 향후 이식 가능한 형태를 지향한다. 아날로그 프론트엔드, ADC, IMU, 무선 통신 모듈, 배터리 구동부를 포함한 착용형 보드를 자체 설계하였으며, 학습은 오프라인에서 수행하고 칩에는 추론 경로만 탑재한다. 측정 위치는 손목 대비 말초 혈관 수축과 팔 움직임의 영향이 적은 이마로 선정하고 헤어밴드 형태로 설계하였다. PCB 제작과 착용 실측은 본 제출 범위 밖이다. 장시간 착용성은 후속 과제이며, 모자·헬멧 내장 형태로의 확장을 전제한다.
 
@@ -196,8 +196,8 @@ IMU(I2C) ─────────────────┤→ [FPGA] FIR �
 [23] PMC3892817, "Driver drowsiness detection using PPG-derived HRV and SVM". https://pmc.ncbi.nlm.nih.gov/articles/PMC3892817/
 [24] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원", 2020.3. https://news.seoul.go.kr/traffic/archives/503010
 [25] 정책브리핑, "페달 오조작 방지장치 보급 시작 — 택시·화물차 우선", 2026.2. https://www.korea.kr/news/policyNewsView.do?newsId=148959338
-[26] 한국일보, "새벽배송 논란, 야간 택배기사 과로·건강권 쟁점 분석", 2025.11. https://www.hankookilbo.com/News/Read/A2025111314350001935
-[27] KBC, "제주 새벽배송 노동자, 6일 연속 야간에 하루 11시간 30분씩 근무", 2025.11. https://news.ikbc.co.kr/article/view/kbc202511120075
+[26] "Sleepiness, Long Distance Commuting and Night Work as Predictors of Driving Performance". https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3448712/
+[27] "Sleepiness, sleep, and use of sleepiness countermeasures in shift-working long-haul truck drivers". https://pubmed.ncbi.nlm.nih.gov/25957933/
 [28] Nurnaningsih et al., "IMU-based drowsiness detection via head movement thresholds (MPU-6050)", 2025. https://journal.uinjkt.ac.id/index.php/ti/article/view/45271
 [29] Sensors, "Context-aware EEG headset with head movement for driver drowsiness detection", 2015. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4570452/
 [30] ACM TOSN, "FDWatch: reliable driver drowsiness detection leveraging wearables", 2023. https://pure.bit.edu.cn/en/publications/towards-reliable-driver-drowsiness-detection-leveraging-wearables/

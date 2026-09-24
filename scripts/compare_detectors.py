@@ -133,7 +133,7 @@ def jy_peaks(y, ok):
     return out
 
 
-def jy_rr(peaks, ok, fix_prev=False, amp_rule=False):
+def jy_rr(peaks, ok, fix_prev=False, amp_rule=False, mot_bad=None):
     """rr_extractor. fix_prev=True 면 RR<RR_MIN 탈락 시 prev_idx 를 갱신하지 않는다(v14 반영).
     amp_rule=True 면 급변 탈락이면서 새 봉우리 높이가 기준 봉우리(prev_idx 자리, last_amp)의 절반 미만일 때도
     가짜로 보고 prev_idx·last_amp 를 갱신하지 않는다(C 안). 짧은 탈락이 아닌 T파·중복맥(RR≥72)을 겨냥."""
@@ -151,7 +151,8 @@ def jy_rr(peaks, ok, fix_prev=False, amp_rule=False):
         base = last_rr if have_last else rr_ref
         mul = 4 if have_last else 2
         jump_bad = ((have_last or have_ref) and base != 0 and abs(rr - base) * mul > base)
-        rej = bool(range_bad or jump_bad or (not ok[n]))
+        motion = bool(mot_bad[n]) if mot_bad is not None and n < len(mot_bad) else False
+        rej = bool(range_bad or jump_bad or (not ok[n]) or motion)
         rows.append((pidx, rr, rej))
         spurious = (fix_prev and rr < RR_MIN) or                    (amp_rule and jump_bad and not range_bad and last_amp > 0 and pamp * 2 < last_amp)
         if not spurious:
@@ -168,7 +169,7 @@ def jy_rr(peaks, ok, fix_prev=False, amp_rule=False):
     return rows
 
 
-def jy_detect(codes, fix_prev=False, use_lpf=True, amp_rule=False):
+def jy_detect(codes, fix_prev=False, use_lpf=True, amp_rule=False, mot_bad=None):
     """use_lpf=False 면 8 Hz FIR 을 빼고 HPF 출력을 바로 검출기에 넣는다(우리와 같은 40 Hz 대역).
     ECG 는 R파 성분이 40 Hz 근처라 8 Hz LPF 가 R을 T파 크기로 깎는다(mpd_io 참고). PPG 에는 없는 왜곡."""
     h = jy_hpf(codes)
@@ -176,7 +177,7 @@ def jy_detect(codes, fix_prev=False, use_lpf=True, amp_rule=False):
     delay = CHAIN_DELAY if use_lpf else CENTER
     ok = jy_sq(y)
     pk = jy_peaks(y, ok)
-    rows = jy_rr(pk, ok, fix_prev, amp_rule)
+    rows = jy_rr(pk, ok, fix_prev, amp_rule, mot_bad)
     peaks = np.array([p[0] for p in pk]) - delay
     rr_at = np.array([r[0] for r in rows]) - delay   # RR 이 확정된 봉우리 위치
     rr = np.array([r[1] for r in rows]); okr = np.array([not r[2] for r in rows], bool)
