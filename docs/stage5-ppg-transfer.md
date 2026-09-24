@@ -75,7 +75,8 @@ PPG-DaLiA 운전 구간에서 문턱별로 보면 판정 창과 정확도가 맞
 - `rtl/infer_top.v`: `i_bad60` 포트.
 - `scripts/make_infer_vectors.py`: 벡터에 `bad60` 열, 경계 사례(창 품질 경계, 나쁜 창 건너뛰는 기준선, 최대값).
 - 시뮬 `sim/tb_classifier.v`: 75,389블록 `hold`·`drowsy`·`alert` 불일치 0. 상수를 일부러 틀리면 잡는다(`KEEP_K` 3→2: 567블록, `BASE_WINS` 3→2: 4,772블록).
-- 자원(Yosys `synth_xilinx` 추정, 이 환경에 Vivado 없음): LUT 119 → 87, FF 60 → 56, DSP 4 그대로. 워밍업 카운터와 재시작 비교가 빠져 작아졌다. Vivado 재합성은 하지 않았다.
+- 자원(Yosys `synth_xilinx` 추정): LUT 119 → 87, FF 60 → 56, DSP 4 그대로. 워밍업 카운터와 재시작 비교가 빠져 작아졌다.
+- Vivado 재합성(9/24, `infer_top` 전체, xc7a35t out-of-context 12 MHz): LUT 271 → **299**, FF 107 → **103**, DSP 3 그대로, WNS 72.1 ns. Yosys 추정과 방향이 반대로 LUT가 28개 늘었다. 줄어든 워밍업 카운터보다 `bad60` 비교·좋은 창 판정·1분 창 카운터가 LUT를 더 쓴다. FF가 준 것은 Yosys와 같다. 리포트 `sim/reports/infer_top_*.rpt`.
 - 준용 쪽: `o_bad60`을 `infer_top.i_bad60`에 연결.
 
 ## 7. 별도 과제 (이번 범위 밖)

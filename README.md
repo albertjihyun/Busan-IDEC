@@ -15,14 +15,14 @@ PPG 센서(KT-0805G LED + TEMD6200 PD) → AFE(OPA2333) → ADC(MCP3421, 12bit /
   → [FPGA: Cmod A7-35T]
        FIR 대역통과 필터
        → SQI → 피크 검출 → RR → 5초 블록 누산            (규칙은 ML이 정함) <<
-       → 재료 5개 (N, ΣRR, ΣRR², Σd, Σd²)
+       → 60초 창 합 (N, ΣRR, 탈락 박동 수)
        → 시간영역 HRV 특징 (후보 14종, 3단계에서 선택)      <<
        → 분류기 (모델 비교 후 확정, 고정소수점 이식)         <<
        → IMU(ICM-42670-P) 규칙 결합 → 판정                  <<
   → UART 출력
 ```
 
-이 구간을 파이썬으로 먼저 구현·검증합니다. 피크 검출과 누산 Verilog는 하드웨어 팀이 짜고 ML은 **규칙과 테스트 벡터**를 넘기며, 재료 5개를 받아 특징·분류·판정을 내는 **추론 Verilog는 ML이 구현**합니다. 인계 명세는 `docs/datapath-request.md`.
+이 구간을 파이썬으로 먼저 구현·검증합니다. 피크 검출과 누산 Verilog는 하드웨어 팀이 짜고 ML은 **규칙과 테스트 벡터**를 넘기며, 60초 창 합을 받아 특징·분류·판정을 내는 **추론 Verilog는 ML이 구현**합니다. 인계 명세는 `docs/datapath-request.md`.
 
 ## 접근
 
@@ -47,7 +47,7 @@ docs/design-overview.md        제출용 설계 개요 초안 (배경·타깃·�
 docs/background-trucking.md    설계 개요의 타깃 근거 자료조사 (화물차·자율주행·규제)
 docs/ml-plan.md                ML 파트 구현 계획 (0~7단계), 문제 정의와 평가 지표
 docs/feature-rationale.md      특징 후보 14종의 선정 기준과 문헌 근거, 뺀 것의 이유
-docs/datapath-request.md       하드웨어 팀 인계 명세: 재료 5개, 5초 블록 구조, 신호, 날짜별 인계
+docs/datapath-request.md       하드웨어 팀 인계 명세: 받는 신호(60초 창 넷), 5초 블록 구조, 신호, 날짜별 인계
 docs/hw-design.md              Verilog 구현 설계: 비트 폭, 부등식 변형, 검증 흐름, 도구, 일정
 docs/data-notes.md             데이터셋 포맷 조사, 라벨 통계, 졸음 사건 통계
 rtl/peak_detect.v, sqi.v, window_acc.v, rr_frontend.v   봉우리·SQI·누산 참조 구현 (채점 통과)

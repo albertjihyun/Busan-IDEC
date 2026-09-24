@@ -9,7 +9,7 @@
 ```
 MCP3421 (12bit, 240 SPS, I2C)
   → [하드웨어 팀] I2C 마스터 → FIR 대역통과 → SQI → 피크 검출 → RR → 5초 블록 누산
-  → 재료 5개 (N, ΣRR, ΣRR², Σd, Σd²)
+  → 60초 창 합 (N, ΣRR, 탈락 박동 수)   ※ 9/14 원래 계획은 재료 5개(N, ΣRR, ΣRR², Σd, Σd²)
   → [ML 파트]    특징 → 분류기 → IMU 결합 → 판정
   → [하드웨어 팀] UART TX → 통신 모듈
 ICM-42670-P (I2C) → [하드웨어 팀] I2C 마스터 → [ML 파트] 고개 떨굼 규칙
@@ -27,7 +27,7 @@ ICM-42670-P (I2C) → [하드웨어 팀] I2C 마스터 → [ML 파트] 고개 �
 
 ## 경계 신호
 
-[datapath-request.md](./datapath-request.md) 3절이 정본이다. 요지: 하드웨어 팀이 5초마다 `o_win_valid`와 함께 30초·60초 창의 재료 5개(N, ΣRR, ΣRR², Σd, Σd²)와 `o_sqi_bad`, IMU 3축을 준다. ML 블록은 `alert` 펄스 하나를 낸다(9/22, 같은 문서 ⑧ 절. 그전에는 `drowsy`·`hold`·`head_nod`·`changed` 넷).
+[datapath-request.md](./datapath-request.md) 3절이 정본이다. 요지: 하드웨어 팀이 5초마다 `o_win_valid`와 함께 60초 창의 `o_n60`·`o_sum_rr60`·`o_bad60`을 주고, IMU 3축(100 Hz)과 끄덕임 펄스 2개를 따로 준다. 하드웨어 팀 누산기는 원래 계획대로 재료 5개(N, ΣRR, ΣRR², Σd, Σd²)를 30초·60초 창으로 다 내지만 ML 블록은 그중 셋만 읽는다(9/24). ML 블록은 `alert` 펄스 하나를 낸다(9/22, 같은 문서 ⑧ 절. 그전에는 `drowsy`·`hold`·`head_nod`·`changed` 넷).
 
 ## 숫자 표현
 
@@ -86,12 +86,12 @@ median NN은 정렬이 필요해 이 구조로 만들 수 없으므로 회로 �
 | `classifier` | `mean_rb ≥ T` 를 교차 곱셈으로. 워밍업 3분 기준선, hold, 5초 판정 | ML | `rtl/classifier.v` (9/20, 50명 채점 통과). 설계 [integer-inference-design.md](./integer-inference-design.md) |
 | `imu_rule` | 가속도 앞축·세로축 저역 필터 → 35° 이상 0.5 s 숙임 → 펄스, 5 s 반복 | ML | `rtl/imu_rule.v` (9/23, 벡터 11,590샘플 + DaLiA 92만 샘플 대조 통과). 설계 [imu-rule-design.md](./imu-rule-design.md). 움직임 과다 보류는 안 넣음 |
 | `combine` | 판정·우리 떨굼·준용 끄덕임(`o_nod_event`, `o_nod_sustained` 상승 에지)을 OR 해 `alert` 펄스 하나로 | ML | `infer_top` 안 한 줄 (9/22, IMU 항 9/23) |
-| `infer_top` | ML 블록 최상위. 창 합 2개 + IMU 4축·펄스 2개 입력, `alert` 펄스·`ready` 출력 | ML | `rtl/infer_top.v` (9/20, 포트 정리 9/22, IMU 결합 9/23). Vivado LUT 271·FF 107·DSP 3 |
+| `infer_top` | ML 블록 최상위. 창 합 3개(`n60`·`sum_rr60`·`bad60`) + IMU 4축·펄스 2개 입력, `alert` 펄스·`ready` 출력 | ML | `rtl/infer_top.v` (9/20, 포트 정리 9/22, IMU 결합 9/23, `bad60` 9/24). Vivado LUT 299·FF 103·DSP 3 (9/24) |
 
 ## 검증 흐름
 
 1. 4단계에서 고정소수점 파이썬 정답지를 **정수 연산만으로** 짠다. numpy float를 쓰지 않는다. RTL과 한 줄씩 대응돼야 한다.
-2. 정답지가 MPD-DF 파형(240 Hz 다운샘플)을 처리하면서 두 종류 벡터를 떨군다. ① 파형 → 봉우리 위치 → 재료 5개 (하드웨어 팀 검증용, 9/15, `sim/vectors/`) ② 재료 2개 → 판정 (ML 블록 검증용, 9/20, `sim/vectors/infer/`, 50명 전부 + 경계 사례).
+2. 정답지가 MPD-DF 파형(240 Hz 다운샘플)을 처리하면서 두 종류 벡터를 떨군다. ① 파형 → 봉우리 위치 → 재료 5개 (하드웨어 팀 검증용, 9/15, `sim/vectors/`) ② 60초 창 합(9/20 둘, 9/24부터 `bad60` 포함 셋) → 판정 (ML 블록 검증용, 9/20, `sim/vectors/infer/`, 50명 전부 + 경계 사례).
 3. Verilog 테스트벤치가 `$readmemh`로 입력을 읽어 240 SPS 간격으로 밀어 넣고, 출력을 기대값과 비교해 불일치를 세어 출력한다.
 4. 중간값까지 대조하므로 틀리면 어느 블록에서 갈라졌는지 바로 보인다.
 
