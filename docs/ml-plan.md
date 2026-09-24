@@ -96,12 +96,12 @@ MPD-DF 50명에 두 규칙을 넣어도 판정 블록 99.8%가 남고 T_FIX는 1
 `classifier`는 좋은 창 판정, 기준선 누산, 교차 곱셈 비교를 하고 5초마다 `hold`·`drowsy`를 낸다. `imu_rule`은 6절의 자세 규칙이다. `infer_top`은 둘을 감싸고 경보를 하나로 합친다.
 
 ```
-alert = (판정 갱신 클럭 AND drowsy AND NOT hold) | 자세 규칙 펄스 | o_nod_event | rise(o_nod_sustained)
+alert = (판정 갱신 클럭 AND drowsy AND NOT hold) | 자세 규칙 펄스 | o_pitch_sign_ok AND (o_nod_event | rise(o_nod_sustained))
 ```
 
-입력은 신호처리 블록의 60초 창 합 3개(`o_n60`, `o_sum_rr60`, `o_bad60`)와 IMU 신호(가속도 3축, `o_imu_valid`, `o_nod_event`, `o_nod_sustained`)다. 출력은 `alert` 펄스 하나이고, 통신 블록이 펄스마다 1바이트를 보낸다.
+입력은 신호처리 블록의 60초 창 합 3개(`o_n60`, `o_sum_rr60`, `o_bad60`)와 IMU 신호(가속도 3축, `o_imu_valid`, `o_nod_event`, `o_nod_sustained`, `o_pitch_sign_ok`)다. 출력은 `alert` 펄스 하나이고, 통신 블록이 펄스마다 1바이트를 보낸다.
 
-파이썬 정수 기준 모델이 만든 정답과 대조해 MPD-DF 50명의 5초 블록 전부(75,186)와 경계 사례 203블록에서 불일치 0이다. `imu_rule`도 6절의 벡터 전부에서 불일치 0이다. Vivado 합성·구현(xc7a35t, out-of-context, 12 MHz)에서 `infer_top`은 LUT 299, FF 103, DSP 3, BRAM 0, WNS 72.1 ns다. 실제 보드 데이터와의 대조는 보드가 없어 후속 과제다.
+파이썬 정수 기준 모델이 만든 정답과 대조해 MPD-DF 50명의 5초 블록 전부(75,186)와 경계 사례 203블록에서 불일치 0이다. `imu_rule`도 6절의 벡터 전부에서 불일치 0이다. Vivado 합성·구현(xc7a35t, out-of-context, 12 MHz)에서 `infer_top`은 LUT 299, FF 103, DSP 3, BRAM 0, WNS 72.1 ns다(단독 합성. 칩 최상위에 통합하면 LUT 201). 실제 보드 데이터와의 대조는 보드가 없어 후속 과제다.
 
 ---
 

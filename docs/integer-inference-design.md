@@ -123,7 +123,7 @@ mean_rb = (60초 창 평균 RR) ÷ (기준선 평균 RR) ≥ T   →   drowsy
 
 파라미터는 `T_FIX=1086`, `FRAC=10`, `WIN_BLOCKS=12`(60초 창 = 5초 블록 12개), `BASE_WINS=3`(기준선 = 좋은 1분 창 3개), `MIN_N60=30`, `KEEP_K=3`이다.
 
-`infer_top`은 `classifier`와 고개 떨굼 규칙 `imu_rule`을 감싸고 통신 블록으로 두 신호를 낸다. `alert`는 1클럭 펄스이고 `(o_valid & o_drowsy & ~o_hold) | 자세 규칙 펄스 | i_nod_event | rise(i_nod_sustained)`이다. 상태가 아니라 펄스로 둔 것은 통신 블록이 펄스마다 한 바이트만 보내면 되게 하기 위해서다. `ready`는 `o_ready`를 그대로 내보내는 상태 표시용이다.
+`infer_top`은 `classifier`와 고개 떨굼 규칙 `imu_rule`을 감싸고 통신 블록으로 두 신호를 낸다. `alert`는 1클럭 펄스이고 `(o_valid & o_drowsy & ~o_hold) | 자세 규칙 펄스 | i_pitch_sign_ok & (i_nod_event | rise(i_nod_sustained))`이다. 자이로 쪽 둘은 신호처리 블록이 자이로 부호를 확정한 뒤에만 받는다(IMU 규칙 설계서). 상태가 아니라 펄스로 둔 것은 통신 블록이 펄스마다 한 바이트만 보내면 되게 하기 위해서다. `ready`는 `o_ready`를 그대로 내보내는 상태 표시용이다.
 
 ## 10. 결과
 
@@ -133,7 +133,7 @@ mean_rb = (60초 창 평균 RR) ÷ (기준선 평균 RR) ≥ T   →   drowsy
 
 | 항목 | 값 | 비고 |
 |---|---|---|
-| LUT | 299 (1.44%) | |
+| LUT | 299 (1.44%) | 단독 합성(out-of-context) 값이다. 칩 최상위 `system_top`에 통합하면 계층 간 최적화로 LUT 201, FF 103, DSP 3이 된다. |
 | FF | 103 | 곱 결과 레지스터는 DSP 안으로 흡수됨 |
 | DSP48E1 | 3 | R = T_FIX × ΣRR_base, 좌변 17×10, 우변 27×8. `imu_rule`은 곱셈 없음 |
 | BRAM | 0 | |
