@@ -1,9 +1,9 @@
-"""고개 떨굼 규칙(rtl/imu_rule.v)의 파이썬 정수 기준 모델. 설계는 docs/imu-rule-design.md 7절.
+"""고개 떨굼 규칙(imu_rule.v)의 파이썬 정수 기준 모델.
 
-입력은 준용 블록이 100 Hz 로 주는 가속도 3축(16비트 signed, ±2 g = 16,384 LSB/g). 출력은 샘플마다 (nod, tilt).
+입력은 신호처리 블록이 100 Hz 로 주는 가속도 3축(16비트 signed, ±2 g = 16,384 LSB/g). 출력은 샘플마다 (nod, tilt).
 
-규칙 (9/22 확정, 설계서 9절)
-  - 앞축 = 센서 Z 에 FWD_SIGN(-1) 을 곱한 것. 고개를 앞으로 숙이면 커진다 (준용 v13 11-3절, 물리 도출).
+규칙
+  - 앞축 = 센서 Z 에 FWD_SIGN(-1) 을 곱한 것. 고개를 앞으로 숙이면 커진다 (센서 장착 방향에서 물리 도출).
     세로축 = 센서 Y. 세웠을 때 ±1 g. 위아래 부호는 착용에 따라 바뀌므로 절댓값을 쓴다.
   - 두 축에 1차 IIR 저역 필터 `lp += (a - lp) >>> 3` (100 Hz 에서 약 2.1 Hz. Ellcie 특허의 2 Hz 와 같다).
   - tilt = (lp_fwd >= TH_FWD) and (|lp_vert| <= TH_VERT).  TH = sin35°·LSB, cos35°·LSB.
@@ -13,11 +13,11 @@
     tilt 가 풀리면 cnt = 0.
   - 모든 연산은 정수. Verilog 가 이 파일과 비트 단위로 같아야 한다. 곱셈 없음.
 
-준용의 imu_feature(자이로, 25° 꾸벅)와 infer_top 에서 OR 로 합쳐진다. 이 모듈은 '숙인 채 있음'(자세)만 본다.
+신호처리 블록의 imu_feature(자이로, 25° 꾸벅)와 infer_top 에서 OR 로 합쳐진다. 이 모듈은 '숙인 채 있음'(자세)만 본다.
 """
 import math
 
-LSB_PER_G = 16384            # ACCEL_CONFIG0 = 0x69 (±2 g, 100 Hz). 준용 icm42670_reader
+LSB_PER_G = 16384            # ACCEL_CONFIG0 = 0x69 (±2 g, 100 Hz). 신호처리 블록 icm42670_reader 설정
 THETA_DEG = 35               # ICM-42670-P 내장 기울기 감지 기본값과 같다
 TH_FWD = int(math.sin(math.radians(THETA_DEG)) * LSB_PER_G)    # 9397  (0.5736 g)
 TH_VERT = int(math.cos(math.radians(THETA_DEG)) * LSB_PER_G)   # 13420 (0.8192 g)

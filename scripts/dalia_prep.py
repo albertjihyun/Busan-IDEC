@@ -1,11 +1,11 @@
 """PPG-DaLiA 전처리. zip 을 풀지 않고 S1..S15 pkl 을 하나씩 스트리밍으로 읽어
 (1) 가벼운 npz 로 저장하고 (2) 5초 블록별 가속도 요약표를 만든다.
 
-  npz  : data/interim/dalia/S{n}.npz
+  npz  : S{n}.npz
          wrist_acc (int16, 32 Hz, 1/64 g), bvp (float32, 64 Hz), ecg (float32, 700 Hz),
          chest_acc (float32, 100 Hz 로 다운샘플, g 단위), rpeaks (int64, 700 Hz 인덱스),
          activity (int8, 4 Hz), label_hr (float32, 8초 창 2초 이동), fs_* 스칼라
-  블록표: data/interim/dalia/acc_blocks.csv  (5초 블록 하나가 한 줄)
+  블록표: acc_blocks.csv  (5초 블록 하나가 한 줄)
          subject, activity(블록 내 최빈 ID), t0, 손목·가슴 각각
            mag_dev_max/p95/mean : | ‖a‖ − 1 g | (정지 기울기와 무관한 동적 크기), g 단위
            jerk_mean            : 연속 샘플 차의 L2 크기 평균, g/sample

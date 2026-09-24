@@ -1,10 +1,10 @@
-"""배포용 실수 문턱 T 를 50명 전체 표에서 다시 잡는다 (설계서 integer-inference-design.md 2절 절차).
+"""배포용 실수 문턱 T 를 50명 전체 표에서 다시 잡는다.
 
     .venv/Scripts/python.exe scripts/calib_t_float.py
 
 features_60s.csv 의 mean_rb_chip(칩 방식 기준선)에 src.stage3.scoring.sweep + pick_thresholds 를
 한 번 적용해 헛경보 4회/h·2회/h 문턱을 낸다. 학습=시험이라 검증값이 아니고 배포 상수용이다.
-결과 T 를 scripts/make_infer_vectors.py 의 T_FLOAT_4 / T_FLOAT_2 에 옮긴 뒤 --calib 로 T_FIX 를 잡는다.
+결과 T 를 make_infer_vectors.py 의 T_FLOAT_4 / T_FLOAT_2 에 옮긴 뒤 --calib 로 T_FIX 를 잡는다.
 """
 
 import sys

@@ -1,4 +1,4 @@
-"""2단계. 특징 표를 모델에 넣기 전에 눈으로 확인. docs/feature-table-design.md 9절.
+"""2단계. 특징 표를 모델에 넣기 전에 눈으로 확인.
 
   1. 계산 검증: 특징별 히스토그램 (각성 vs 피로), 30초·60초
   2. 집계표: 행 수, 무효 사유, 클래스 비율
@@ -6,7 +6,7 @@
   4. 상관 행렬: |r| ≥ 0.95 쌍 표시
   5. 정답 봉우리(gt) 표와의 차이 (둘 다 유효한 행만)
 
-그림은 docs/figures/, 표는 stdout에 마크다운으로 (docs/features.md에 붙여 넣는다).
+그림은 png 파일로, 표는 stdout에 마크다운으로.
 
     python scripts/plot_features.py
 """

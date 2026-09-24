@@ -1,7 +1,7 @@
 """1단계. MPD-DF 50명 ECG → 240 Hz → 단순 규칙 봉우리 → RR 배열.
 
 정답은 1024 Hz 원본에서 neurokit2로 뽑아 240 Hz 인덱스로 환산한다.
-사람마다 data/interim/rr/{sid}.npz 에 저장:
+사람마다 RR 파일({sid}.npz)로 저장:
   peaks   단순 규칙 봉우리 인덱스 (240 Hz)
   rr      봉우리 간격 (샘플 수). peaks[1:] - peaks[:-1]
   ok      SQI 통과 여부
@@ -44,7 +44,7 @@ def run(sid):
     x1k, fs = load_ecg(sid)
     gt1k, method = reference_peaks(x1k, fs)
     gt = np.round(gt1k * FS / fs).astype(int)
-    x = load_ecg_as_ppg_chain(sid, FS)          # AFE 대역(0.16~16 Hz) 흉내 후 240 Hz
+    x = load_ecg_as_ppg_chain(sid, FS)          # AFE 대역(ECG용 0.16~40 Hz) 흉내 후 240 Hz
     peaks, rr, ok = detect(x)
     n_epochs = len(x) // (FS * EPOCH_SEC)
     labels = np.array([-1 if l is None else l for l in load_labels(sid, n_epochs)], dtype=np.int8)

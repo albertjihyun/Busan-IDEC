@@ -1,4 +1,4 @@
-"""3단계 실행기: 겹친 LOSO로 모델을 돌리고 결과를 저장한다. 설계서 2·3·7절.
+"""3단계 실행기: 겹친 LOSO로 모델을 돌리고 결과를 저장한다.
 
 사용: python -m src.stage3.run --models rule dtree --wins 30 60 [--n-jobs 8] [--sids 1 2 3]
 """
@@ -19,7 +19,7 @@ from .data import FEATURES, OUT_DIR, corr_prune, load_table
 from .models import MODELS, ORDER, SEED, ModelSpec
 from .scoring import bootstrap_ci, pick_thresholds, pooled, score_table, subject_auc, sweep
 
-CAPS = [0.5, 1.0, 2.0, 4.0, 8.0]      # 헛경보/시간 상한 격자 (설계서 3절 4)
+CAPS = [0.5, 1.0, 2.0, 4.0, 8.0]      # 헛경보/시간 상한 격자
 N_INNER = 5
 PERM_REPEATS = 3
 

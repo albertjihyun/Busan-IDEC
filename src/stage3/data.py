@@ -1,7 +1,4 @@
-"""3단계 입력: 2단계 특징 표를 읽고 학습/채점용 배열을 만든다.
-
-설계서 docs/model-comparison-design.md 1절.
-"""
+"""3단계 입력: 2단계 특징 표를 읽고 학습/채점용 배열을 만든다."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -28,7 +25,7 @@ def load_table(win: int, chip_baseline: bool = False) -> pd.DataFrame:
     """창 길이(30/60)의 표 전체를 (sid, epoch) 순으로 읽는다. valid==0 행도 포함한다(사건 정의에 필요).
 
     chip_baseline=True 이면 mean_rb 를 칩 방식 기준선(첫 3분 ΣRR÷N)으로 만든 mean_rb_chip 으로 바꿔 넣는다.
-    4단계 정수 구현과 표를 일치시키는 확인용(설계서 10절). 나머지 열은 그대로.
+    4단계 정수 구현과 표를 일치시키는 확인용. 나머지 열은 그대로.
     """
     df = pd.read_csv(PROCESSED / f"features_{win}s.csv")
     df = df.sort_values(["sid", "epoch"]).reset_index(drop=True)

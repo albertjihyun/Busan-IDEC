@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PPG-DaLiA 전처리를 분리 프로세스로. 로그는 data/interim/dalia/prep.log
+# PPG-DaLiA 전처리를 분리 프로세스로. 로그는 prep.log
 cd "$(dirname "$0")/.."
 mkdir -p data/interim/dalia
 export TMP=C:/tmp TEMP=C:/tmp PYTHONWARNINGS=ignore

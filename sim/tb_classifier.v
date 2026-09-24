@@ -1,4 +1,4 @@
-// infer_top(classifier) 채점. sim/vectors/infer/ 의 파이썬 정수 정답(src/infer_ref.py)과 비트 단위로 대조.
+// infer_top(classifier) 채점. 판정 벡터 파일의 파이썬 정수 정답(infer_ref)과 비트 단위로 대조.
 //
 //   iverilog -g2012 -o sim/infer.vvp rtl/classifier.v rtl/imu_rule.v rtl/infer_top.v sim/tb_classifier.v && vvp -n sim/infer.vvp
 //

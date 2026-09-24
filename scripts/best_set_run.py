@@ -1,7 +1,7 @@
 """1-SE 규칙 대신 '안쪽 AUC 최고' 특징 세트로 바깥 고리를 다시 돈다.
 
 손잡이는 주 실행에서 고른 것을 그대로 쓰고 특징 세트만 바꾼다. 안쪽 탐색이 없어 값싸다.
-결과는 {model}_{win}s_bestset/ 에 저장. 설계서 9절 "검토에서 나온 것"으로 보고한다.
+결과는 {model}_{win}s_bestset 폴더에 저장.
 사용: python -m scripts.best_set_run logreg dtree --wins 30 60
 """
 import argparse, json, sys
