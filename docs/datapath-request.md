@@ -128,7 +128,7 @@
 
 4단계(정수 변환)와 7단계(Verilog)를 끝냈다. 설계와 근거는 `docs/integer-inference-design.md`. 준용 쪽에 필요한 것만 적는다.
 
-**받는 신호.** ③·⑥ 절 그대로 `o_win_valid`(5초마다 1클럭), `o_n60`(8비트), `o_sum_rr60`(17비트) 셋뿐. 기준선(첫 3분)도 이 셋으로 만든다(12·24·36번째 블록의 60초 창 합 셋을 더하면 3분 합). 블록 하나짜리 값이나 `o_sqi_bad`는 안 받는다.
+**받는 신호.** ③·⑥ 절의 `o_win_valid`(5초마다 1클럭), `o_n60`(8비트), `o_sum_rr60`(17비트)에 **9/24부터 `o_bad60`(8비트, 60초 창 탈락 박동 수)을 더해 넷**. `o_bad60`은 v13부터 준용 `hrv_accumulator`에 이미 있는 출력이라 배선만 하면 된다(창 품질·기준선 규칙, `docs/stage5-ppg-transfer.md`). 기준선(첫 3분)도 이 셋으로 만든다(12·24·36번째 블록의 60초 창 합 셋을 더하면 3분 합). 블록 하나짜리 값이나 `o_sqi_bad`는 안 받는다.
 
 **판정식 (나눗셈 없음).**
 
@@ -146,10 +146,10 @@ T = 1086 / 1024 = 1.0605. `mean_rb ≥ T`의 양변에 `n60 × N_base × 1024`�
 
 | 파일 | 내용 |
 |---|---|
-| `rtl/classifier.v` | 위 식 그대로. 파라미터 `T_FIX=1086`, `FRAC=10`, `WARM_BLOCKS=36`, `MIN_N60=30`, `MIN_BASE_N=45` |
+| `rtl/classifier.v` | 위 식 그대로. 파라미터 `T_FIX=1086`, `FRAC=10`, `WIN_BLOCKS=12`, `BASE_WINS=3`, `MIN_N60=30`, `KEEP_K=3` (9/24: 워밍업 재시작 규칙 대신 좋은 1분 창 3개 모으기, 탈락 25% 넘는 창 hold) |
 | `rtl/infer_top.v` | `classifier` 를 감싸 `drowsy`·`hold`·`head_nod`(아직 0)·`changed` 출력. "신호" 절의 지현→UART 이름 그대로 |
 | `sim/vectors/infer/NN.txt` × 50 | 사람마다 5초 블록 전부. `block n60 sum_rr60 hold drowsy`. 앞 셋을 넣으면 뒤 둘이 나와야 한다 |
-| `sim/vectors/infer/edge.txt` | 경계 사례(양변 같을 때, n60 29/30, 최대값, 워밍업 재시작) |
+| `sim/vectors/infer/edge.txt` | 경계 사례(양변 같을 때, n60 29/30, 최대값, 창 품질 경계, 나쁜 창 건너뛰는 기준선). 9/24부터 줄 형식 `block n60 sum_rr60 bad60 hold drowsy` |
 | `sim/tb_classifier.v` | 위 파일을 전부 읽어 대조. 50명 75,186블록 + 경계 196블록 불일치 0 |
 
 ```

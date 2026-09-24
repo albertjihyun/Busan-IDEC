@@ -2,7 +2,7 @@
 // 인터페이스는 docs/datapath-request.md ⑧ 절. 9/22 에 출력을 alert 하나로, 9/23 에 IMU 입력을 붙였다.
 //
 //   alert : 1클럭 펄스. 다음 셋 중 하나라도 있으면 1회.
-//           - 5초 판정이 졸림이고 보류(워밍업·박동 부족) 아님            classifier
+//           - 5초 판정이 졸림이고 보류(기준선 준비 중·박동 부족·탈락 과다) 아님   classifier
 //           - 고개를 35° 넘게 숙인 채 0.5 s (숙인 채 있으면 5 s 마다)   imu_rule   (가속도, 자세)
 //           - 준용 imu_feature 의 끄덕임(o_nod_event) / 떨군 채 유지(o_nod_sustained 상승 에지)   (자이로, 동작)
 //           UART 는 이 펄스마다 바이트 하나를 보낸다. 상태는 밖으로 안 낸다.
@@ -19,10 +19,11 @@ module infer_top #(
 )(
     input  wire        clk,
     input  wire        rst_n,
-    // 준용 → 5초 창 합
+    // 준용 → 5초 창 합 (o_win_valid, o_n60, o_sum_rr60, o_bad60)
     input  wire        i_win_valid,
     input  wire [7:0]  i_n60,
     input  wire [16:0] i_sum_rr60,
+    input  wire [7:0]  i_bad60,      // 60초 창 탈락 박동 수 (o_bad60). 창 품질·기준선 규칙에 쓴다
     // 준용 → IMU 원시값 (o_accel_x/y/z, o_imu_valid, 100 Hz)
     input  wire        i_imu_valid,
     input  wire signed [15:0] i_accel_x,
@@ -38,7 +39,7 @@ module infer_top #(
 
     classifier #(.T_FIX(T_FIX), .FRAC(FRAC)) u_cls (
         .clk(clk), .rst_n(rst_n),
-        .i_win_valid(i_win_valid), .i_n60(i_n60), .i_sum_rr60(i_sum_rr60),
+        .i_win_valid(i_win_valid), .i_n60(i_n60), .i_sum_rr60(i_sum_rr60), .i_bad60(i_bad60),
         .o_valid(c_valid), .o_hold(c_hold), .o_drowsy(c_drowsy), .o_ready(ready)
     );
 
