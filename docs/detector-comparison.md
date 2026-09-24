@@ -1,5 +1,7 @@
 # 봉우리 검출기 비교: 우리 `peak_detect` 대 준용 v13 `peak_detector`
 
+> **최종 결론(7절, 9/23 저녁).** 학습(RR·특징 표·문턱 `T_FIX` 1086)은 우리 검출기, 칩은 준용 검출기(`prev_idx` 수정 포함)다. 5·6절의 "학습도 준용 검출기로 통일"은 7절에서 번복됐다. 둘을 잇는 것은 특징 `mean_rb`이고, 이마 PPG에서 맞는지는 `stage5-ppg-transfer.md`에서 확인했다. 8절 "다음"의 1번(WildPPG)은 9/24에 끝났다(PR #18).
+
 작성 2026-09-23. 질문은 하나다. 판정 문턱 T는 우리 검출기가 뽑은 RR로 정했는데, 칩에는 준용이 따로 짠 검출기가 들어간다. 둘 중 무엇을 기준으로 삼아야 하는가. 각자 다른 데이터에서만 검증돼 있어서 같은 데이터에 둘 다 돌렸다.
 
 스크립트: `scripts/compare_detectors.py`(심전도 50명), `scripts/wildppg_detectors.py`(이마 PPG). 표 원본은 `data/processed/stage1/detector_compare*.md`, `wildppg_compare_*.md`.

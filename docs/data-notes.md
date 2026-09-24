@@ -8,6 +8,8 @@
 
 ## AdVitam Exp4 (외부 검증 데이터)
 
+> **2026-09-24 갱신.** AdVitam 외부 검증은 9/30 범위에서 뺐다(`hw-design.md` 일정 절). 이 데이터로 돌린 결과는 없고, 로컬 사본(`data/raw/advitam/`)도 지웠다. 다시 필요하면 `python scripts/download_data.py advitam`. 이마 PPG 쪽 검증은 WildPPG로 했다(`stage5-ppg-transfer.md`).
+
 조사 시점에는 주 학습 데이터로 잡고 있었으나, 라벨 간격을 확인한 뒤 **외부 검증용으로 역할을 바꿨다**(아래 「라벨 시간 해상도 비교」 참조).
 
 Zenodo 레코드 7319612 (concept DOI 10.5281/zenodo.7214953). 6개 실험 중 **Exp4가 수면부족 조작 실험**이라 이것만 받는다. 전체는 13.9GB, Exp4.zip만 3.97GB(압축 해제 시 약 11GB).
@@ -226,6 +228,8 @@ EDF 헤더를 직접 읽어 확인했다(02번 기준).
 - 단점 3: 수면부족을 실험적으로 조작하지 않았다. AdVitam은 절반을 6시간 미만으로 재우고 온 설계라 "수면부족 상태의 생체신호"라는 근거가 더 명확하다.
 
 ### 결정 (2026-09-07)
+
+> **2026-09-24 갱신.** 아래 외부 검증 계획은 실행하지 않았다. AdVitam 외부 검증은 9/30 범위에서 뺐다(`hw-design.md` 일정 절). 이 데이터로 돌린 결과는 없고, 로컬 사본(`data/raw/advitam/`)도 지웠다. 다시 필요하면 `python scripts/download_data.py advitam`. 이마 PPG 쪽 검증은 WildPPG로 했다(`stage5-ppg-transfer.md`).
 
 **MPD-DF로 학습하고 AdVitam으로 외부 검증한다.** 계획서의 데이터 역할을 이에 맞춰 고쳤다.
 
