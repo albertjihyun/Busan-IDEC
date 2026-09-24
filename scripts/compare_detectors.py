@@ -1,19 +1,19 @@
-"""준용 검출기(v13 골든 모델) vs 우리 검출기, MPD-DF 50명 ECG에서 같은 잣대로 채점.
+"""칩 검출기(골든 모델) vs 학습 검출기, MPD-DF 50명 ECG에서 같은 잣대로 채점.
 
 두 검출기를 같은 입력(AFE 대역 ECG → 240 Hz → 정수 코드, ±2047 클립)에 넣고
-  1) 봉우리 놓침·오검출 (src/peak_eval, ±12샘플)
+  1) 봉우리 놓침·오검출 (peak_eval, ±12샘플)
   2) 60초 창마다 '통과 RR의 평균' 대 '정답 RR의 평균' 편향 (%)  ← 판정식 sum_rr60/n60 이 쓰는 값
   3) 창 커버리지 (n ≥ 30 인 창 비율)
-를 낸다. 준용 체인은 sim/make_ppg_stim.py 의 골든 모델을 옮긴 것(HPF 512 이동평균 →
+를 낸다. 칩 검출기 체인은 신호처리 블록의 골든 모델(make_ppg_stim.py)을 옮긴 것(HPF 512 이동평균 →
 FIR LPF 8 Hz 132탭 → signal_quality → peak_detector → rr_extractor). 봉우리 위치는
 체인 고정 지연(256 + 66 = 322샘플)을 빼고 정답과 맞춘다.
 
     .venv/Scripts/python.exe scripts/compare_detectors.py            # 전원
     .venv/Scripts/python.exe scripts/compare_detectors.py 02 05      # 일부
-    .venv/Scripts/python.exe scripts/compare_detectors.py --fix-prev # 준용 검출기에 prev_idx 수정 적용
+    .venv/Scripts/python.exe scripts/compare_detectors.py --fix-prev # 칩 검출기에 prev_idx 수정 적용
 
-준용 RR 출력은 data/interim/rr_jy/{sid}.npz 에 저장한다 (peaks, rr, ok, gt).
-표는 data/processed/stage1/detector_compare.md.
+칩 검출기 RR 출력은 사람마다 npz 로 저장한다 (peaks, rr, ok, gt).
+표는 detector_compare.md.
 """
 
 import sys
@@ -32,7 +32,7 @@ OURS = ROOT / "data" / "interim" / "rr"
 OUT_JY = ROOT / "data" / "interim" / "rr_jy"
 OUT_MD = ROOT / "data" / "processed" / "stage1" / "detector_compare.md"
 
-# ---- 준용 v13 상수 (sim/make_ppg_stim.py 와 동일) ----
+# ---- 칩 검출기 상수 (골든 모델과 동일) ----
 LOG2N = 9; N_MA = 1 << LOG2N; CENTER = N_MA >> 1
 REFRACTORY = 48; DECAY_SH = 8; THR_MIN = 6; SEARCH_LEN = 40; NOPEAK_LIM = 400; GUARD_LEN = 120
 RR_MIN, RR_MAX = 72, 360; REJ_LIM = 3
@@ -134,9 +134,9 @@ def jy_peaks(y, ok):
 
 
 def jy_rr(peaks, ok, fix_prev=False, amp_rule=False, mot_bad=None):
-    """rr_extractor. fix_prev=True 면 RR<RR_MIN 탈락 시 prev_idx 를 갱신하지 않는다(v14 반영).
+    """rr_extractor. fix_prev=True 면 RR<RR_MIN 탈락 시 prev_idx 를 갱신하지 않는다.
     amp_rule=True 면 급변 탈락이면서 새 봉우리 높이가 기준 봉우리(prev_idx 자리, last_amp)의 절반 미만일 때도
-    가짜로 보고 prev_idx·last_amp 를 갱신하지 않는다(C 안). 짧은 탈락이 아닌 T파·중복맥(RR≥72)을 겨냥."""
+    가짜로 보고 prev_idx·last_amp 를 갱신하지 않는다. 짧은 탈락이 아닌 T파·중복맥(RR≥72)을 겨냥."""
     prev_idx, have_prev = 0, False
     last_rr, have_last = 0, False
     rr_ref, have_ref, rejrun = 0, False, 0
@@ -170,7 +170,7 @@ def jy_rr(peaks, ok, fix_prev=False, amp_rule=False, mot_bad=None):
 
 
 def jy_detect(codes, fix_prev=False, use_lpf=True, amp_rule=False, mot_bad=None):
-    """use_lpf=False 면 8 Hz FIR 을 빼고 HPF 출력을 바로 검출기에 넣는다(우리와 같은 40 Hz 대역).
+    """use_lpf=False 면 8 Hz FIR 을 빼고 HPF 출력을 바로 검출기에 넣는다(학습 검출기와 같은 40 Hz 대역).
     ECG 는 R파 성분이 40 Hz 근처라 8 Hz LPF 가 R을 T파 크기로 깎는다(mpd_io 참고). PPG 에는 없는 왜곡."""
     h = jy_hpf(codes)
     y = jy_lpf(h) if use_lpf else h
@@ -213,13 +213,13 @@ def run(sid, fix_prev, use_lpf=True, amp_rule=False):
     codes = np.clip(to_codes(x), -2047, 2047)
     d = np.load(OURS / f"{sid}.npz")
     gt = d["gt"]
-    # 준용
+    # 칩 검출기
     p_j, at_j, rr_j, ok_j = jy_detect(codes, fix_prev, use_lpf, amp_rule)
     s_j = summarize(p_j, rr_j, ok_j, gt)
     b_j = window_bias(at_j, rr_j, ok_j, gt, len(codes))
     OUT_JY.mkdir(parents=True, exist_ok=True)
     np.savez(OUT_JY / f"{sid}.npz", peaks=p_j, rr_at=at_j, rr=rr_j, ok=ok_j, gt=gt)
-    # 우리 (1단계 결과 그대로. rr/ok 는 peaks[1:] 에 대응)
+    # 학습 검출기 (1단계 결과 그대로. rr/ok 는 peaks[1:] 에 대응)
     p_o = d["peaks"]; rr_o = d["rr"]; ok_o = d["ok"]
     s_o = summarize(p_o, rr_o, ok_o, gt)
     b_o = window_bias(p_o[1:], rr_o, ok_o, gt, len(codes))
@@ -241,9 +241,9 @@ def main(argv):
     amp_rule = "--amp-rule" in argv
     sids = [a for a in argv if not a.startswith("--")] or subject_ids()
     t0 = time.time(); rows = []
-    tag = ("prev_idx 수정" if fix_prev else "v13 그대로") + (" + 진폭 규칙(C)" if amp_rule else "") + ("" if use_lpf else ", 8 Hz LPF 없음")
-    print(f"준용 검출기 = {tag}")
-    print(f"{'sid':>4} | {'놓침% 준용':>9} {'우리':>6} | {'오검출% 준용':>10} {'우리':>6} | {'창편향% 중앙 준용':>14} {'우리':>6} | {'커버% 준용':>9} {'우리':>6}")
+    tag = ("prev_idx 수정" if fix_prev else "prev_idx 규칙 없음") + (" + 진폭 규칙(C)" if amp_rule else "") + ("" if use_lpf else ", 8 Hz LPF 없음")
+    print(f"칩 검출기 = {tag}")
+    print(f"{'sid':>4} | {'놓침% 칩':>9} {'학습':>6} | {'오검출% 칩':>10} {'학습':>6} | {'창편향% 중앙 칩':>14} {'학습':>6} | {'커버% 칩':>9} {'학습':>6}")
     for sid in sids:
         r = run(sid, fix_prev, use_lpf, amp_rule); rows.append(r)
         aj, ao = agg([r["bias_jy"]]), agg([r["bias_ours"]])
@@ -256,8 +256,8 @@ def main(argv):
         return 100 * miss / gt, 100 * fp / det_n
     mj, fj = pooled("miss", "jy"); mo, fo = pooled("miss", "ours")
     AJ = agg([r["bias_jy"] for r in rows]); AO = agg([r["bias_ours"] for r in rows])
-    lines = [f"# 검출기 비교 (MPD-DF {len(rows)}명, 준용 = {tag})", "",
-             "| | 준용 v13 | 우리 |", "|---|---|---|",
+    lines = [f"# 검출기 비교 (MPD-DF {len(rows)}명, 칩 검출기 = {tag})", "",
+             "| | 칩 검출기(prev_idx 규칙 없음) | 학습 |", "|---|---|---|",
              f"| 놓침 (pooled) | {mj:.2f}% | {mo:.2f}% |",
              f"| 오검출 (pooled) | {fj:.2f}% | {fo:.2f}% |",
              f"| 60초 창 평균 RR 편향, 중앙값 | {AJ['med']:+.2f}% | {AO['med']:+.2f}% |",
@@ -267,8 +267,8 @@ def main(argv):
              f"| 커버리지 (n60 ≥ 30) | {AJ['cover']:.1f}% | {AO['cover']:.1f}% |",
              f"| 창 수 | {AJ['n_win']} | {AO['n_win']} |", "",
              "편향 = (통과 RR 평균 ÷ neurokit 정답 RR 평균 − 1). 첫 3분 제외, 비겹침 60초 창. "
-             "입력은 둘 다 AFE 대역 ECG → 240 Hz → ±2047 코드. 준용 봉우리는 체인 지연 322샘플 보정.", ""]
-    lines += ["| sid | 놓침% 준용 | 우리 | 오검출% 준용 | 우리 | 창편향% 준용 | 우리 | 커버% 준용 | 우리 |", "|---|---|---|---|---|---|---|---|---|"]
+             "입력은 둘 다 AFE 대역 ECG → 240 Hz → ±2047 코드. 칩 검출기 봉우리는 체인 지연 322샘플 보정.", ""]
+    lines += ["| sid | 놓침% 칩 | 학습 | 오검출% 칩 | 학습 | 창편향% 칩 | 학습 | 커버% 칩 | 학습 |", "|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         aj, ao = agg([r["bias_jy"]]), agg([r["bias_ours"]])
         lines.append(f"| {r['sid']} | {r['jy']['miss_pct']:.2f} | {r['ours']['miss_pct']:.2f} | {r['jy']['fp_pct']:.2f} | {r['ours']['fp_pct']:.2f} | "

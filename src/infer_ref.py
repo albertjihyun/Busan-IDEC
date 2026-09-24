@@ -1,12 +1,12 @@
-"""판정 블록(rtl/classifier.v)의 파이썬 정수 기준 모델. 설계는 docs/integer-inference-design.md, 기준선·창 품질 규칙은 docs/stage5-ppg-transfer.md.
+"""판정 블록(classifier.v)의 파이썬 정수 기준 모델.
 
-입력은 준용 블록이 5초마다 주는 60초 창 합 셋: n60(통과 박동 수), sum_rr60(통과 RR 합), bad60(탈락 박동 수). 출력은 (hold, drowsy).
+입력은 신호처리 블록이 5초마다 주는 60초 창 합 셋: n60(통과 박동 수), sum_rr60(통과 RR 합), bad60(탈락 박동 수). 출력은 (hold, drowsy).
 
 규칙
   - 창 품질: 창이 "좋다" = n60 ≥ MIN_N60 이고 KEEP_K × bad60 ≤ n60 (살린 비율 ≥ K/(K+1), K=3 이면 75%).
     KEEP_K = 0 이면 탈락 수는 안 본다.
-  - 기준선(9/24): 블록 12개(1분)마다 창 하나를 보고, 좋은 창이면 그 창 합을 기준선에 더한다. 좋은 창이 BASE_WINS(3)개
-    모이면 기준선 완성. 1분 창은 서로 겹치지 않는다. 처음 3분 창이 전부 좋으면 예전(12·24·36번째 블록 합)과 같다.
+  - 기준선: 블록 12개(1분)마다 창 하나를 보고, 좋은 창이면 그 창 합을 기준선에 더한다. 좋은 창이 BASE_WINS(3)개
+    모이면 기준선 완성. 1분 창은 서로 겹치지 않는다. 처음 3분 창이 전부 좋으면 12·24·36번째 블록의 창 합이 기준선이 된다.
   - 기준선이 완성되면 R = T_FIX × base_sum 을 한 번 계산해 둔다.
   - 매 블록: hold = 기준선 미완성 또는 창이 좋지 않음.
              drowsy = hold 아님 그리고 (sum_rr60 × base_n) << FRAC ≥ R × n60.
@@ -15,14 +15,14 @@
 """
 
 FRAC = 10                # T 의 소수 비트 수. T = T_FIX / 2**FRAC
-T_FIX = 1086             # T = 1.0605. 50명 헛경보 4회/h 이하 최소 정수 (scripts/make_infer_vectors.py --calib). 학습 검출기(peak_simple) RR 기준
+T_FIX = 1086             # T = 1.0605. 50명 헛경보 4회/h 이하 최소 정수 (make_infer_vectors.py --calib). 학습 검출기(peak_simple) RR 기준
 WIN_BLOCKS = 12          # 60초 창 = 블록 12개. 기준선 후보 창을 1분마다 하나 본다
 BASE_WINS = 3            # 기준선 = 좋은 1분 창 3개 (3분)
 MIN_N60 = 30             # 창 안 유효 박동 하한 (2단계 표의 low_n 과 같음)
 KEEP_K = 3               # 탈락 규칙: KEEP_K × bad60 > n60 이면 나쁜 창. 3 = 살린 비율 75%. 0 = 끔
 
 # 비트 폭 (Verilog 와 일치)
-W_N60, W_SUM60, W_BAD60 = 8, 17, 8   # 준용 인터페이스 (o_n60, o_sum_rr60, o_bad60)
+W_N60, W_SUM60, W_BAD60 = 8, 17, 8   # 신호처리 블록 인터페이스 (o_n60, o_sum_rr60, o_bad60)
 W_BASE_N, W_BASE_SUM = 10, 16   # 1분 창 셋: n ≤ 3 × 255 = 765, ΣRR ≤ 3 × (60 s × 240 + 360) = 44,280
 W_TFIX = 11                     # T_FIX < 2048
 W_R = W_TFIX + W_BASE_SUM       # 27

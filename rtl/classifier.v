@@ -1,5 +1,4 @@
-// 각성도 저하 판정. src/infer_ref.py 를 옮긴 것. 설계는 docs/integer-inference-design.md,
-// 기준선·창 품질 규칙은 docs/stage5-ppg-transfer.md.
+// 각성도 저하 판정. 파이썬 정수 기준 모델(infer_ref)을 옮긴 것.
 //
 //   mean_rb = (sum_rr60 / n60) / (base_sum / base_n) >= T
 //   양변에 n60 × base_n × 2^FRAC 를 곱해 나눗셈을 없앤다:
@@ -30,7 +29,7 @@ module classifier #(
     input  wire        i_win_valid,     // 5초마다 1클럭. 아래 셋이 갱신됨
     input  wire [7:0]  i_n60,
     input  wire [16:0] i_sum_rr60,
-    input  wire [7:0]  i_bad60,         // 60초 창의 탈락 박동 수 (준용 o_bad60)
+    input  wire [7:0]  i_bad60,         // 60초 창의 탈락 박동 수 (신호처리 블록 o_bad60)
     output reg         o_valid,         // 판정 갱신 펄스
     output reg         o_hold,
     output reg         o_drowsy,

@@ -1,11 +1,11 @@
 """PPG-DaLiA 로 '움직임 크기 vs PPG 심박 오차' 를 잰다. 6단계 보류(hold) 문턱의 근거 자료.
 
-칩과 같은 조건으로 손목 PPG(BVP 64 Hz → 240 Hz, 0.16~16 Hz 대역)에 우리 봉우리 규칙(src/peak_simple)과
-SQI, 5초 블록 누산(src/window_acc), 정수 판정(src/infer_ref)을 돌리고, 가슴 ECG 의 R봉우리(데이터셋 제공,
-보정본)를 정답으로 삼아 블록·창 단위로 비교한다. 움직임은 scripts/dalia_prep.py 가 만든 acc_blocks.csv
+칩과 같은 조건으로 손목 PPG(BVP 64 Hz → 240 Hz, 0.16~16 Hz 대역)에 학습 검출기 규칙(peak_simple)과
+SQI, 5초 블록 누산(window_acc), 정수 판정(infer_ref)을 돌리고, 가슴 ECG 의 R봉우리(데이터셋 제공,
+보정본)를 정답으로 삼아 블록·창 단위로 비교한다. 움직임은 dalia_prep.py 가 만든 acc_blocks.csv
 (손목 = PPG 센서 자체의 움직임, 가슴 = 이마 대용).
 
-출력 (data/processed/stage6/)
+출력
   blocks.csv   블록 하나가 한 줄: subject, blk, activity, 손목·가슴 움직임(dev_max), 5초 블록 n·ΣRR (ECG / PPG SQI 있음 / PPG SQI 없음)
   windows.csv  60초 창(블록마다 하나): 창 평균 RR 오차(PPG−ECG)/ECG, ECG·PPG 판정(hold, drowsy; 기준선은 ECG 것 공유), 창 안 최대 움직임
   요약표는 report_motion_error() 가 표준 출력으로 (마크다운).
@@ -33,8 +33,8 @@ OUT = ROOT / "data/processed/stage6"
 FS_PPG = 240
 FS_ECG = 700
 HP_HZ, LP_HZ = 0.16, 16.0          # AFE 대역(회로도). PPG 는 16 Hz 로 충분
-POLARITY = -1                      # Empatica BVP 는 급상승이 아래로 향한다. 뒤집어야 우리 규칙(급하강 24샘플)이 맞는다.
-                                   # 극성 그대로면 반값 하강에 82샘플(0.34 s)이 걸려 DROP_WIN 72 이상 필요. 준용 v9 PPG_INVERT 와 같은 문제
+POLARITY = -1                      # Empatica BVP 는 급상승이 아래로 향한다. 뒤집어야 학습 검출기 규칙(급하강 24샘플)이 맞는다.
+                                   # 극성 그대로면 반값 하강에 82샘플(0.34 s)이 걸려 DROP_WIN 72 이상 필요. 신호처리 블록의 PPG_INVERT 와 같은 문제
 MOTION_BINS = [0, 0.1, 0.2, 0.3, 0.5, 1.0, np.inf]
 ACT = {0: "이동", 1: "앉기", 2: "계단", 3: "축구", 4: "자전거", 5: "운전", 6: "점심", 7: "걷기", 8: "업무"}
 
@@ -156,7 +156,7 @@ def process(sub, acc_tbl):
 
 
 def report_motion_error(win, blk):
-    """텍스트 요약. ⑤ 결정용."""
+    """텍스트 요약."""
     warnings.simplefilter("ignore")
     pd.set_option("display.width", 250)
     lines = []

@@ -2,7 +2,7 @@
 
     from src.mpd_io import load_ecg, load_labels, resample_to
     x, fs = load_ecg("02")           # 1024 Hz float 배열
-    x240 = resample_to(x, fs, 240)   # 우리 ADC 조건
+    x240 = resample_to(x, fs, 240)   # 보드 ADC 조건
 """
 
 import csv
@@ -41,9 +41,9 @@ def resample_to(x, fs_in, fs_out):
     return resample_poly(x, fs_out // g, fs_in // g)
 
 
-# 하드웨어 팀 아날로그 프론트엔드(idec_fin 회로도 5쪽)를 ECG에 흉내 낸 대역.
+# 보드 아날로그 프론트엔드를 ECG에 흉내 낸 대역.
 # 실제 회로: AC 결합 C4 10µF + R7 100k → 0.16 Hz 고역통과. 출력 R15 100k + C2 100nF → 16 Hz 저역통과.
-# FPGA 안 FIR은 노치만 넣을 예정(2026-09-15 준용)이라 여기서는 흉내 내지 않는다.
+# FPGA 안 FIR은 노치만 넣으므로 여기서는 흉내 내지 않는다.
 #
 # 고역통과 0.16 Hz는 그대로 쓴다. DC 제거가 봉우리 검출의 전제라서다.
 # 저역통과는 16이 아니라 40 Hz를 쓴다. 16 Hz는 PPG 봉우리(성분 10 Hz 이하)에는 여유롭지만
@@ -65,7 +65,7 @@ def afe_filter(x, fs):
 
 
 def load_ecg_as_ppg_chain(sid, fs_out=240):
-    """ECG를 하드웨어 팀 신호 체인 조건으로: AFE 대역 → 240 Hz. 봉우리 규칙 평가와 채점 파일용."""
+    """ECG를 하드웨어 팀 신호 체인 조건으로: AFE 대역 → 240 Hz. 봉우리 규칙 평가용."""
     x, fs = load_ecg(sid)
     return resample_to(afe_filter(x, fs), fs, fs_out)
 

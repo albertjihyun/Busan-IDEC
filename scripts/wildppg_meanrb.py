@@ -1,14 +1,14 @@
-"""5단계 본론: 같은 사람의 흉골 ECG(우리 검출기)와 이마 PPG(준용 v14 검출기)에서 칩 방식 mean_rb 를 나란히 낸다.
+"""5단계 본론: 같은 사람의 흉골 ECG(학습 검출기)와 이마 PPG(칩 검출기)에서 칩 방식 mean_rb 를 나란히 낸다.
 
 두 경로 모두 칩과 같은 절차를 밟는다:
-  ECG → AFE 흉내(0.16~40 Hz, 학습 파이프라인과 동일) → 240 Hz → 코드 → 우리 peak_detect/SQI → 5초 블록 → 60초 창 (n60, sum_rr60)
-  PPG → AFE 흉내(0.16~16 Hz, 보드) → 240 Hz → 코드(2초 창 p-p 중앙값 238) → 준용 v14 골든 → 5초 블록 → 60초 창
-그 뒤 src.infer_ref.InferRef(T_FIX 1086)로 워밍업(첫 3분 창 합 셋, N_base ≥ 45)·hold·drowsy 를 칩 그대로 굴리고,
+  ECG → AFE 흉내(0.16~40 Hz, 학습 파이프라인과 동일) → 240 Hz → 코드 → 학습 검출기(peak_simple)/SQI → 5초 블록 → 60초 창 (n60, sum_rr60)
+  PPG → AFE 흉내(0.16~16 Hz, 보드) → 240 Hz → 코드(2초 창 p-p 중앙값 238) → 칩 검출기 골든 → 5초 블록 → 60초 창
+그 뒤 칩 판정 절차(T_FIX 1086)로 워밍업·hold·drowsy 를 굴리고,
 둘 다 판정한 블록에서 mean_rb_PPG ÷ mean_rb_ECG − 1 의 치우침·흔들림, 그리고 drowsy 판정 일치율을 낸다.
 
     .venv/Scripts/python.exe scripts/wildppg_meanrb.py data/raw/wildppg/WildPPG_Part_an0.mat [more.mat ...] [--start-min 10] [--hours H]
 
-결과 data/processed/stage5/wildppg_meanrb.md (참가자별 + 합산).
+결과 wildppg_meanrb_*.md (참가자별 + 합산).
 """
 
 import sys
@@ -30,7 +30,7 @@ from scripts.wildppg_detectors import load_participant, to_240, to_codes_pp  # n
 OUT = ROOT / "data" / "processed" / "stage5" / "wildppg_meanrb.md"
 T_REAL = T_FIX / (1 << FRAC)
 
-# 준용 imu_feature.v 의 모션 에너지 (sim/motion_gate.py 와 같은 정수 연산). rr_extractor 조건 4: motion_energy > MOTION_TH 면 박동 탈락
+# 신호처리 블록 imu_feature.v 의 모션 에너지 (같은 정수 연산). rr_extractor 조건 4: motion_energy > MOTION_TH 면 박동 탈락
 GRAV_SH, LPF_SH, MOT_WIN, MOT_SH, MOTION_TH, LSB_G, ODR = 6, 2, 100, 6, 4000, 16384.0, 100
 
 
@@ -69,7 +69,7 @@ def head_motion_gate(P, s0, s1, n_ecg, fs):
 
 
 def ecg_chain(ecg, fs):
-    """학습 파이프라인(src.mpd_io.load_ecg_as_ppg_chain)과 같은 대역·리샘플·코드화."""
+    """학습 파이프라인(mpd_io.load_ecg_as_ppg_chain)과 같은 대역·리샘플·코드화."""
     sos_hp = butter(1, AFE_HP_HZ, btype="high", fs=fs, output="sos")
     sos_lp = butter(1, AFE_LP_HZ, btype="low", fs=fs, output="sos")
     y = sosfiltfilt(sos_lp, sosfiltfilt(sos_hp, np.asarray(ecg, float)))
@@ -82,7 +82,7 @@ def ecg_chain(ecg, fs):
 
 
 def block_materials(rr_at, rr, ok, n_samples):
-    """봉우리 위치 기준 5초 블록 배정 → 블록마다 (n60, sum_rr60, bad60). bad60 = 최근 12블록의 탈락 박동 수(준용 o_bad60)."""
+    """봉우리 위치 기준 5초 블록 배정 → 블록마다 (n60, sum_rr60, bad60). bad60 = 최근 12블록의 탈락 박동 수(신호처리 블록 o_bad60)."""
     nblk = n_samples // BLOCK
     per = {}
     for p, r, o in zip(rr_at, rr, ok):
@@ -105,8 +105,8 @@ def block_materials(rr_at, rr, ok, n_samples):
 
 def run_chip(mats, keep=0.0, base_keep=0.0, base_blocks=None):
     """칩 절차를 블록마다 굴려 (hold, drowsy, mean_rb 또는 nan, base_n, base_sum) 목록과 기준선에 쓴 블록 번호를 낸다.
-    기본(0, 0, None): InferRef 와 같다 — 12·24·36번째 블록의 60초 창 합 셋, N_base ≥ 45 아니면 재시작.
-    base_keep > 0 : B 방식 — 워밍업 중 12블록(1분)마다 창 하나를 보고, n60 ≥ 30 이고 살린 비율 ≥ base_keep 인
+    기본(0, 0, None): 창 품질을 안 본다 — 12·24·36번째 블록의 60초 창 합 셋, N_base ≥ 45 아니면 재시작.
+    base_keep > 0 : 칩(InferRef)과 같은 방식 — 워밍업 중 12블록(1분)마다 창 하나를 보고, n60 ≥ 30 이고 살린 비율 ≥ base_keep 인
                     창만 기준선에 더한다. 좋은 창 3개가 모이면 완성.
     keep > 0      : 판정 중 살린 비율 < keep 인 블록을 추가 hold.
     base_blocks   : 기준선을 이 블록들의 창 합으로 강제(ECG 쪽을 PPG 와 같은 시점 기준선으로 맞출 때)."""
@@ -166,16 +166,16 @@ def analyze(path, start_min=0.0, hours=None, keep=0.0, base_keep=0.0):
     acc = np.sqrt(sum(P["head"][k]["v"].astype(float)[s0:s1][:n] ** 2 for k in ("acc_x", "acc_y", "acc_z")))
     w = int(60 * fs); nw = len(acc) // w
     sd = np.array([acc[i * w:(i + 1) * w].std() for i in range(nw)])
-    still_min = sd <= np.percentile(sd, 25)          # 가장 조용한 25% 분 = 착석에 대응(준용 motion_gate.py 와 같은 정의)
+    still_min = sd <= np.percentile(sd, 25)          # 가장 조용한 25% 분 = 착석에 대응
     g1 = float(np.median(acc))                       # 긴 구간 벡터 크기 중앙값 = 1 g
     seat_min = sd / g1 < 0.02                        # 절대 기준: 분당 표준편차 0.02 g 미만 (DaLiA 앉기 0.017 g, 운전 0.16 g p95)
     mot_bad, me100 = head_motion_gate(P, s0, s1, n, fs)
 
-    # ECG → 우리 검출기
+    # ECG → 학습 검출기
     ce = ecg_chain(ecg, fs)
     pe, rre, oke = detect(ce)
     me = block_materials(pe[1:], rre, oke, len(ce))
-    # PPG → 준용 v14 검출기 (보드 극성: −)
+    # PPG → 칩 검출기 (보드 극성: −)
     yp = to_240(ppg, fs)
     cp, _ = to_codes_pp(-yp)
     pp, at, rrp, okp = jy_detect(cp, fix_prev=True, use_lpf=True, mot_bad=mot_bad)
@@ -236,9 +236,9 @@ def main(argv):
     Se = np.concatenate(allSeat) if allSeat else np.array([])
     A, St, Sa = stats(D), stats(S), stats(Se)
     wa = sum(a * n for a, n in agrees if np.isfinite(a)) / max(sum(n for a, n in agrees if np.isfinite(a)), 1)
-    lines = [f"# 5단계: ECG(우리 검출기) 대 이마 PPG(준용 v14) 60초 창 mean_rb — WildPPG {len(paths)}명" + (f" (PPG 살린 비율 ≥ {keep:.2f} 추가 hold)" if keep else "") + (f" (기준선 창 살린 비율 ≥ {base_keep:.2f} 아니면 재시작)" if base_keep else ""), "",
+    lines = [f"# ECG(학습 검출기) 대 이마 PPG(칩 검출기) 60초 창 mean_rb — WildPPG {len(paths)}명" + (f" (PPG 살린 비율 ≥ {keep:.2f} 추가 hold)" if keep else "") + (f" (기준선 창 살린 비율 ≥ {base_keep:.2f} 아니면 재시작)" if base_keep else ""), "",
              f"차이 = mean_rb_PPG ÷ mean_rb_ECG − 1 (5초 블록마다, 둘 다 판정한 블록만). 워밍업·hold·기준선은 칩(InferRef, T_FIX {T_FIX}) 그대로. "
-             f"시작 오프셋 {start_min:.0f}분. 정지 = 이마 가속도 60초 창 표준편차 하위 25%(착석 대응). PPG 경로에는 준용 모션 게이트(motion_energy > 4000 박동 탈락) 포함. 판정 일치 = 문턱 {T_REAL:.4f}에서 drowsy 가 같은 블록 비율.", "",
+             f"시작 오프셋 {start_min:.0f}분. 정지 = 이마 가속도 60초 창 표준편차 하위 25%(착석 대응). PPG 경로에는 신호처리 블록 모션 게이트(motion_energy > 4000 박동 탈락) 포함. 판정 일치 = 문턱 {T_REAL:.4f}에서 drowsy 가 같은 블록 비율.", "",
              *hdr, *rows, "",
              f"**합산 {len(paths)}명, 블록 {A.get('n', 0)}개:** 차이 중앙 {A.get('med', np.nan):+.2f}%, 사분위 {A.get('q1', np.nan):+.2f}~{A.get('q3', np.nan):+.2f}%, "
              f"표준편차 {A.get('sd', np.nan):.2f}%, |차이|>1% {A.get('gt1', np.nan):.0f}% · >2% {A.get('gt2', np.nan):.0f}% · >4% {A.get('gt4', np.nan):.0f}%. "

@@ -1,15 +1,15 @@
-"""4단계. 판정 블록의 정수 정답지와 테스트 벡터. 설계는 docs/integer-inference-design.md.
+"""4단계. 판정 블록의 정수 정답지와 테스트 벡터.
 
     python scripts/make_infer_vectors.py              # 50명 전부 + edge
     python scripts/make_infer_vectors.py --calib [--frac=10]   # T_FIX 후보를 훑어 헛경보 4회/h 이하 최소값 찾기
     python scripts/make_infer_vectors.py 02 05        # 일부
 
 만드는 것
-  data/processed/stage4/infer_key.csv   50명 × 5초 블록. 재료·기준선·정수 판정·실수 판정·뒤집힘
-  sim/vectors/infer/NN.txt              사람마다 "block n60 sum_rr60 bad60 hold drowsy" (테스트벤치 입력·정답)
-  sim/vectors/infer/edge.txt            손으로 만든 경계 사례. 같은 형식
+  infer_key.csv   50명 × 5초 블록. 재료·기준선·정수 판정·실수 판정·뒤집힘
+  NN.txt          사람마다 "block n60 sum_rr60 bad60 hold drowsy" (테스트벤치 입력·정답)
+  edge.txt        손으로 만든 경계 사례. 같은 형식
 
-정답은 라벨이 아니라 src/infer_ref.py 의 정수 판정이다. Verilog 가 이것과 비트 단위로 같으면 통과.
+정답은 라벨이 아니라 infer_ref 의 정수 판정이다. Verilog 가 이것과 비트 단위로 같으면 통과.
 재료(n60, sum_rr60)는 2단계 표와 같은 절차(WindowAcc, 봉우리 위치 기준 블록)로 만들되 5초마다 저장한다.
 30초 에폭 끝 블록의 재료는 features_60s.csv 의 n, sum_rr 와 같아야 한다(스크립트가 확인한다).
 """
@@ -32,13 +32,13 @@ TABLE = ROOT / "data" / "processed" / "features_60s.csv"
 OUT_KEY = ROOT / "data" / "processed" / "stage4"
 OUT_VEC = ROOT / "sim" / "vectors" / "infer"
 EPOCH_BLOCKS = 6
-T_FLOAT_4 = 1.0601714757378689     # 50명 전체 mean_rb_chip 에서 헛경보 4회/h 실수 문턱 (설계서 2절, scripts/calib_t_float.py 로 재현 가능)
+T_FLOAT_4 = 1.0601714757378689     # 50명 전체 mean_rb_chip 에서 헛경보 4회/h 실수 문턱 (calib_t_float.py 로 재현 가능)
 T_FLOAT_2 = 1.0999238569284642     # 2회/h. 칩에는 안 넣고 참고용
 
 
 def block_materials(sid):
-    """블록마다 (n60, sum_rr60, bad60). scripts/make_features.windows 와 같은 절차, 저장만 5초마다.
-    bad60 = 최근 12블록에서 SQI 탈락한 RR 수(준용 o_bad60 와 같은 뜻)."""
+    """블록마다 (n60, sum_rr60, bad60). make_features.windows 와 같은 절차, 저장만 5초마다.
+    bad60 = 최근 12블록에서 SQI 탈락한 RR 수(신호처리 블록 o_bad60 와 같은 뜻)."""
     z = np.load(IN / f"{sid}.npz")
     peaks, rr, ok, labels = z["peaks"], z["rr"], z["ok"], z["labels"].astype(int)
     nblk = len(labels) * EPOCH_BLOCKS
@@ -90,7 +90,7 @@ def check_against_table(key):
     e = e[e.reason != "no_window"]
     bad = e[(e.n60 != e.n) | (e.sum_rr60 != e.sum_rr)]
     assert bad.empty, f"재료 불일치 {len(bad)}행\n{bad.head()}"
-    # 9/24 기준선·창 품질 규칙 이후: 표(첫 3분 고정 기준선, n60<30 만 무효)와 다를 수 있는 곳은 둘뿐이다.
+    # 기준선·창 품질 규칙 때문에 표(첫 3분 고정 기준선, n60<30 만 무효)와 다를 수 있는 곳은 둘뿐이다.
     # (1) 첫 3분 창 중 나쁜 창이 있어 기준선이 늦게 잡힌 사람, (2) 탈락이 많아 추가로 hold 된 창.
     # 그 밖에서는 기준선·mean_rb 가 표와 같아야 한다.
     j = e[(e.judged == 1) & (e.hold == 0)]

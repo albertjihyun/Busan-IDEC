@@ -1,4 +1,4 @@
-// imu_rule 채점. sim/vectors/imu/cases.txt (scripts/make_imu_vectors.py, 정답은 src/imu_ref.py)와 비트 단위로 대조.
+// imu_rule 채점. cases.txt (make_imu_vectors.py 로 생성, 정답은 imu_ref)와 비트 단위로 대조.
 //
 //   iverilog -g2012 -o sim/imu.vvp rtl/imu_rule.v sim/tb_imu_rule.v && vvp -n sim/imu.vvp
 //   iverilog -g2012 -Ptb_imu_rule.FWD_SIGN=1 -Ptb_imu_rule.VERT_AXIS=0 -o sim/imu_chest.vvp rtl/imu_rule.v sim/tb_imu_rule.v

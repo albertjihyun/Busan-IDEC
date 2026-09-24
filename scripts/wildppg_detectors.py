@@ -1,12 +1,12 @@
 """이마 PPG(WildPPG 원본, 128 Hz)에서 두 검출기를 같은 잣대로 채점.
 
-준용은 v13 검증에 이마 PPG 실데이터 1명을 썼지만 우리 검출기는 이마에서 돌려 본 적이 없다.
+칩 검출기는 이마 PPG 실데이터 1명으로만 확인됐고 학습 검출기는 이마에서 돌려 본 적이 없다.
 여기서는 WildPPG(ETH, 이마 PPG + 흉골 ECG, 13시간/명)를 받아
   이마 PPG → 보드 AFE 흉내(HP 0.16 Hz, LP 16 Hz) → 240 Hz → 코드(2초 창 p-p 중앙값 = TARGET_PP) → ±2047
 를 두 검출기(+ 극성 ±)에 넣고, 정답은 흉골 ECG 의 neurokit R 봉우리로 잡는다.
 채점은 compare_detectors 와 같다: 60초 창 '통과 RR 평균 ÷ 정답 RR 평균' 편향, 커버리지(n ≥ 30),
 그리고 봉우리 일치(맥파 전달 지연을 중앙값으로 뺀 뒤 ±24샘플).
-움직임이 적은 창(이마 가속도 크기 표준편차 하위 절반)을 따로 집계해 준용의 '안정 구간'에 대응시킨다.
+움직임이 적은 창(이마 가속도 크기 표준편차 하위 절반)을 따로 집계해 칩 검출기 확인 때의 '안정 구간'에 대응시킨다.
 
     .venv/Scripts/python.exe scripts/wildppg_detectors.py data/raw/wildppg/WildPPG_Part_an0.mat [--hours 2]
 """
@@ -24,7 +24,7 @@ from src.peak_simple import detect, FS  # noqa: E402
 from src.peak_eval import match  # noqa: E402
 from scripts.compare_detectors import jy_detect, WARM_N  # noqa: E402
 
-TARGET_PP = 238          # 준용 회로 해석의 이마 중심 동작점 [코드]
+TARGET_PP = 238          # 신호처리 블록 회로 해석의 이마 중심 동작점 [코드]
 AFE_HP, AFE_LP = 0.16, 16.0
 TOL = 24                 # 100 ms. PPG 봉우리는 ECG R 보다 넓고 PTT 가 흔들린다
 OUT_MD = Path(__file__).resolve().parents[1] / "data" / "processed" / "stage1" / "wildppg_compare.md"
@@ -55,7 +55,7 @@ def to_240(x, fs):
 
 
 def to_codes_pp(y, target=TARGET_PP):
-    """2초 창 p-p 중앙값이 target 코드가 되게 스케일. 준용 real_ppg 절차와 같은 발상."""
+    """2초 창 p-p 중앙값이 target 코드가 되게 스케일. 신호처리 블록 real_ppg 절차와 같은 발상."""
     w = 2 * FS
     n = len(y) // w
     pp = np.array([y[i * w:(i + 1) * w].max() - y[i * w:(i + 1) * w].min() for i in range(n)])
@@ -176,10 +176,10 @@ def main(argv):
         y = to_240(raw, fs_p)
         for pol in ((-1,) if "--neg-only" in argv else (+1, -1)):
             codes, scale = to_codes_pp(pol * y)
-            for name, det, kw in [("우리", "ours", {}), ("우리 DROP_WIN=48", "ours", dict(drop_win=48)),
-                                  ("준용 v13", "jy", dict(fix_prev=False, use_lpf=True)),
-                                  ("준용 +prev_idx 수정", "jy", dict(fix_prev=True, use_lpf=True)),
-                                  ("준용 +수정 +진폭규칙(C)", "jy", dict(fix_prev=True, use_lpf=True, amp_rule=True))]:
+            for name, det, kw in [("학습", "ours", {}), ("학습 DROP_WIN=48", "ours", dict(drop_win=48)),
+                                  ("칩 검출기(prev_idx 규칙 없음)", "jy", dict(fix_prev=False, use_lpf=True)),
+                                  ("칩 검출기 +prev_idx 수정", "jy", dict(fix_prev=True, use_lpf=True)),
+                                  ("칩 검출기 +수정 +진폭규칙(C)", "jy", dict(fix_prev=True, use_lpf=True, amp_rule=True))]:
                 r = run_one(codes, gt, still_mask, det, **kw)
                 A, S = agg(r["rows"]), agg(r["rows"], only_still=True)
                 lines.append(f"| {ch} | {'+' if pol > 0 else '−'} | {name} | {r['miss']:.1f} | {r['fp']:.1f} | {r['rej']:.1f} | "

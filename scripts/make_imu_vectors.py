@@ -1,10 +1,10 @@
-"""6단계. 고개 떨굼 규칙(src/imu_ref.py / rtl/imu_rule.v)의 테스트 벡터와 정답. 설계는 docs/imu-rule-design.md 8절.
+"""6단계. 고개 떨굼 규칙(imu_ref.py / imu_rule.v)의 테스트 벡터와 정답.
 
     python scripts/make_imu_vectors.py            # 합성 시나리오 → sim/vectors/imu/cases.txt, 기대 펄스 수 확인
     python scripts/make_imu_vectors.py --dalia    # + PPG-DaLiA 가슴 가속도 15명(이마 대용)에 규칙을 돌려 오발 횟수 표,
                                                   #   S1 전체를 data/processed/stage6/imu_dalia_S1.txt 로 (git 제외, tb +vec= 용)
 
-합성 시나리오는 100 Hz, ±2 g(16,384 LSB/g) 정수. 좌표는 준용 v13 11절: Y = 이마-턱(세우면 +1 g), Z = 앞(숙이면 −sinθ·g),
+합성 시나리오는 100 Hz, ±2 g(16,384 LSB/g) 정수. 좌표는 센서 장착 기준: Y = 이마-턱(세우면 +1 g), Z = 앞(숙이면 −sinθ·g),
 X = 귀-귀. 급제동은 차가 뒤로 잡아당기므로 +Z(앞)에 −a 가 실린다(숙임과 같은 부호). 정답은 라벨이 아니라 파이썬 정수 규칙이다.
 """
 import math
@@ -75,7 +75,7 @@ def scenarios():
     S.append(("dash_plus_brake", make(ramp_hold(20, 0.2, 2.0), brake_g=np.r_[np.zeros(120), np.full(200, 0.5), np.zeros(int(4.4 * FS) - 320)]),
               0, "계기판 20° 보면서 급제동 0.5 g. 앞축 합은 문턱 넘지만 세로축 cos20° 가 막는다"))
     th = np.concatenate([np.zeros(100), np.linspace(0, 45, 600), np.full(1000, 45), np.linspace(45, 0, 100), np.zeros(100)])
-    S.append(("slow_slump", make(th), None, "6 s 에 걸쳐 45° 까지 천천히 처져 10 s 유지. 준용 자이로 규칙은 못 잡는 경우"))
+    S.append(("slow_slump", make(th), None, "6 s 에 걸쳐 45° 까지 천천히 처져 10 s 유지. 신호처리 블록 자이로 규칙은 못 잡는 경우"))
     S.append(("exact_35deg", make(ramp_hold(35, 0.2, 5.0)), None, "정확히 35° 5 s. 잡음·반올림에 따라 경계"))
     S.append(("nod_y_negative", make(ramp_hold(40, 0.15, 1.0), y_sign=-1), 1, "세로축 부호가 반대(밴드 뒤집어 씀)여도 같아야 함"))
     S.append(("clip_extreme", q(np.tile([[32767, -32768, -32768]], (300, 1))), None, "포화값. 오버플로 없음만 확인"))
