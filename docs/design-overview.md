@@ -109,7 +109,7 @@
 - "왜 전용 하드웨어인가"는 주장이 아니라 동일 모델의 MCU 구현 대비 판단 1회당 에너지·지연시간 비교로 답한다. 본 제출에서는 FPGA 합성 리포트의 전력·지연 추정치와 MCU 데이터시트 기반 계산으로 비교하고, 실측은 후속 과제다.
 - 무선 통신은 BLE 스택 전용 펌웨어가 고정된 SMD 모듈을 채택하여, 범용 프로세서를 두지 않으면서 물리 계층 변환만 위임한다.
 
-**저전력 동작 구조.** ④를 위해 판정을 칩 안에서 끝내고 밖으로는 결과만 내보낸다. 광원·센서·심박 검출은 상시, 특징 추출과 추론은 5초 주기로 동작하며, 무선으로는 경보가 날 때만 1바이트를 보낸다. 파형을 스마트폰으로 계속 보내 폰에서 판단하는 구조와 비교하면 무선 송신량이 경보 한 번에 1바이트로 줄고, 판단을 맡는 회로는 곱셈기 3개 규모의 고정 로직이다. 무선 모듈은 상시 연결 상태로 두며, 이 상태의 모듈 전류는 약 1 mA로 광원(약 16 mA)보다 작다. 모듈을 경보 때만 깨우는 방식은 연결 상태 확인 신호가 필요해 후속 과제로 둔다.
+**저전력 동작 구조.** ④를 위해 판정을 칩 안에서 끝내고 밖으로는 결과만 내보낸다. 광원·센서·심박 검출은 상시, 특징 추출과 추론은 5초 주기로 동작하며, 무선으로는 경보가 날 때만 1바이트를 보낸다. 졸림 판정이 이어지는 동안에는 30초마다 다시 보낸다. 판정 하나가 최근 60초를 보므로 5초마다 연달아 나온 판정은 대부분 같은 데이터이고, 규정은 첫 경고를 가능한 한 빨리 내고 운전자가 확인할 때까지 반복·강화할 수 있게 한다[38]. 반복이 잦으면 경고에 둔감해지므로[39] 첫 경고는 늦추지 않되 반복 간격을 창의 절반인 30초로 둔다. 파형을 스마트폰으로 계속 보내 폰에서 판단하는 구조와 비교하면 무선 송신량이 경보 한 번에 1바이트로 줄고, 판단을 맡는 회로는 곱셈기 3개 규모의 고정 로직이다. 무선 모듈은 상시 연결 상태로 두며, 이 상태의 모듈 전류는 약 1 mA로 광원(약 16 mA)보다 작다. 모듈을 경보 때만 깨우는 방식은 연결 상태 확인 신호가 필요해 후속 과제로 둔다.
 
 ## 2.4 시스템 구성 개요
 
@@ -206,3 +206,6 @@ IMU(I2C) ─────────────────┤→ [FPGA] FIR �
 [35] L. Hejjel, E. Roth, "What is the adequate sampling interval of the ECG signal for heart rate variability analysis in the time domain?", Physiological Measurement 25(6):1405-1411, 2004. https://doi.org/10.1088/0967-3334/25/6/006
 [36] S. Béres, L. Hejjel, "The minimal sampling frequency of the photoplethysmogram for accurate pulse rate variability parameters in healthy volunteers", Biomedical Signal Processing and Control 68:102589, 2021. https://doi.org/10.1016/j.bspc.2021.102589
 [37] M. Meier, B. U. Demirel, C. Holz, "WildPPG: A Real-World PPG Dataset of Long Continuous Recordings", Advances in Neural Information Processing Systems 37 (NeurIPS 2024) Datasets and Benchmarks Track. https://arxiv.org/abs/2412.17540
+
+[38] European Commission, Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems), Official Journal of the European Union L 292, 2021. https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
+[39] D. C. Marshall, J. D. Lee, P. A. Austria, "Alerts for in-vehicle information systems: annoyance, urgency, and appropriateness", Human Factors 49(1):145-157, 2007. https://doi.org/10.1518/001872007779598145

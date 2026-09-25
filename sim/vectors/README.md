@@ -8,10 +8,10 @@ MPD-DF 50명의 RR로 5초 블록마다 60초 창 합(n60, sum_rr60, bad60)을 �
 
 | 파일 | 내용 |
 |---|---|
-| `NN.txt` (01~50) | `block n60 sum_rr60 bad60 hold drowsy`. 사람마다 리셋부터 시작. 앞 넷이 입력, 뒤 둘이 정답 |
-| `edge.txt` | `case block n60 sum_rr60 bad60 hold drowsy`. 손으로 만든 경계 사례 4벌(판정 경계, 창 품질 경계, 나쁜 창을 건너뛰는 기준선, 최대값). `case`가 바뀌면 리셋 |
+| `NN.txt` (01~50) | `block n60 sum_rr60 bad60 hold drowsy alert`. 사람마다 리셋부터 시작. 앞 넷이 입력, 뒤 셋이 정답(`alert`는 30초 간격 규칙을 적용한 심박 경보) |
+| `edge.txt` | `case block n60 sum_rr60 bad60 hold drowsy alert`. 손으로 만든 경계 사례 5벌(판정 경계, 창 품질 경계, 나쁜 창을 건너뛰는 기준선, 최대값, 경보 간격). `case`가 바뀌면 리셋 |
 
-tb_classifier.v가 51개 파일을 전부 읽어 블록마다 hold·drowsy를 대조하고, alert 펄스 수가 drowsy와 같은지도 센다.
+tb_classifier.v가 51개 파일을 전부 읽어 블록마다 hold·drowsy·alert를 대조한다. tb_infer_uart.v는 50명 파일을 판정 블록과 통신 블록에 넣어 UART 바이트 수가 alert와 같은지 센다.
 
 ## `imu/` — 고개 떨굼 규칙 채점 파일
 

@@ -2,6 +2,9 @@
 //
 //   alert : 1클럭 펄스. 다음 셋 중 하나라도 있으면 1회.
 //           - 5초 판정이 졸림이고 보류(기준선 준비 중·박동 부족·탈락 과다) 아님   classifier
+//             단 마지막 심박 경보로부터 블록 REPEAT_BLOCKS 개(30초)가 지나야 다시 낸다. 판정 하나가 최근 60초를
+//             보므로 연달아 나온 판정은 55초가 같은 데이터이고, 30초(창의 절반)가 지나야 절반이 새 데이터다.
+//             첫 졸림은 바로 내고, 졸림이 이어지면 30초마다 다시 낸다. 판정이 끊겼다 다시 와도 마지막 경보만 본다.
 //           - 고개를 35° 넘게 숙인 채 0.5 s (숙인 채 있으면 5 s 마다)   imu_rule   (가속도, 자세)
 //           - 신호처리 블록 imu_feature 의 끄덕임(o_nod_event) / 떨군 채 유지(o_nod_sustained 상승 에지)   (자이로, 동작)
 //             단 자이로 부호가 확정된 뒤(o_pitch_sign_ok = 1)에만 받는다. 확정 전에는 imu_feature 가 부호를
@@ -17,7 +20,8 @@
 `default_nettype none
 module infer_top #(
     parameter T_FIX = 1086,
-    parameter FRAC  = 10
+    parameter FRAC  = 10,
+    parameter REPEAT_BLOCKS = 6        // 심박 경보 재송신 간격 [5초 블록]. 1..15
 )(
     input  wire        clk,
     input  wire        rst_n,
@@ -62,12 +66,21 @@ module infer_top #(
     end
     wire m_nod = m_nod_pose | (i_pitch_sign_ok & (i_nod_event | (i_nod_sustained & ~sus_d)));
 
-    // combine: 판정 갱신 클럭에 졸림이고 보류 아니면 1펄스, 떨굼은 그 순간 1펄스
+    // 심박 경보 간격: since = 마지막 심박 경보 뒤 지난 블록 수 (REPEAT_BLOCKS 에서 포화). 블록마다(보류 포함) 센다
+    reg  [3:0] since;
+    wire [3:0] since_inc = (since < REPEAT_BLOCKS) ? since + 4'd1 : since;
+    wire       heart     = c_valid & c_drowsy & ~c_hold & (since_inc >= REPEAT_BLOCKS);
+    always @(posedge clk) begin
+        if (!rst_n)       since <= REPEAT_BLOCKS;
+        else if (c_valid) since <= heart ? 4'd0 : since_inc;
+    end
+
+    // combine: 심박 경보(간격 규칙 통과) 1펄스, 떨굼은 그 순간 1펄스
     always @(posedge clk) begin
         if (!rst_n)
             alert <= 1'b0;
         else
-            alert <= (c_valid & c_drowsy & ~c_hold) | m_nod;
+            alert <= heart | m_nod;
     end
 endmodule
 `default_nettype wire

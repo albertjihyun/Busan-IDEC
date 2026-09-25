@@ -2,9 +2,9 @@
 //
 //   iverilog -g2012 -o sim/infer.vvp rtl/classifier.v rtl/imu_rule.v rtl/infer_top.v sim/tb_classifier.v && vvp -n sim/infer.vvp
 //
-// 입력 줄: block n60 sum_rr60 bad60 hold drowsy. 50명 파일(NN.txt)은 사람마다 리셋하고 블록 75,186개를 전부 넣는다. edge.txt 는 case 이름이 바뀔 때 리셋.
+// 입력 줄: block n60 sum_rr60 bad60 hold drowsy alert. 50명 파일(NN.txt)은 사람마다 리셋하고 블록 75,186개를 전부 넣는다. edge.txt 는 case 이름이 바뀔 때 리셋.
 // 블록 간격은 실제 6만 클럭 대신 8클럭. 설계가 간격에 의존하지 않는다.
-// alert 도 같이 센다: 판정 하나에 펄스가 정확히 drowsy 개(0 또는 1)여야 한다. hold·drowsy 는 classifier 출력을 계층 참조로 본다.
+// alert 도 같이 센다: 판정 하나에 펄스가 정확히 정답 alert 개(0 또는 1)여야 한다(30초 간격 규칙 포함). hold·drowsy 는 classifier 출력을 계층 참조로 본다.
 
 `timescale 1ns/1ps
 module tb_classifier;
@@ -27,7 +27,7 @@ module tb_classifier;
     integer f, rc, sid;
     reg [8*200:1] line;
     reg [8*32:1]  cname, cname_prev;
-    integer x_blk, x_n, x_s, x_b, x_hold, x_drowsy;
+    integer x_blk, x_n, x_s, x_b, x_hold, x_drowsy, x_alert;
     integer n_chk = 0, n_err = 0, n_alert_err = 0, n_files = 0;
     integer sub_err;
     integer n_alert;
@@ -43,7 +43,7 @@ module tb_classifier;
     endtask
 
     // 블록 하나 넣고 판정(3클럭 뒤)을 정답과 비교
-    task push_block(input integer n, input integer s, input integer bd, input integer e_hold, input integer e_drowsy, input [8*40:1] tag, input integer blk);
+    task push_block(input integer n, input integer s, input integer bd, input integer e_hold, input integer e_drowsy, input integer e_alert, input [8*40:1] tag, input integer blk);
         integer k;
         begin
             @(posedge clk); #1;
@@ -62,10 +62,10 @@ module tb_classifier;
                     $display("MISMATCH %0s blk %0d: n60=%0d sum=%0d bad=%0d  exp hold=%0d drowsy=%0d  got hold=%0d drowsy=%0d",
                              tag, blk, n, s, bd, e_hold, e_drowsy, hold, drowsy);
             end
-            if (n_alert !== e_drowsy) begin
+            if (n_alert !== e_alert) begin
                 n_alert_err = n_alert_err + 1;
                 if (n_alert_err <= 5)
-                    $display("ALERT    %0s blk %0d: exp %0d pulse got %0d", tag, blk, e_drowsy, n_alert);
+                    $display("ALERT    %0s blk %0d: exp %0d pulse got %0d", tag, blk, e_alert, n_alert);
             end
             repeat (2) @(posedge clk);
         end
@@ -84,8 +84,8 @@ module tb_classifier;
                 do_reset;
                 sub_err = 0;
                 while (!$feof(f)) begin
-                    rc = $fscanf(f, "%d %d %d %d %d %d\n", x_blk, x_n, x_s, x_b, x_hold, x_drowsy);
-                    if (rc == 6) push_block(x_n, x_s, x_b, x_hold, x_drowsy, fname, x_blk);
+                    rc = $fscanf(f, "%d %d %d %d %d %d %d\n", x_blk, x_n, x_s, x_b, x_hold, x_drowsy, x_alert);
+                    if (rc == 7) push_block(x_n, x_s, x_b, x_hold, x_drowsy, x_alert, fname, x_blk);
                 end
                 $fclose(f);
                 if (sub_err) $display("subject %02d: %0d mismatch", sid, sub_err);
@@ -100,13 +100,13 @@ module tb_classifier;
             cname_prev = "";
             sub_err = 0;
             while (!$feof(f)) begin
-                rc = $fscanf(f, "%s %d %d %d %d %d %d\n", cname, x_blk, x_n, x_s, x_b, x_hold, x_drowsy);
-                if (rc == 7) begin
+                rc = $fscanf(f, "%s %d %d %d %d %d %d %d\n", cname, x_blk, x_n, x_s, x_b, x_hold, x_drowsy, x_alert);
+                if (rc == 8) begin
                     if (cname != cname_prev) begin
                         do_reset;
                         cname_prev = cname;
                     end
-                    push_block(x_n, x_s, x_b, x_hold, x_drowsy, cname, x_blk);
+                    push_block(x_n, x_s, x_b, x_hold, x_drowsy, x_alert, cname, x_blk);
                 end
             end
             $fclose(f);
