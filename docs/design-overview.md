@@ -93,8 +93,8 @@
 **PPG 채택의 대가 — 접촉 품질과 모션 노이즈.** 카메라와 달리 신체 접촉이 필요하고, 움직임에 취약하며, HRV는 개인차가 있다[34].
 - 측정 위치를 손목이 아닌 이마로 선정: 말초 혈관 수축과 팔 움직임(조향)의 영향이 적다. 반사형 이마 측정은 DC 광전류가 커지므로 TIA를 상방 스윙 구조(캐소드→반전입력, 기준 1V)로 설계하여 약 7µA까지의 선형 구간을 확보하였다.
 - 신호 품질 검증(SQI) 단계를 데이터패스에 내장: 진폭 범위와 RR 간격의 생리학적 타당성을 검사하여 불량 구간은 판단을 보류한다.
-- IMU를 병행: 고개 떨굼은 심박과 무관하게 즉시 경보한다. 자이로로 꾸벅(빠른 하강·복귀, 25° 이상)을, 가속도 중력 투영으로 숙인 채 있는 자세(35° 이상 0.5초, 세로축 조건으로 급제동과 구별)를 각각 잡아 합친다[29][30]. 머리 움직임이 큰 구간은 SQI의 모션 게이트가 박동 단위로 걸러낸다(IMU 별도 보류는 PPG-DaLiA 15명 분석에서 이득이 작아 두지 않음).
-- 개인차 보정: 운전 초반 구간을 개인 기준선으로 삼아 상대값 특징을 함께 쓴다. 문헌고찰이 개인화를 정확도의 핵심 요소로 지목하였다[34].
+- IMU를 병행: 고개 떨굼은 심박과 무관하게 즉시 경보한다. 자이로로 꾸벅(빠른 하강·복귀, 25° 이상)을, 가속도 중력 투영으로 숙인 채 있는 자세(35° 이상 0.5초, 세로축 조건으로 급제동과 구별)를 각각 잡아 합친다[28][29][30]. 머리 움직임이 큰 구간은 SQI의 모션 게이트가 박동 단위로 걸러낸다(IMU 별도 보류는 PPG-DaLiA 15명 분석에서 이득이 작아 두지 않음).
+- 개인차 보정: 좋은 1분 창 3개로 개인 기준선을 만들고, 기준선 대비 평균 RR 비율(`mean_rb`) 하나로 판정한다. 문헌고찰이 개인화를 정확도의 핵심 요소로 지목하였다[34].
 - 노이즈를 완전히 제거한다고 주장하지 않는다. 대역 제한 필터, SQI, 잔여 변동에 대한 모델 강건성 검증의 3단으로 대응하며, 판단 보류에 따른 커버리지를 성능과 함께 보고한다.
 - 착용성(장시간 헤어밴드)은 후속 과제로 남기고, 모자·헬멧 내장 형태로의 확장을 전제한다.
 
@@ -115,12 +115,16 @@
 
 *(하드웨어 담당 작성. 제출 전 이 안내와 아래 항목 표시는 삭제. 분량 반~한 페이지, 상세 회로는 3번 항목으로.)*
 
-**[블록 다이어그램]** — 회로도가 아닌 블록 수준 그림. 센서 → AFE → ADC → FPGA 내부(FIR → SQI → 피크/RR → HRV 특징 → 분류기 → 결합 규칙) → UART → BLE → 스마트폰. IMU는 I2C로 FPGA에 병렬 입력.
+**[블록 다이어그램]** — 회로도가 아닌 블록 수준 그림. 센서 → AFE → ADC → FPGA 내부(FIR → SQI → 피크/RR → 60초 창 합 → 기준선·판정 → 자세·끄덕임 결합) → UART → BLE → 스마트폰. IMU는 I2C로 FPGA에 병렬 입력.
 
 ```
-PPG 센서 → AFE → ADC(I2C) ─┐
-IMU(I2C) ─────────────────┤→ [FPGA] FIR → SQI → 피크/RR → HRV 특징 → 분류기 → 결합 규칙 → 판정
-                          └→ UART → BLE 모듈(경보 시 1바이트) → 스마트폰
+PPG 센서 → AFE → ADC ─┐ I2C
+IMU ──────────────────┘
+        ↓
+[FPGA] FIR → SQI → 피크/RR → 60초 창 합 → 기준선·판정 ─┐
+       IMU 자세·끄덕임 ───────────────────────────────┴→ 경보 결합 → UART
+        ↓
+BLE 모듈(경보 시 1바이트) → 스마트폰
 ```
 
 **[블록별 한 줄 설명]**
@@ -133,7 +137,7 @@ IMU(I2C) ─────────────────┤→ [FPGA] FIR �
 - 전원부:
 
 **[주요 부품 및 사양]**
-- 포토다이오드 / LED: TEMD6200FX01(녹색 대역) / KT-0805G 녹색, 15mA
+- 포토다이오드 / LED: TEMD6200FX01(녹색 대역) / KT-0805G 녹색, 약 16 mA(3.3 V, 직렬 75 Ω)
 - 증폭기: OPA2333 (TIA 330k + 이득 21, AC 결합 0.16Hz, 출력 LPF 16Hz, 기준 1V)
 - ADC: MCP3421A0, 12비트 / 240 SPS, I2C 0x68. 240 SPS(4.17 ms)는 PPG 기반 HRV 지표에서 오차 1% 미만으로 보고된 범위다[36]
 - IMU: ICM-42670-P, I2C 0x69
@@ -190,8 +194,8 @@ IMU(I2C) ─────────────────┤→ [FPGA] FIR �
 [19] 로컬세계, "국토부, 사업용 차량 졸음운전 방지대책", 2017.7. https://localsegye.co.kr/news/view/1065592300623588
 [20] 해사신문, "국토부, 대형 화물차 첨단안전장치 장착 의무화", 2016.4. http://www.haesanews.com/news/articleView.html?idxno=73724
 [21] Electrek, "Tesla driver asleep at 100 km/h exposes monitoring gap", 2026.7. https://electrek.co/2026/07/06/tesla-driver-asleep-monitoring-gap/
-[22] Scientific Reports, "Wearable PPG-based HRV drowsiness detection with ML on real-driving data", 2025. https://www.nature.com/articles/s41598-025-08582-2
-[23] PMC3892817, "Driver drowsiness detection using PPG-derived HRV and SVM". https://pmc.ncbi.nlm.nih.gov/articles/PMC3892817/
+[22] Z. AlArnaout, C. Zaki, Y. Kotb, M. AlAkkoumi, N. Mostafa, "Exploiting heart rate variability for driver drowsiness detection using wearable sensors and machine learning", Scientific Reports 15, 2025. https://www.nature.com/articles/s41598-025-08582-2
+[23] G. Li, W.-Y. Chung, "Detection of driver drowsiness using wavelet analysis of heart rate variability and a support vector machine classifier", Sensors 13(12):16494-16511, 2013. https://pmc.ncbi.nlm.nih.gov/articles/PMC3892817/
 [24] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원", 2020.3. https://news.seoul.go.kr/traffic/archives/503010
 [25] 정책브리핑, "페달 오조작 방지장치 보급 시작 — 택시·화물차 우선", 2026.2. https://www.korea.kr/news/policyNewsView.do?newsId=148959338
 [26] "Sleepiness, Long Distance Commuting and Night Work as Predictors of Driving Performance". https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3448712/
