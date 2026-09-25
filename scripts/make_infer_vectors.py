@@ -6,7 +6,7 @@
 
 만드는 것
   infer_key.csv   50명 × 5초 블록. 재료·기준선·정수 판정·실수 판정·뒤집힘
-  NN.txt          사람마다 "block n60 sum_rr60 bad60 hold drowsy" (테스트벤치 입력·정답)
+  NN.txt          사람마다 "block n60 sum_rr60 bad60 hold drowsy alert" (테스트벤치 입력·정답)
   edge.txt        손으로 만든 경계 사례. 같은 형식
 
 정답은 라벨이 아니라 infer_ref 의 정수 판정이다. Verilog 가 이것과 비트 단위로 같으면 통과.
@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from src.window_acc import WindowAcc, BLOCK  # noqa: E402
 from src import infer_ref as R  # noqa: E402
-from src.infer_ref import InferRef  # noqa: E402
+from src.infer_ref import InferRef, AlertGate  # noqa: E402
 from src.stage3 import scoring as S  # noqa: E402
 
 IN = ROOT / "data" / "interim" / "rr"
@@ -63,9 +63,11 @@ def block_materials(sid):
 
 def subject_key(sid, mats, labels, t_fix, frac=R.FRAC):
     ref = InferRef(t_fix, frac)
+    gate = AlertGate()
     rows = []
     for b, (n60, s60, b60) in enumerate(mats):
         hold, drowsy = ref.push(n60, s60, b60)
+        alert = gate.push(drowsy)
         # 실수 판정: 표의 mean_rb_chip 정의 그대로 (mean_nn × base_n / base_sum). 기준선은 push 전 값이 아니라
         # 판정에 실제 쓰인 값(ready 상태의 것)이어야 하므로 hold 가 아닐 때만 의미 있다.
         if hold:
@@ -79,7 +81,7 @@ def subject_key(sid, mats, labels, t_fix, frac=R.FRAC):
         rows.append(dict(sid=int(sid), block=b, epoch=epoch, epoch_end=int((b + 1) % EPOCH_BLOCKS == 0),
                          label=int(labels[epoch]), n60=n60, sum_rr60=s60, bad60=b60,
                          base_n=ref.base_n if ref.ready else 0, base_sum=ref.base_sum if ref.ready else 0,
-                         hold=hold, drowsy=drowsy, mean_rb=mean_rb, drowsy_f4=f4, drowsy_f2=f2))
+                         hold=hold, drowsy=drowsy, alert=alert, mean_rb=mean_rb, drowsy_f4=f4, drowsy_f2=f2))
     return pd.DataFrame(rows)
 
 
@@ -155,12 +157,19 @@ def edge_cases():
     cases.append(("base_skip", seq + [(80, 19200, 0), (80, 22000, 0), (80, 22000, 30)]))
     # 4. 최대값: base_n·base_sum 상한 근처
     cases.append(("maxval", [(255, 14760, 0)] * 36 + [(200, 72000, 0), (200, 131071, 0), (255, 131071, 0), (30, 131071, 0)]))
-    lines = ["case block n60 sum_rr60 bad60 hold drowsy"]
+    # 5. 경보 간격: 졸림 14블록 연속(0·6·12번째에 경보), 끊겼다 간격 안에 재발(안 냄), 간격을 채우고 재발(냄),
+    #    보류 블록도 간격에 셈, 5블록 뒤 재발(안 냄)과 6블록 뒤 재발(냄)
+    dz, ok_, bad = (80, s_eq + 400, 0), (80, 19200, 0), (10, 2400, 0)
+    body = [dz] * 14 + [ok_] * 2 + [dz] * 3 + [ok_] * 7 + [dz] + [bad] * 5 + [dz] + [ok_] * 4 + [dz] * 2
+    cases.append(("repeat", warm + body))
+    lines = ["case block n60 sum_rr60 bad60 hold drowsy alert"]
     for name, seq in cases:
         ref = InferRef()
+        gate = AlertGate()
         for b, (n, s_, bd) in enumerate(seq):
             h, d = ref.push(n, s_, bd)
-            lines.append(f"{name} {b} {n} {s_} {bd} {h} {d}")
+            a = gate.push(d)
+            lines.append(f"{name} {b} {n} {s_} {bd} {h} {d} {a}")
     return lines
 
 
@@ -194,7 +203,11 @@ def main(argv):
     print(f"에폭 채점(3단계 방식, 50명 전체): 헛경보 {p['fa_per_hour']:.3f}/h, 사건 민감도 {p['event_sens']:.3f}, "
           f"창 민감도 {p['win_sens']:.3f}, 잡은 사건 {p['detected']}/{p['n_events']}")
     print(f"블록 전체: {len(key)}, hold {int(key.hold.sum())} ({100 * key.hold.mean():.1f}%), "
-          f"drowsy {int(key.drowsy.sum())} ({100 * key.drowsy.mean():.1f}%)")
+          f"drowsy {int(key.drowsy.sum())} ({100 * key.drowsy.mean():.1f}%), 심박 경보 {int(key.alert.sum())}")
+    hours = lambda m: m.sum() * 5 / 3600
+    aw, dr = key.label == 0, key.label >= 1
+    print(f"심박 경보 시간당: 전체 {key.alert.sum() / (len(key) * 5 / 3600):.1f}, 각성 {key.alert[aw].sum() / hours(aw):.1f}, "
+          f"피로1+ {key.alert[dr].sum() / hours(dr):.1f}, 경보 중 피로1+ 비율 {100 * key.alert[dr].sum() / key.alert.sum():.1f}%")
     print(f"기준선 범위: base_n {j.base_n.min()}~{j.base_n.max()}, base_sum {j.base_sum.min()}~{j.base_sum.max()}, "
           f"기준선 늦게 잡힌 사람: {moved}")
 
@@ -203,9 +216,9 @@ def main(argv):
     OUT_VEC.mkdir(parents=True, exist_ok=True)
     for sid, k in key.groupby("sid"):
         with open(OUT_VEC / f"{sid:02d}.txt", "w", newline="\n") as f:
-            f.write("block n60 sum_rr60 bad60 hold drowsy\n")
+            f.write("block n60 sum_rr60 bad60 hold drowsy alert\n")
             for r in k.itertuples():
-                f.write(f"{r.block} {r.n60} {r.sum_rr60} {r.bad60} {r.hold} {r.drowsy}\n")
+                f.write(f"{r.block} {r.n60} {r.sum_rr60} {r.bad60} {r.hold} {r.drowsy} {r.alert}\n")
     with open(OUT_VEC / "edge.txt", "w", newline="\n") as f:
         f.write("\n".join(edge_cases()) + "\n")
     print(f"→ {OUT_KEY.relative_to(ROOT)}/infer_key.csv, {OUT_VEC.relative_to(ROOT)}/NN.txt × {key.sid.nunique()}, edge.txt"

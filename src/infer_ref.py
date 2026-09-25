@@ -12,6 +12,12 @@
              drowsy = hold 아님 그리고 (sum_rr60 × base_n) << FRAC ≥ R × n60.
     이는 mean_rb = (sum_rr60/n60) / (base_sum/base_n) ≥ T 의 양변에 n60 × base_n × 2^FRAC 를 곱한 것.
   - 모든 연산은 정수. Verilog 가 이 파일과 비트 단위로 같아야 한다.
+
+경보 간격(AlertGate, infer_top 의 심박 경보)
+  - 판정은 5초마다 하지만 판정 하나가 최근 60초를 보므로, 연달아 나온 판정은 60초 중 55초가 같은 데이터다.
+    그래서 졸림 판정이 나오면 경보를 바로 내고, 그 뒤 REPEAT_BLOCKS(6블록 = 30초, 창의 절반) 동안은
+    졸림 판정이 나와도 경보를 내지 않는다. 판정이 중간에 끊겼다 다시 와도 마지막 경보 시각만 본다.
+  - 판정(hold, drowsy) 자체는 바꾸지 않는다. 바뀌는 것은 경보 횟수뿐이다.
 """
 
 FRAC = 10                # T 의 소수 비트 수. T = T_FIX / 2**FRAC
@@ -20,6 +26,7 @@ WIN_BLOCKS = 12          # 60초 창 = 블록 12개. 기준선 후보 창을 1�
 BASE_WINS = 3            # 기준선 = 좋은 1분 창 3개 (3분)
 MIN_N60 = 30             # 창 안 유효 박동 하한 (2단계 표의 low_n 과 같음)
 KEEP_K = 3               # 탈락 규칙: KEEP_K × bad60 > n60 이면 나쁜 창. 3 = 살린 비율 75%. 0 = 끔
+REPEAT_BLOCKS = 6        # 심박 경보 재송신 간격 = 블록 6개(30초). 60초 창의 절반
 
 # 비트 폭 (Verilog 와 일치)
 W_N60, W_SUM60, W_BAD60 = 8, 17, 8   # 신호처리 블록 인터페이스 (o_n60, o_sum_rr60, o_bad60)
@@ -76,3 +83,20 @@ class InferRef:
         rhs = self.r * n60
         assert lhs < (1 << self.w_lhs) and rhs < (1 << self.w_rhs)
         return 0, int(lhs >= rhs)
+
+
+class AlertGate:
+    """심박 판정 → 경보. 마지막 경보로부터 REPEAT_BLOCKS 블록이 지나야 다시 낸다. 리셋 직후 첫 졸림은 바로 낸다.
+    push 는 블록마다(hold 블록 포함) 한 번 부른다. since 는 infer_top 의 카운터와 같은 값이다."""
+
+    def __init__(self, repeat=REPEAT_BLOCKS):
+        self.repeat = repeat
+        self.since = repeat      # 마지막 경보 뒤 지난 블록 수 (repeat 에서 포화)
+
+    def push(self, drowsy):
+        if self.since < self.repeat:
+            self.since += 1
+        fire = bool(drowsy) and self.since >= self.repeat
+        if fire:
+            self.since = 0
+        return int(fire)

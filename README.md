@@ -39,9 +39,11 @@ PPG와 졸음 라벨이 함께 있는 공개 데이터는 없습니다. 그래�
 
 | 항목 | 값 |
 |---|---|
-| 사건 민감도 (헛경보 4회/h, LOSO) | 0.413 [0.28–0.53], 정수화 후 0.381 |
-| 판정 블록 시뮬레이션 | 50명 75,186블록 + 경계 203블록, 파이썬 정수 정답과 불일치 0 |
-| `infer_top` 합성 (xc7a35t, Vivado 2026.1) | 단독 LUT 299, FF 103, DSP 3, BRAM 0, 12 MHz에서 WNS 72.1 ns. 칩 최상위에 통합하면 LUT 201 |
+| 사건 민감도 (헛경보 4회/h, LOSO: 처음 보는 사람 기준) | 0.413 [0.28–0.53], 깊은 사건(피로2+) 0.633 [0.48–0.80] |
+| 칩 재현 (T_FIX 1086 하나, 창 품질·기준선 규칙 포함, 50명) | 사건 민감도 0.379, 깊은 사건 0.567, 헛경보 3.94/h |
+| 경보 수 (심박 경보 30초 간격, 50명) | 깨어 있을 때 시간당 26회, 피로1 이상일 때 45회. 경보 중 실제 피로1 이상 34% |
+| 판정 블록 시뮬레이션 | 50명 75,186블록 + 경계 278블록, 파이썬 정수 정답과 불일치 0. 통신 블록을 붙이면 경보 3,154개 = UART 바이트 3,154개 |
+| `infer_top` 합성 (xc7a35t, Vivado 2026.1) | 단독 LUT 305, FF 107, DSP 3, BRAM 0, 12 MHz에서 WNS 72.3 ns. 칩 최상위에 통합하면 LUT 207 |
 
 보드 없이 시뮬레이션과 합성 리포트로 완성을 정의합니다. PCB 제작과 이마 실측은 후속 과제입니다.
 
@@ -65,6 +67,7 @@ rtl/classifier.v                 기준선·창 품질·mean_rb 판정 (정수, 
 rtl/imu_rule.v                   IMU 고개 떨굼 자세 규칙
 rtl/infer_top.v                  판정 블록 최상위: 판정 + IMU 결합 → alert 펄스
 sim/tb_classifier.v, tb_imu_rule.v   파이썬 정답과 비트 대조하는 테스트벤치
+sim/tb_infer_uart.v              판정 → 통신 블록(data/communication_module) 연결 채점
 sim/vectors/                     테스트 벡터 (판정 infer/, IMU imu/)
 sim/vivado_infer_top.tcl, reports/   Vivado 합성 스크립트와 자원·타이밍·전력 리포트
 src/infer_ref.py, imu_ref.py     판정·IMU 규칙의 파이썬 정수 기준 모델
@@ -94,6 +97,7 @@ python scripts/download_data.py   # 스크립트 docstring 참고. WildPPG 는 �
 ```bash
 iverilog -g2012 -o infer.vvp rtl/classifier.v rtl/imu_rule.v rtl/infer_top.v sim/tb_classifier.v && vvp -n infer.vvp
 iverilog -g2012 -o imu.vvp rtl/imu_rule.v sim/tb_imu_rule.v && vvp -n imu.vvp
+iverilog -g2012 -o infer_uart.vvp rtl/classifier.v rtl/imu_rule.v rtl/infer_top.v data/communication_module/uart_tx.v data/communication_module/uart_tx_ble.v sim/tb_infer_uart.v && vvp -n infer_uart.vvp
 ```
 
 사용자 폴더 경로에 한글이 있는 Windows에서는 다음을 지켜야 도구가 돈다.
