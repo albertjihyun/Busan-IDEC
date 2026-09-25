@@ -18,7 +18,7 @@ module tb_classifier;
     infer_top dut (
         .clk(clk), .rst_n(rst_n), .i_win_valid(i_win_valid), .i_n60(i_n60), .i_sum_rr60(i_sum_rr60), .i_bad60(i_bad60),
         .i_imu_valid(1'b0), .i_accel_x(16'sd0), .i_accel_y(16'sd0), .i_accel_z(16'sd0),
-        .i_nod_event(1'b0), .i_nod_sustained(1'b0),
+        .i_nod_event(1'b0), .i_nod_sustained(1'b0), .i_pitch_sign_ok(1'b1),
         .alert(alert), .ready(ready)
     );
     wire drowsy = dut.c_drowsy;

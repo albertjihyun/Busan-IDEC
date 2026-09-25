@@ -176,7 +176,7 @@ MPU-6050도 ±2 g에서 16,384 LSB/g라 "단위 환산"은 사실 없다. 문제
 | 움직임 과다 보류 | **넣지 않는다.** IMU는 떨굼만 본다 | 2.5절: IMU 보류를 더해도 판정 뒤집힘 3.2 → 2.9%. 12블록 범위는 이득 없이 커버리지만 손실. 이마 실측에서 필요해지면 M2 척도·1 g·해당 블록만으로 붙인다 |
 | 떨굼 대 보류 | 기준선 준비 중·박동 부족 보류 중에도 떨굼은 울린다 | IMU가 직접 본 것이라 심박과 무관하다 |
 | 경보 형태 | `alert` 1클럭 펄스, 반복 규칙 없음 | 통신 블록은 펄스마다 한 바이트만 보낸다 |
-| 자이로 끄덕임과의 결합 | **둘 다 OR.** `alert = 판정 \| 자세 규칙 펄스 \| o_nod_event \| rise(o_nod_sustained)` | 자이로 쪽은 꾸벅·급제동 면역, 자세 규칙은 천천히 처짐·5 s 반복. 서로 못 잡는 것을 채운다(2.6절 표). 자이로 문턱 25°와 자세 규칙 35°로 대역을 가른다 |
+| 자이로 끄덕임과의 결합 | **둘 다 OR.** `alert = 판정 \| 자세 규칙 펄스 \| o_pitch_sign_ok & (o_nod_event \| rise(o_nod_sustained))` | 자이로 쪽은 꾸벅·급제동 면역, 자세 규칙은 천천히 처짐·5 s 반복. 서로 못 잡는 것을 채운다(2.6절 표). 자이로 문턱 25°와 자세 규칙 35°로 대역을 가른다 |
 | 축 파라미터 | `FWD_AXIS=2(Z)`, `FWD_SIGN=−1`, `VERT_AXIS=1(Y)`, 세로축 절댓값 | 풋프린트 도면에서 도출(2.6절). 실물 10초 확인 뒤 파라미터만 바꾼다 |
 
 ## 7. 구현 (`imu_rule`, 파이썬 기준 모델과 같은 연산)
@@ -192,7 +192,7 @@ MPU-6050도 ±2 g에서 16,384 LSB/g라 "단위 환산"은 사실 없다. 문제
   o_nod  = (cnt 가 50 에 닿음) 또는 (cnt 가 550 에 닿음 → cnt ← 50)      0.5 s 뒤 1회, 이후 5 s 마다
 
 infer_top:
-  m_nod = o_nod(자세 규칙) | i_nod_event(자이로, 펄스) | rise(i_nod_sustained)(자이로, 상태 → 상승 에지)
+  m_nod = o_nod(자세 규칙) | i_pitch_sign_ok & (i_nod_event(자이로, 펄스) | rise(i_nod_sustained)(자이로, 상태 → 상승 에지))
   alert = (c_valid & c_drowsy & ~c_hold) | m_nod
 ```
 
@@ -202,7 +202,7 @@ infer_top:
 
 뺄셈에 결합(`{a[15], a} - {lp[15], lp}`)을 쓰면 식 전체가 unsigned로 승격돼 `>>>`가 논리 시프트가 되고 음수 입력에서만 틀린다. 그래서 `$signed()`로 감싼다. IIR의 바닥 나눗셈 때문에 상수 입력에서 `lp`가 목표보다 최대 7 LSB(0.0004 g) 아래에 머무르는데, 무시할 크기다.
 
-자이로 쪽 `nod_sustained`는 상태라 `infer_top`에서 상승 에지로 한 번만 센다. `nod_event`는 이미 1클럭 펄스다. 떨굼 경보는 기준선 준비·보류와 무관하게 울린다.
+자이로 쪽 `nod_sustained`는 상태라 `infer_top`에서 상승 에지로 한 번만 센다. `nod_event`는 이미 1클럭 펄스다. 둘 다 자이로 부호가 확정된 뒤(`i_pitch_sign_ok = 1`)에만 받는다. 확정 전에는 `imu_feature`가 부호를 +1로 가정하고 돌아, 밴드를 반대로 쓴 경우 꾸벅임을 놓치거나 고개를 든 자세에서 `nod_sustained`가 설 수 있기 때문이다. 자세 규칙은 앞축 부호가 패키지 방향으로 고정돼 이 영향이 없다. 떨굼 경보는 기준선 준비·보류와 무관하게 울린다.
 
 ## 8. 검증 결과
 
@@ -230,7 +230,7 @@ infer_top:
 
 **판정 블록 회귀.** `infer_top` 전체로 판정 테스트벤치(50명 + 경계 사례 75,389블록, IMU 입력 0)를 돌려 `hold`·`drowsy`·`alert` 불일치 0이다.
 
-**Vivado 2026.1, xc7a35t, out-of-context, 12 MHz.** `infer_top`(`classifier` + `imu_rule` + 경보 결합): LUT 299, FF 103, DSP 3(`imu_rule`은 곱셈 없음), BRAM 0, WNS 72.1 ns(주기 83.3 ns).
+**Vivado 2026.1, xc7a35t, out-of-context, 12 MHz.** `infer_top`(`classifier` + `imu_rule` + 경보 결합): LUT 299, FF 103, DSP 3(`imu_rule`은 곱셈 없음), BRAM 0, WNS 72.1 ns(주기 83.3 ns). 단독 합성(out-of-context) 값이다. 칩 최상위 `system_top`에 통합하면 계층 간 최적화로 LUT 201, FF 103, DSP 3이 된다.
 
 ## 참고
 

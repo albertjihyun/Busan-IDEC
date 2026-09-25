@@ -75,7 +75,7 @@ PPG-DaLiA 운전 구간에서 문턱별로 보면 판정 창과 정확도가 맞
 
 테스트 벡터에는 `bad60` 열과 경계 사례(창 품질 경계, 나쁜 창을 건너뛰는 기준선, 최대값)가 들어 있다. 시뮬레이션에서 75,389블록의 `hold`·`drowsy`·`alert`가 파이썬 정수 기준 모델과 불일치 0이고, 상수를 일부러 틀리면 잡는다(`KEEP_K` 3 → 2: 567블록, `BASE_WINS` 3 → 2: 4,772블록).
 
-Vivado 합성·구현(`infer_top` 전체, xc7a35t out-of-context 12 MHz)은 LUT 299, FF 103, DSP 3, WNS 72.1 ns다.
+Vivado 합성·구현(`infer_top` 전체, xc7a35t out-of-context 12 MHz)은 LUT 299, FF 103, DSP 3, WNS 72.1 ns다(단독 합성. 칩 최상위에 통합하면 LUT 201).
 
 ## 7. 별도 과제 (범위 밖)
 
