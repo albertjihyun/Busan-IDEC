@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="1000" height="430" font-family="Malgun Gothic, Apple SD Gothic Neo, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52514e"/>
+    </marker>
+    <style>
+      .t{font-size:14px;font-weight:700;fill:#0b0b0b}
+      .m{font-size:12.5px;font-weight:700;fill:#0b0b0b}
+      .s{font-size:11px;fill:#52514e}
+      .c{font-size:11px;fill:#0b0b0b;font-family:Consolas, monospace}
+      .mod{fill:#ffffff;stroke:#8a8a86;stroke-width:1}
+      .w{stroke:#52514e;stroke-width:1.4;fill:none}
+    </style>
+  </defs>
+  <rect width="1000" height="430" fill="#ffffff"/>
+
+  <!-- infer_top 경계 -->
+  <rect x="205" y="14" width="710" height="402" rx="10" fill="#FDEEE7" stroke="#eb6834" stroke-width="1.4"/>
+  <text x="217" y="34" class="t">판정 블록 (infer_top)</text>
+
+  <!-- classifier 경계 -->
+  <rect x="220" y="48" width="480" height="128" rx="8" fill="#ffffff" fill-opacity="0.55" stroke="#8a8a86" stroke-dasharray="5 4"/>
+  <text x="232" y="66" class="m">심박 판정 (classifier)</text>
+  <!-- imu_rule 경계 -->
+  <rect x="220" y="196" width="480" height="108" rx="8" fill="#ffffff" fill-opacity="0.55" stroke="#8a8a86" stroke-dasharray="5 4"/>
+  <text x="232" y="214" class="m">고개 떨굼 규칙 (imu_rule)</text>
+
+  <!-- 입력 -->
+  <text x="20" y="100" class="m">심박 재료</text>
+  <text x="20" y="118" class="c">n60 · sum_rr60 · bad60</text>
+  <text x="20" y="134" class="s">5초마다 (i_win_valid)</text>
+  <text x="20" y="248" class="m">가속도 3축</text>
+  <text x="20" y="266" class="s">±2 g, 100 Hz</text>
+  <text x="20" y="352" class="m">자이로 끄덕임 결과</text>
+  <text x="20" y="370" class="c">nod_event · nod_sustained</text>
+  <text x="20" y="386" class="c">pitch_sign_ok</text>
+
+  <!-- 심박 경로 -->
+  <rect x="235" y="80" width="140" height="80" rx="5" class="mod"/>
+  <text x="305" y="102" class="m" text-anchor="middle">좋은 창 판정</text>
+  <text x="305" y="122" class="c" text-anchor="middle">n60 ≥ 30</text>
+  <text x="305" y="138" class="c" text-anchor="middle">3·bad60 ≤ n60</text>
+  <text x="305" y="153" class="s" text-anchor="middle">아니면 보류</text>
+
+  <rect x="390" y="80" width="140" height="80" rx="5" class="mod"/>
+  <text x="460" y="102" class="m" text-anchor="middle">개인 기준선</text>
+  <text x="460" y="120" class="s" text-anchor="middle">1분마다 좋은 창만 더함</text>
+  <text x="460" y="136" class="s" text-anchor="middle">3개 모이면 완성</text>
+  <text x="460" y="152" class="c" text-anchor="middle">R = T_FIX·ΣRR_base</text>
+
+  <rect x="545" y="80" width="140" height="80" rx="5" class="mod"/>
+  <text x="615" y="102" class="m" text-anchor="middle">교차 곱셈 비교</text>
+  <text x="615" y="120" class="c" text-anchor="middle">(sum_rr60·N_base)≪10</text>
+  <text x="615" y="136" class="c" text-anchor="middle">≥ R·n60</text>
+  <text x="615" y="152" class="s" text-anchor="middle">나눗셈 없음 · DSP 3</text>
+
+  <rect x="720" y="92" width="120" height="56" rx="5" class="mod"/>
+  <text x="780" y="114" class="m" text-anchor="middle">경보 간격</text>
+  <text x="780" y="132" class="s" text-anchor="middle">첫 판정 즉시,</text>
+  <text x="780" y="145" class="s" text-anchor="middle">이후 30초마다</text>
+
+  <!-- 자세 경로 -->
+  <rect x="235" y="228" width="140" height="62" rx="5" class="mod"/>
+  <text x="305" y="250" class="m" text-anchor="middle">저역 필터</text>
+  <text x="305" y="268" class="c" text-anchor="middle">y += (x−y)≫3</text>
+  <text x="305" y="283" class="s" text-anchor="middle">약 2 Hz, 앞축·세로축</text>
+
+  <rect x="390" y="228" width="140" height="62" rx="5" class="mod"/>
+  <text x="460" y="250" class="m" text-anchor="middle">숙임 판정</text>
+  <text x="460" y="268" class="s" text-anchor="middle">앞축 ≥ sin 35°</text>
+  <text x="460" y="283" class="s" text-anchor="middle">|세로축| ≤ cos 35°</text>
+
+  <rect x="545" y="228" width="140" height="62" rx="5" class="mod"/>
+  <text x="615" y="250" class="m" text-anchor="middle">지속 카운터</text>
+  <text x="615" y="268" class="s" text-anchor="middle">0.5초 이어지면 펄스</text>
+  <text x="615" y="283" class="s" text-anchor="middle">숙인 채면 5초마다</text>
+
+  <!-- 자이로 게이트 -->
+  <rect x="545" y="334" width="295" height="62" rx="5" class="mod"/>
+  <text x="692" y="356" class="m" text-anchor="middle">자이로 부호 게이트</text>
+  <text x="692" y="374" class="c" text-anchor="middle">pitch_sign_ok AND</text>
+  <text x="692" y="389" class="c" text-anchor="middle">(nod_event OR 상승에지(nod_sustained))</text>
+
+  <!-- OR -->
+  <circle cx="870" cy="215" r="22" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.4"/>
+  <text x="870" y="220" class="m" text-anchor="middle">OR</text>
+  <text x="930" y="205" class="m">alert</text>
+  <text x="930" y="240" class="s">1클럭 펄스</text>
+  <text x="930" y="255" class="s">→ 통신 블록</text>
+
+  <!-- 연결선 -->
+  <path d="M170,120 L233,120" class="w" marker-end="url(#ar)"/>
+  <path d="M375,120 L388,120" class="w" marker-end="url(#ar)"/>
+  <path d="M530,120 L543,120" class="w" marker-end="url(#ar)"/>
+  <path d="M685,120 L718,120" class="w" marker-end="url(#ar)"/>
+  <text x="702" y="112" class="s" text-anchor="middle">졸림</text>
+  <path d="M840,120 L858,120 L865,195" class="w" marker-end="url(#ar)"/>
+  <path d="M110,259 L233,259" class="w" marker-end="url(#ar)"/>
+  <path d="M375,259 L388,259" class="w" marker-end="url(#ar)"/>
+  <path d="M530,259 L543,259" class="w" marker-end="url(#ar)"/>
+  <path d="M685,259 L835,259 L853,230" class="w" marker-end="url(#ar)"/>
+  <path d="M190,365 L543,365" class="w" marker-end="url(#ar)"/>
+  <path d="M840,365 L858,365 L866,238" class="w" marker-end="url(#ar)"/>
+  <path d="M892,215 L992,215" class="w" marker-end="url(#ar)"/>
+</svg>

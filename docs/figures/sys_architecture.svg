@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 920" width="900" height="920" font-family="Malgun Gothic, Apple SD Gothic Neo, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52514e"/>
+    </marker>
+    <style>
+      .t{font-size:15px;font-weight:700;fill:#0b0b0b}
+      .m{font-size:13px;font-weight:700;fill:#0b0b0b}
+      .s{font-size:11.5px;fill:#52514e}
+      .l{font-size:11.5px;fill:#0b0b0b}
+      .mod{fill:#ffffff;stroke:#8a8a86;stroke-width:1}
+      .w{stroke:#52514e;stroke-width:1.4;fill:none}
+      .wd{stroke:#52514e;stroke-width:1.4;fill:none;stroke-dasharray:5 4}
+    </style>
+  </defs>
+  <rect width="900" height="920" fill="#ffffff"/>
+
+  <!-- 센서 보드 (입력) -->
+  <rect x="20" y="20" width="860" height="92" rx="8" fill="#F2F3F2" stroke="#8a8a86" stroke-dasharray="6 4"/>
+  <text x="32" y="42" class="t">센서 보드</text>
+  <rect x="40" y="54" width="130" height="48" rx="5" class="mod"/>
+  <text x="105" y="74" class="m" text-anchor="middle">LED · 포토다이오드</text>
+  <text x="105" y="92" class="s" text-anchor="middle">녹색, 이마 반사형</text>
+  <rect x="195" y="54" width="160" height="48" rx="5" class="mod"/>
+  <text x="275" y="74" class="m" text-anchor="middle">아날로그 프론트엔드</text>
+  <text x="275" y="92" class="s" text-anchor="middle">TIA · 2단 증폭 · 0.16~16 Hz</text>
+  <rect x="380" y="54" width="150" height="48" rx="5" class="mod"/>
+  <text x="455" y="74" class="m" text-anchor="middle">ADC MCP3421</text>
+  <text x="455" y="92" class="s" text-anchor="middle">12비트 · 240 SPS</text>
+  <rect x="600" y="54" width="150" height="48" rx="5" class="mod"/>
+  <text x="675" y="74" class="m" text-anchor="middle">IMU ICM-42670-P</text>
+  <text x="675" y="92" class="s" text-anchor="middle">가속도 · 자이로</text>
+
+  <!-- FPGA -->
+  <rect x="20" y="140" width="860" height="662" rx="10" fill="none" stroke="#0b0b0b" stroke-width="1.6"/>
+  <text x="32" y="160" class="t">FPGA  Artix-7 (Cmod A7-35T) · 12 MHz</text>
+  <text x="560" y="128" class="l" text-anchor="middle">I2C 100 kHz 버스 하나</text>
+
+  <!-- 신호처리 블록 -->
+  <rect x="40" y="170" width="820" height="300" rx="8" fill="#EAF2FC" stroke="#2a78d6" stroke-width="1.4"/>
+  <text x="52" y="190" class="t" fill="#0b0b0b">신호처리 블록</text>
+  <rect x="60" y="200" width="780" height="28" rx="4" class="mod"/>
+  <text x="450" y="219" class="m" text-anchor="middle">I2C 마스터 · 버스 중재 (ADC 0x68, IMU 0x69)</text>
+
+  <text x="60" y="252" class="s">PPG 경로</text>
+  <rect x="60" y="262" width="140" height="48" rx="5" class="mod"/>
+  <text x="130" y="282" class="m" text-anchor="middle">ADC 읽기</text>
+  <text x="130" y="300" class="s" text-anchor="middle">적응형 폴링</text>
+  <rect x="225" y="262" width="140" height="48" rx="5" class="mod"/>
+  <text x="295" y="282" class="m" text-anchor="middle">기저선 제거</text>
+  <text x="295" y="300" class="s" text-anchor="middle">고역 0.35 Hz</text>
+  <rect x="390" y="262" width="140" height="48" rx="5" class="mod"/>
+  <text x="460" y="282" class="m" text-anchor="middle">저역 FIR</text>
+  <text x="460" y="300" class="s" text-anchor="middle">8 Hz · 132탭</text>
+
+  <rect x="390" y="340" width="140" height="48" rx="5" class="mod"/>
+  <text x="460" y="360" class="m" text-anchor="middle">신호 품질</text>
+  <text x="460" y="378" class="s" text-anchor="middle">진폭 · 클리핑 · 움직임</text>
+  <rect x="225" y="340" width="140" height="48" rx="5" class="mod"/>
+  <text x="295" y="360" class="m" text-anchor="middle">봉우리 → RR</text>
+  <text x="295" y="378" class="s" text-anchor="middle">박동 단위 통과/탈락</text>
+  <rect x="60" y="340" width="140" height="48" rx="5" class="mod"/>
+  <text x="130" y="360" class="m" text-anchor="middle">누산</text>
+  <text x="130" y="378" class="s" text-anchor="middle">5초 블록 → 60초 창</text>
+
+  <rect x="225" y="412" width="140" height="40" rx="5" class="mod"/>
+  <text x="295" y="430" class="m" text-anchor="middle">LED 구동</text>
+  <text x="295" y="446" class="s" text-anchor="middle">점등 · 워밍업 7초</text>
+
+  <text x="580" y="252" class="s">IMU 경로</text>
+  <rect x="580" y="262" width="260" height="48" rx="5" class="mod"/>
+  <text x="710" y="282" class="m" text-anchor="middle">IMU 읽기</text>
+  <text x="710" y="300" class="s" text-anchor="middle">6축 버스트 · 100 Hz</text>
+  <rect x="580" y="340" width="120" height="48" rx="5" class="mod"/>
+  <text x="640" y="360" class="m" text-anchor="middle">움직임 크기</text>
+  <text x="640" y="378" class="s" text-anchor="middle">1초 에너지</text>
+  <rect x="720" y="340" width="120" height="48" rx="5" class="mod"/>
+  <text x="780" y="360" class="m" text-anchor="middle">끄덕임 검출</text>
+  <text x="780" y="378" class="s" text-anchor="middle">자이로 25° 이상</text>
+  <text x="556" y="404" class="s" text-anchor="middle">움직임 탈락</text>
+
+  <!-- 신호처리 → 판정 -->
+  <text x="140" y="500" class="l">n60 · sum_rr60 · bad60</text>
+  <text x="140" y="516" class="s">60초 창 합, 5초마다</text>
+  <text x="620" y="482" class="l" text-anchor="middle">끄덕임 · 자이로 부호 확정</text>
+  <text x="860" y="508" class="l" text-anchor="end">가속도 3축</text>
+
+  <!-- 판정 블록 -->
+  <rect x="40" y="520" width="820" height="170" rx="8" fill="#FDEEE7" stroke="#eb6834" stroke-width="1.4"/>
+  <text x="52" y="540" class="t">판정 블록</text>
+  <rect x="60" y="555" width="340" height="60" rx="5" class="mod"/>
+  <text x="230" y="578" class="m" text-anchor="middle">심박 판정</text>
+  <text x="230" y="598" class="s" text-anchor="middle">좋은 창 · 개인 기준선 · 60초 평균 RR ÷ 기준선 ≥ T</text>
+  <rect x="500" y="555" width="340" height="60" rx="5" class="mod"/>
+  <text x="670" y="578" class="m" text-anchor="middle">고개 떨굼 규칙</text>
+  <text x="670" y="598" class="s" text-anchor="middle">35° 넘게 0.5초 숙이면 · 급제동과 구별</text>
+  <rect x="250" y="635" width="400" height="44" rx="5" class="mod"/>
+  <text x="450" y="653" class="m" text-anchor="middle">경보 결합 (OR)</text>
+  <text x="450" y="670" class="s" text-anchor="middle">심박은 30초 간격 · 떨굼 즉시 · 끄덕임은 부호 확정 뒤</text>
+
+  <!-- 판정 → 통신 -->
+  <text x="460" y="702" class="l">alert (1클럭 펄스)</text>
+
+  <!-- 통신 블록 -->
+  <rect x="40" y="710" width="820" height="76" rx="8" fill="#E6F6F0" stroke="#1baf7a" stroke-width="1.4"/>
+  <text x="52" y="730" class="t">통신 블록</text>
+  <rect x="300" y="725" width="300" height="48" rx="5" class="mod"/>
+  <text x="450" y="745" class="m" text-anchor="middle">UART 송신</text>
+  <text x="450" y="763" class="s" text-anchor="middle">경보마다 0x01 한 바이트 · 9600 8N1</text>
+
+  <!-- 출력 -->
+  <rect x="20" y="822" width="860" height="80" rx="8" fill="#F2F3F2" stroke="#8a8a86" stroke-dasharray="6 4"/>
+  <text x="32" y="844" class="t">센서 보드</text>
+  <rect x="330" y="840" width="240" height="48" rx="5" class="mod"/>
+  <text x="450" y="860" class="m" text-anchor="middle">BLE 모듈 JDY-23</text>
+  <text x="450" y="878" class="s" text-anchor="middle">투명 전송, 상시 연결</text>
+  <rect x="680" y="840" width="160" height="48" rx="5" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.2"/>
+  <text x="760" y="860" class="m" text-anchor="middle">스마트폰</text>
+  <text x="760" y="878" class="s" text-anchor="middle">바이트가 오면 경보음</text>
+  <text x="624" y="856" class="s" text-anchor="middle">BLE</text>
+  <!-- 연결선 (맨 위 층) -->
+  <path d="M170,78 L193,78" class="w" marker-end="url(#ar)"/>
+  <path d="M355,78 L378,78" class="w" marker-end="url(#ar)"/>
+  <path d="M455,102 L455,198" class="w" marker-end="url(#ar)"/>
+  <path d="M675,102 L675,198" class="w" marker-end="url(#ar)"/>
+  <path d="M200,286 L223,286" class="w" marker-end="url(#ar)"/>
+  <path d="M365,286 L388,286" class="w" marker-end="url(#ar)"/>
+  <path d="M460,310 L460,338" class="w" marker-end="url(#ar)"/>
+  <path d="M390,364 L367,364" class="w" marker-end="url(#ar)"/>
+  <path d="M225,364 L202,364" class="w" marker-end="url(#ar)"/>
+  <path d="M640,310 L640,338" class="w" marker-end="url(#ar)"/>
+  <path d="M780,310 L780,338" class="w" marker-end="url(#ar)"/>
+  <path d="M580,364 L532,364" class="wd" marker-end="url(#ar)"/>
+  <path d="M130,388 L130,553" class="w" marker-end="url(#ar)"/>
+  <path d="M780,388 L780,488 L470,488 L470,633" class="w" marker-end="url(#ar)"/>
+  <path d="M840,286 L868,286 L868,585 L842,585" class="w" marker-end="url(#ar)"/>
+  <path d="M230,615 L230,657 L248,657" class="w" marker-end="url(#ar)"/>
+  <path d="M670,615 L670,657 L652,657" class="w" marker-end="url(#ar)"/>
+  <path d="M450,679 L450,723" class="w" marker-end="url(#ar)"/>
+  <path d="M450,773 L450,838" class="w" marker-end="url(#ar)"/>
+  <path d="M570,864 L678,864" class="wd" marker-end="url(#ar)"/>
+</svg>
