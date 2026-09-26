@@ -7,18 +7,23 @@
 | 절 | 파일 | 작성 |
 |---|---|---|
 | 1. 작품명 | [1-title.md](1-title.md) | 공동 |
-| 2. 설계 개요 (2.1 배경 ~ 2.6 차별점) | [2-overview.md](2-overview.md) | 공동 |
+| 2.1 배경 | [2-1-background.md](2-1-background.md) | 공동 |
+| 2.2 문제 정의 | [2-2-problem.md](2-2-problem.md) | 공동 |
+| 2.3 설계 기준 | [2-3-criteria.md](2-3-criteria.md) | 공동 |
+| 2.4 핵심 설계 결정 | [2-4-decisions.md](2-4-decisions.md) | 공동 |
+| 2.5 범위 | [2-5-scope.md](2-5-scope.md) | 공동 |
+| 2.6 차별점 | [2-6-differentiation.md](2-6-differentiation.md) | 공동 |
 | 3.1 전체 구조 | [3-1-architecture.md](3-1-architecture.md) | 공동 |
-| 3.2 아날로그 프론트엔드 | [3-2-afe.md](3-2-afe.md) | 하드웨어 |
-| 3.3 신호처리 블록 | [3-3-signal-processing.md](3-3-signal-processing.md) | 하드웨어 |
+| 3.2 아날로그 프론트엔드 | 담당이 작성 | 하드웨어 |
+| 3.3 신호처리 블록 | 담당이 작성 | 하드웨어 |
 | 3.4 판정 블록 | [3-4-inference.md](3-4-inference.md) | ML |
-| 3.5 통신 블록 | [3-5-communication.md](3-5-communication.md) | 통신 |
+| 3.5 통신 블록 | 담당이 작성 | 통신 |
 | 3.6 통합 검증과 결과 | [3-6-integration.md](3-6-integration.md) | 공동 |
 | 3.7 기대 효과 | [3-7-impact.md](3-7-impact.md) | 공동 |
 | 3.8 한계와 후속 과제 | [3-8-limitations.md](3-8-limitations.md) | 공동 |
 | 참고문헌 | [references.md](references.md) | 공동 |
 
-3.2, 3.3, 3.5는 각 담당의 하위 절 구성이 정해지기 전에 지금까지 받은 설계 자료로 채운 초안이다. 담당이 구성을 바꾸면 그대로 덮어쓴다.
+3.2, 3.3, 3.5는 각 담당이 쓴다. 다른 절이 이 세 절을 가리키는 번호(3.3.5 등)는 담당 원고가 들어오면 맞춘다.
 
 ## 그림
 

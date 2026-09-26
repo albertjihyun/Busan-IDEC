@@ -87,5 +87,3 @@
 [42] Ellcie Healthy, US 10,152,869 B2, "Personal system for the detection of a risky situation and alert", 2016 우선권. https://patents.google.com/patent/US10152869B2/en
 
 [43] TDK InvenSense, ICM-42670-P Datasheet DS-000451.
-
-> 확인: 3.3.7의 실측 기록 두 개(PhysioNet 손가락 PPG 레코드, ETH mhealth24 이마 PPG + IMU)의 정확한 서지를 추가한다.
