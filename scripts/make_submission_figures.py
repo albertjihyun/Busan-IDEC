@@ -2,7 +2,7 @@
 
     python scripts/make_submission_figures.py
 
-docs/figures/ 에 PNG를 쓴다. 구조도(sys_architecture, infer_top)는 같은 폴더의
+docs/figures/ 에 PNG를 쓴다. 구조도(3.1_sys_architecture, 3.4.1_infer_top)는 같은 폴더의
 SVG를 브라우저로 렌더링한 것이라 이 스크립트가 만들지 않는다.
 """
 from pathlib import Path
@@ -68,7 +68,7 @@ def model_size():
     ax.set_axisbelow(True)
     ax.set_title("처음 보는 사람에 대한 성능 (50명 LOSO, 60초 창, 헛경보 시간당 4회)",
                  fontsize=10, color=INK, loc="left")
-    fig.savefig(OUT / "model_size.png")
+    fig.savefig(OUT / "3.4.2_model_size.png")
     plt.close(fig)
 
 
@@ -92,7 +92,7 @@ def ppg_transfer():
     ax.set_xlabel("PPG와 ECG의 mean_rb 차이, 표준편차 (%)")
     ax.grid(axis="x", color=GRID, lw=0.8)
     ax.set_axisbelow(True)
-    fig.savefig(OUT / "ppg_transfer.png")
+    fig.savefig(OUT / "3.4.2_ppg_transfer.png")
     plt.close(fig)
 
 
@@ -152,7 +152,7 @@ def timeline():
     a2.legend(loc="upper right", frameon=False, fontsize=8.5, ncol=2)
     a2.set_title("경보 간격: 첫 졸림 판정에서 즉시, 이어지면 30초마다", fontsize=10, loc="left", color=INK)
     fig.tight_layout(h_pad=1.6)
-    fig.savefig(OUT / "baseline_alert_timeline.png")
+    fig.savefig(OUT / "3.4.3_baseline_alert_timeline.png")
     plt.close(fig)
 
 
@@ -184,7 +184,7 @@ def tilt_plane():
     ax.set_ylabel("세로축 가속도 (g)")
     ax.grid(color=GRID, lw=0.8)
     ax.set_axisbelow(True)
-    fig.savefig(OUT / "tilt_plane.png")
+    fig.savefig(OUT / "3.4.4_tilt_plane.png")
     plt.close(fig)
 
 
