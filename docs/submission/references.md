@@ -16,7 +16,7 @@ IEEE 형식. 번호는 본문(목차 순서)에 처음 나오는 순서이고, �
 
 [7] 아시아투데이, "박일수 마스오토 대표 '2028년 장거리 화물운송 완전 무인화 달성'," Jul. 2026. [Online]. Available: https://www.asiatoday.co.kr/kn/view.php?key=20260701010000579; 황정호, "[현장] 마스오토, 한·미 수출 물류 전 구간 자율주행 트레일러 도입한다," *테크42*, Jul. 2, 2026. [Online]. Available: https://www.tech42.co.kr/%ED%98%84%EC%9E%A5-%EB%A7%88%EC%8A%A4%EC%98%A4%ED%86%A0-%ED%95%9C%C2%B7%EB%AF%B8-%EC%88%98%EC%B6%9C-%EB%AC%BC%EB%A5%98-%EC%A0%84-%EA%B5%AC%EA%B0%84-%EC%9E%90%EC%9C%A8%EC%A3%BC%ED%96%89-%ED%8A%B8/
 
-[8] Reuters, "The automation dilemma: Are drivers checking phones while on autopilot?," *Malay Mail*, Sep. 18, 2024. [Online]. Available: https://www.malaymail.com/news/tech-gadgets/2024/09/18/the-automation-dilemma-are-drivers-checking-phones-while-on-autopilot/150792
+[8] A. S. Mueller, P. Gershon, S. H. Haus, J. B. Cicchino, B. Mehler, and B. Reimer, "Finding windows of opportunity: How drivers adapt to partial automation safeguards over time," *Transportation Research Part F: Traffic Psychology and Behaviour*, vol. 111, pp. 112–129, May 2025, doi: 10.1016/j.trf.2025.02.019.
 
 [9] F. Lambert, "Tesla is one step away from having to recall FSD in NHTSA visibility crash probe," *Electrek*, Mar. 19, 2026. [Online]. Available: https://electrek.co/2026/03/19/nhtsa-upgrades-tesla-fsd-visibility-investigation-3-2-million-vehicles/
 
