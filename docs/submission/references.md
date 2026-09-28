@@ -10,7 +10,7 @@ IEEE 형식. 번호는 본문(목차 순서)에 처음 나오는 순서이고, �
 
 [4] 한국교통연구원, *2019 하반기 화물운송시장 동향*, 월간노동법률 재인용. [Online]. Available: https://www.worklaw.co.kr/main2022/view/view.asp?bi_pidx=32404
 
-[5] "우리나라 사업용 화물차 운전자의 최소 휴게시간 준수와 위험운전행동," *대한교통학회지*, 2026. [Online]. Available: https://www.jkst.or.kr/articles/pdf/BqBe/kst-2026-044-02-10.pdf
+[5] 홍다희, 한상진, "우리나라 사업용 화물차 운전자의 최소 휴게시간 준수와 위험운전행동 변화," *대한교통학회지*, vol. 44, no. 2, pp. 306–318, Apr. 2026, doi: 10.7470/jkst.2026.44.2.306.
 
 [6] 이데일리, "마스오토, 국내 최초 트레일러 자율주행…2028년 한·미 화물운송 완전 무인화," Jul. 2026. [Online]. Available: https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=04027846645510256
 
