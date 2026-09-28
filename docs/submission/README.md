@@ -29,14 +29,14 @@
 
 | 그림 | 파일 | 쓰는 절 |
 |---|---|---|
-| 전체 구조 | `3.1_sys_architecture.png` (원본 `.svg`) | 3.1 |
-| 판정 블록 구조 | `3.4.1_infer_top.png` (원본 `.svg`) | 3.4.1 |
+| 전체 구조 | `3.1_sys_architecture.png` (원본 `src/3.1_sys_architecture.svg`) | 3.1 |
+| 판정 블록 구조 | `3.4.1_infer_top.png` (원본 `src/3.4.1_infer_top.svg`) | 3.4.1 |
 | 모델 크기 대 성능 | `3.4.2_model_size.png` | 3.4.2 |
 | 이마 PPG 전이 | `3.4.2_ppg_transfer.png` | 3.4.2 |
 | 기준선과 경보 간격 | `3.4.3_baseline_alert_timeline.png` | 3.4.3 |
 | 숙임 판정 평면 | `3.4.4_tilt_plane.png` | 3.4.4 |
 
-구조도 두 장은 SVG를 고친 뒤 브라우저로 PNG를 다시 뽑는다. 수치 그림 네 장은 `python scripts/make_submission_figures.py`로 다시 만든다.
+구조도 두 장은 `docs/figures/src/`의 SVG를 고친 뒤 브라우저로 PNG를 다시 뽑는다. 수치 그림 네 장은 `python scripts/make_submission_figures.py`로 다시 만든다.
 
 ## 표기
 
