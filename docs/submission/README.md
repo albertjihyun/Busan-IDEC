@@ -13,14 +13,13 @@
 | 2.4 핵심 설계 결정 | [2.4_decisions.md](2.4_decisions.md) | 공동 |
 | 2.5 범위 | [2.5_scope.md](2.5_scope.md) | 공동 |
 | 2.6 차별점 | [2.6_differentiation.md](2.6_differentiation.md) | 공동 |
-| 3.1 전체 구조 | [3.1_architecture.md](3.1_architecture.md) | 공동 |
-| 3.2 아날로그 프론트엔드 | 담당이 작성 | 하드웨어 |
+| 3.1 시스템 구성 | [3.1_architecture.md](3.1_architecture.md) | 공동 |
+| 3.2 센서 보드 | 담당이 작성 | 하드웨어 |
 | 3.3 신호처리 블록 | 담당이 작성 | 하드웨어 |
 | 3.4 판정 블록 | [3.4_inference.md](3.4_inference.md) | ML |
 | 3.5 통신 블록 | 담당이 작성 | 통신 |
-| 3.6 통합 검증과 결과 | [3.6_integration.md](3.6_integration.md) | 공동 |
-| 3.7 기대 효과 | [3.7_impact.md](3.7_impact.md) | 공동 |
-| 3.8 한계와 후속 과제 | [3.8_limitations.md](3.8_limitations.md) | 공동 |
+| 3.6 통합 검증 및 구현 결과 | [3.6_integration.md](3.6_integration.md) | 공동 |
+| 3.7 결론 및 향후 과제 | [3.7_conclusion.md](3.7_conclusion.md) | 공동 |
 | 참고문헌 | [references.md](references.md) | 공동 |
 
 3.2, 3.3, 3.5는 각 담당이 쓴다. 다른 절이 이 세 절을 가리키는 번호(3.3.5 등)는 담당 원고가 들어오면 맞춘다.
