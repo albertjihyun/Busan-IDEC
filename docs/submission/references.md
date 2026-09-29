@@ -16,7 +16,7 @@ IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오
 
 [7] A. Sriram and D. Shepardson, "NHTSA upgrades probe into 3.2M Teslas over self-driving crashes," *Insurance Journal* (Reuters), Mar. 20, 2026. [Online]. Available: https://www.insurancejournal.com/news/national/2026/03/20/862650.htm
 
-[8] F. Lyrheden, "DDAW and ADDW systems are now mandatory in new cars: Here's what you should know," *Smart Eye*, Jul. 8, 2024. [Online]. Available: https://smarteye.se/blog/what-to-know-about-ddaw-and-addw-systems/
+[8] European Parliament and Council of the European Union, "Regulation (EU) 2019/2144 of 27 November 2019 on type-approval requirements for motor vehicles and their trailers, and systems, components and separate technical units intended for such vehicles, as regards their general safety and the protection of vehicle occupants and vulnerable road users," *Official Journal of the European Union*, L 325, pp. 1–40, Dec. 2019. [Online]. Available: https://eur-lex.europa.eu/eli/reg/2019/2144/oj
 
 [9] InterRegs, "EU regulation on driver drowsiness and attention warning systems published," Sep. 2021. [Online]. Available: https://www.interregs.com/articles/spotlight/233/eu-regulation-on-driver-drowsiness-and-attention-warning-systems-published
 
