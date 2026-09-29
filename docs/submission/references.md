@@ -14,13 +14,13 @@ IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오
 
 [6] A. S. Mueller, P. Gershon, S. H. Haus, J. B. Cicchino, B. Mehler, and B. Reimer, "Finding windows of opportunity: How drivers adapt to partial automation safeguards over time," *Transportation Research Part F: Traffic Psychology and Behaviour*, vol. 111, pp. 112–129, May 2025, doi: 10.1016/j.trf.2025.02.019.
 
-[7] F. Lambert, "Tesla is one step away from having to recall FSD in NHTSA visibility crash probe," *Electrek*, Mar. 19, 2026. [Online]. Available: https://electrek.co/2026/03/19/nhtsa-upgrades-tesla-fsd-visibility-investigation-3-2-million-vehicles/
+[7] A. Sriram and D. Shepardson, "NHTSA upgrades probe into 3.2M Teslas over self-driving crashes," *Insurance Journal* (Reuters), Mar. 20, 2026. [Online]. Available: https://www.insurancejournal.com/news/national/2026/03/20/862650.htm
 
 [8] F. Lyrheden, "DDAW and ADDW systems are now mandatory in new cars: Here's what you should know," *Smart Eye*, Jul. 8, 2024. [Online]. Available: https://smarteye.se/blog/what-to-know-about-ddaw-and-addw-systems/
 
 [9] InterRegs, "EU regulation on driver drowsiness and attention warning systems published," Sep. 2021. [Online]. Available: https://www.interregs.com/articles/spotlight/233/eu-regulation-on-driver-drowsiness-and-attention-warning-systems-published
 
-[10] F. Lambert, "Tesla driver caught asleep at 100 km/h — how monitoring failed," *Electrek*, Jul. 6, 2026. [Online]. Available: https://electrek.co/2026/07/06/tesla-driver-asleep-monitoring-gap/
+[10] J. Bright, "Sunglasses defeat Tesla's safety camera, B.C. driver asleep at 100 km/h with two kids," *Tech Times*, Jul. 7, 2026. [Online]. Available: https://www.techtimes.com/articles/319863/20260707/sunglasses-defeat-teslas-safety-camera-bc-driver-asleep-100-km-h-two-kids.htm
 
 [11] Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology, "Heart rate variability: Standards of measurement, physiological interpretation, and clinical use," *Circulation*, vol. 93, no. 5, pp. 1043–1065, 1996, doi: 10.1161/01.CIR.93.5.1043.
 
