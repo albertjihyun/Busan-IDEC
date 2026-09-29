@@ -2,7 +2,7 @@
 
     python scripts/make_submission_figures.py
 
-docs/figures/ 에 PNG를 쓴다. 구조도(3.1_sys_architecture, 3.4.1_infer_top)는 같은 폴더의
+docs/figures/ 에 PNG를 쓴다. 구조도(3.1_sys_architecture, 3.4.1_infer_top)는 docs/figures/src/ 의
 SVG를 브라우저로 렌더링한 것이라 이 스크립트가 만들지 않는다.
 """
 from pathlib import Path

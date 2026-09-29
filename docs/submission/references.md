@@ -1,89 +1,107 @@
 # 참고문헌
 
-번호는 초안 작성 순서다. 합칠 때 본문에 처음 나오는 순서로 다시 매긴다.
+IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오는 순서이고, 절을 추가하거나 고칠 때마다 다시 매긴다. 팀원 문헌도 같은 번호 체계로 통합했다. 구글 문서 목록에는 본문에 인용된 [1]–[21]만 둔다. [22]–[35]는 이 저장소 초안(3.4, 3.7)에서 인용 순서대로 매긴 번호이고, 그 뒤는 아직 인용되지 않은 문헌이다. [50]–[52]는 하드웨어 원고에서 쓰던 문헌(Nesseler, Hartmann, Desgranges)으로, 3.2에서 인용하면 다시 번호를 매긴다.
 
-[1] 조선비즈, "고속도로 교통사고 사망 70% 졸음 탓", 2026.6. https://v.daum.net/v/20260618102616783
+[1] 조선비즈, "고속도로 교통사고 사망 70% 졸음 탓," Jun. 2026. [Online]. Available: https://v.daum.net/v/20260618102616783
 
-[2] GHSA, "Drowsy Driving", 2025. https://www.ghsa.org/state-laws-issues/drowsy-driving
+[2] 부산일보, "한국도로공사, AI·빅데이터로 지킨 안전…고속도로 사망자 역대 최저," Mar. 2026. [Online]. Available: https://www.busan.com/view/busan/view.php?code=2026033016342758526
 
-[3] 부산일보, "한국도로공사, AI·빅데이터로 지킨 안전…고속도로 사망자 역대 최저", 2026.3. https://www.busan.com/view/busan/view.php?code=2026033016342758526
+[3] 이데일리, "마스오토, 국내 최초 트레일러 자율주행…2028년 한·미 화물운송 완전 무인화," Jul. 2026. [Online]. Available: https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=04027846645510256
 
-[4] 문화일보, "1월 고속도로 운전 시 화물차 사고, 심야시간대 교통사고 각별한 주의 당부", 2026.1. https://www.munhwa.com/article/11558945
+[4] 아시아투데이, "박일수 마스오토 대표 '2028년 장거리 화물운송 완전 무인화 달성'," Jul. 2026. [Online]. Available: https://www.asiatoday.co.kr/kn/view.php?key=20260701010000579; 황정호, "[현장] 마스오토, 한·미 수출 물류 전 구간 자율주행 트레일러 도입한다," *테크42*, Jul. 2, 2026. [Online]. Available: https://www.tech42.co.kr/%ED%98%84%EC%9E%A5-%EB%A7%88%EC%8A%A4%EC%98%A4%ED%86%A0-%ED%95%9C%C2%B7%EB%AF%B8-%EC%88%98%EC%B6%9C-%EB%AC%BC%EB%A5%98-%EC%A0%84-%EA%B5%AC%EA%B0%84-%EC%9E%90%EC%9C%A8%EC%A3%BC%ED%96%89-%ED%8A%B8/
 
-[5] 한국교통연구원, 2019 하반기 화물운송시장 동향 (월간노동법률 인용). https://www.worklaw.co.kr/main2022/view/view.asp?bi_pidx=32404
+[5] E. E. Flynn-Evans *et al.*, "Supervision of a self-driving vehicle unmasks latent sleepiness relative to manually controlled driving," *Scientific Reports*, vol. 11, Art. no. 18530, 2021, doi: 10.1038/s41598-021-92914-5.
 
-[6] 시사IN, "요일도 밤낮도 없는 화물차 기사의 24시간 365일 노동 [DTG 데이터 탐사보도②]", 2022.11. https://www.sisain.co.kr/news/articleView.html?idxno=48966
+[6] A. S. Mueller, P. Gershon, S. H. Haus, J. B. Cicchino, B. Mehler, and B. Reimer, "Finding windows of opportunity: How drivers adapt to partial automation safeguards over time," *Transportation Research Part F: Traffic Psychology and Behaviour*, vol. 111, pp. 112–129, May 2025, doi: 10.1016/j.trf.2025.02.019.
 
-[7] 대한교통학회지, "우리나라 사업용 화물차 운전자의 최소 휴게시간 준수와 위험운전행동", 2026. https://www.jkst.or.kr/articles/pdf/BqBe/kst-2026-044-02-10.pdf
+[7] A. Sriram and D. Shepardson, "NHTSA upgrades probe into 3.2M Teslas over self-driving crashes," *Insurance Journal* (Reuters), Mar. 20, 2026. [Online]. Available: https://www.insurancejournal.com/news/national/2026/03/20/862650.htm
 
-[8] 상용차신문, "화물운송시장 '청년' 운전자가 안보인다…신규 진입자 평균 48세", 2026.2. https://www.cvinfo.com/news/articleView.html?idxno=30631
+[8] European Parliament and Council of the European Union, "Regulation (EU) 2019/2144 of 27 November 2019 on type-approval requirements for motor vehicles and their trailers, and systems, components and separate technical units intended for such vehicles, as regards their general safety and the protection of vehicle occupants and vulnerable road users," *Official Journal of the European Union*, L 325, pp. 1–40, Dec. 2019. [Online]. Available: https://eur-lex.europa.eu/eli/reg/2019/2144/oj
 
-[9] 상용차매거진, "화물운송시장 '이중 고령화' 운전자도 늙고 차량도 늙는다", 2026.8. https://www.cvinfo.com/news/articleView.html?idxno=31576
+[9] InterRegs, "EU regulation on driver drowsiness and attention warning systems published," Sep. 2021. [Online]. Available: https://www.interregs.com/articles/spotlight/233/eu-regulation-on-driver-drowsiness-and-attention-warning-systems-published
 
-[10] 베타뉴스, "마스오토, 국내 트레일러 자율주행 시작", 2026.7. https://www.betanews.net/article/view/beta202607010036
+[10] J. Bright, "Sunglasses defeat Tesla's safety camera, B.C. driver asleep at 100 km/h with two kids," *Tech Times*, Jul. 7, 2026. [Online]. Available: https://www.techtimes.com/articles/319863/20260707/sunglasses-defeat-teslas-safety-camera-bc-driver-asleep-100-km-h-two-kids.htm
 
-[11] 이데일리, "트럭운전자 고령화·구인난 해법…초기투자 지원·제도정비 서둘러야", 2026.7. https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=01820406645519768
+[11] Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology, "Heart rate variability: Standards of measurement, physiological interpretation, and clinical use," *Circulation*, vol. 93, no. 5, pp. 1043–1065, 1996, doi: 10.1161/01.CIR.93.5.1043.
 
-[12] 이데일리, "마스오토, 국내 최초 트레일러 자율주행…2028년 한·미 화물운송 완전 무인화", 2026.7. https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=04027846645510256
+[12] K. Lu, A. Sjörs Dahlman, J. Karlsson, and S. Candefjord, "Detecting driver fatigue using heart rate variability: A systematic review," *Accident Analysis & Prevention*, vol. 178, Art. no. 106830, 2022, doi: 10.1016/j.aap.2022.106830.
 
-[13] 아시아투데이, "박일수 마스오토 대표 '2028년 장거리 화물운송 완전 무인화 달성'", 2026.7. https://www.asiatoday.co.kr/kn/view.php?key=20260701010000579 / 테크42 동일 간담회 보도(레벨2 출시 이유). https://www.tech42.co.kr/
+[13] F. Vaussenat *et al.*, "Early drowsiness detection via second-order derivative analysis of heart rate variability: A non-contact ECG approach with machine learning," *Sensors*, vol. 26, no. 4, Art. no. 1348, 2026, doi: 10.3390/s26041348.
 
-[14] 정책브리핑, "2027년 레벨4 완전자율주행 상용화…AI 모빌리티 혁신 로드맵 가동", 2026.3. https://www.korea.kr/news/policyNewsView.do?newsId=148960802
+[14] K. Fujiwara *et al.*, "Heart rate variability-based driver drowsiness detection and its validation with EEG," *IEEE Transactions on Biomedical Engineering*, vol. 66, no. 6, pp. 1769–1778, Jun. 2019, doi: 10.1109/TBME.2018.2879346.
 
-[15] IIHS·MIT AgeLab 연구 보도, 2024.9. https://www.malaymail.com/news/tech-gadgets/2024/09/18/the-automation-dilemma-are-drivers-checking-phones-while-on-autopilot/150792
+[15] J. Li *et al.*, "Multimodal phenotyping dataset of driving fatigue," *Scientific Data*, vol. 13, Art. no. 289, 2026, doi: 10.1038/s41597-026-06634-4.
 
-[16] Electrek, "NHTSA upgrades Tesla FSD investigation to engineering analysis (3.2M vehicles)", 2026.3. https://electrek.co/2026/03/19/nhtsa-upgrades-tesla-fsd-visibility-investigation-3-2-million-vehicles/
+[16] L. Di Milia, N. L. Rogers, and T. Åkerstedt, "Sleepiness, long distance commuting and night work as predictors of driving performance," *PLoS ONE*, vol. 7, no. 9, Art. no. e45856, 2012, doi: 10.1371/journal.pone.0045856.
 
-[17] InterRegs, "EU regulation on driver drowsiness and attention warning systems". https://www.interregs.com/articles/spotlight/233/eu-regulation-on-driver-drowsiness-and-attention-warning-systems-published
+[17] L. El Sahmarany, M. Alkhaldi, S. I. Alzahrani, and C. Baumgartner, "Sensing technologies and physiological parameters for real-time driver drowsiness detection: A comprehensive review," *Sensors*, vol. 26, no. 11, Art. no. 3333, 2026, doi: 10.3390/s26113333.
 
-[18] Smart Eye, "What to know about DDAW and ADDW systems". https://smarteye.se/blog/what-to-know-about-ddaw-and-addw-systems/
+[18] D. Nurnaningsih, K. Adi, and B. Surarso, "IMU-based early warning system for driver drowsiness detection via head movement analysis," *Jurnal Teknik Informatika*, vol. 18, no. 2, pp. 270–280, 2025, doi: 10.15408/jti.v18i2.45271.
 
-[19] 로컬세계, "국토부, 사업용 차량 졸음운전 방지대책", 2017.7. https://localsegye.co.kr/news/view/1065592300623588
+[19] A. A. Awad, M. A. Ghobashy, W. Ouda, R. G. Stout, D. G. Silverman, and K. H. Shelley, "Different responses of ear and finger pulse oximeter wave form to cold pressor test," *Anesthesia & Analgesia*, vol. 92, no. 6, pp. 1483–1486, Jun. 2001, doi: 10.1097/00000539-200106000-00026.
 
-[20] 해사신문, "국토부, 대형 화물차 첨단안전장치 장착 의무화", 2016.4. http://www.haesanews.com/news/articleView.html?idxno=73724
+[20] V. Fleischhauer, J. Bruhn, S. Rasche, and S. Zaunseder, "Photoplethysmography upon cold stress—impact of measurement site and acquisition mode," *Frontiers in Physiology*, vol. 14, Art. no. 1127624, Jun. 2023, doi: 10.3389/fphys.2023.1127624.
 
-[21] Electrek, "Tesla driver asleep at 100 km/h exposes monitoring gap", 2026.7. https://electrek.co/2026/07/06/tesla-driver-asleep-monitoring-gap/
+[21] F. Ricci, C. Vivarelli, E. Mattei, and G. Calcagnini, "Signal quality of reflective-mode photoplethysmograms across anatomical sites," *Sensors*, vol. 26, no. 10, Art. no. 2986, 2026, doi: 10.3390/s26102986.
 
-[22] Z. AlArnaout, C. Zaki, Y. Kotb, M. AlAkkoumi, N. Mostafa, "Exploiting heart rate variability for driver drowsiness detection using wearable sensors and machine learning", Scientific Reports 15, 2025. https://www.nature.com/articles/s41598-025-08582-2
+[22] S. Ziyabari, V. Shah, M. Golmohammadi, I. Obeid, and J. Picone, "Objective evaluation metrics for automatic classification of EEG events," 2017, *arXiv:1712.10107*.
 
-[23] G. Li, W.-Y. Chung, "Detection of driver drowsiness using wavelet analysis of heart rate variability and a support vector machine classifier", Sensors 13(12):16494-16511, 2013. https://pmc.ncbi.nlm.nih.gov/articles/PMC3892817/
+[23] J. Dan *et al.*, "SzCORE: Seizure Community Open-Source Research Evaluation framework for the validation of electroencephalography-based automated seizure detection algorithms," *Epilepsia*, vol. 66, no. S3, pp. 14–24, 2025, doi: 10.1111/epi.18113.
 
-[24] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원", 2020.3. https://news.seoul.go.kr/traffic/archives/503010
+[24] M. Meier, B. U. Demirel, and C. Holz, "WildPPG: A real-world PPG dataset of long continuous recordings," in *Advances in Neural Information Processing Systems 37 (NeurIPS 2024), Datasets and Benchmarks Track*, 2024. [Online]. Available: https://arxiv.org/abs/2412.17540
 
-[25] 정책브리핑, "페달 오조작 방지장치 보급 시작 — 택시·화물차 우선", 2026.2. https://www.korea.kr/news/policyNewsView.do?newsId=148959338
+[25] A. Reiss, I. Indlekofer, and P. Schmidt, "PPG-DaLiA," UCI Machine Learning Repository, 2019, doi: 10.24432/C53890.
 
-[26] "Sleepiness, Long Distance Commuting and Night Work as Predictors of Driving Performance". https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3448712/
+[26] L. Hejjel and E. Roth, "What is the adequate sampling interval of the ECG signal for heart rate variability analysis in the time domain?," *Physiological Measurement*, vol. 25, no. 6, pp. 1405–1411, 2004, doi: 10.1088/0967-3334/25/6/006.
 
-[27] "Sleepiness, sleep, and use of sleepiness countermeasures in shift-working long-haul truck drivers". https://pubmed.ncbi.nlm.nih.gov/25957933/
+[27] S. Béres and L. Hejjel, "The minimal sampling frequency of the photoplethysmogram for accurate pulse rate variability parameters in healthy volunteers," *Biomedical Signal Processing and Control*, vol. 68, Art. no. 102589, 2021, doi: 10.1016/j.bspc.2021.102589.
 
-[28] Nurnaningsih et al., "IMU-based drowsiness detection via head movement thresholds (MPU-6050)", 2025. https://journal.uinjkt.ac.id/index.php/ti/article/view/45271
+[28] European Commission, "Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems)," *Official Journal of the European Union*, L 292, 2021. [Online]. Available: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
 
-[29] Sensors, "Context-aware EEG headset with head movement for driver drowsiness detection", 2015. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4570452/
+[29] D. C. Marshall, J. D. Lee, and P. A. Austria, "Alerts for in-vehicle information systems: Annoyance, urgency, and appropriateness," *Human Factors*, vol. 49, no. 1, pp. 145–157, 2007, doi: 10.1518/001872007779598145.
 
-[30] ACM TOSN, "FDWatch: reliable driver drowsiness detection leveraging wearables", 2023. https://pure.bit.edu.cn/en/publications/towards-reliable-driver-drowsiness-detection-leveraging-wearables/
+[30] P. Peyrard, "Personal system for the detection of a risky situation and alert," U.S. Patent 10 152 869 B2, Dec. 11, 2018.
 
-[31] Scientific Data, "A multimodal phenotyping dataset of driving fatigue (MPD-DF)", 2026. https://www.nature.com/articles/s41597-026-06634-4
+[31] TDK InvenSense, "ICM-42670-P datasheet: High performance 6-axis MotionTracking IMU," DS-000451, Rev. 1.2, 2026.
 
-[32] Reiss et al., "PPG-DaLiA", UCI ML Repository. https://archive.ics.uci.edu/dataset/495/ppg+dalia
+[32] G. Li and W.-Y. Chung, "A context-aware EEG headset system for early detection of driver drowsiness," *Sensors*, vol. 15, no. 8, pp. 20873–20893, 2015, doi: 10.3390/s150820873.
 
-[33] Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology, "Heart rate variability: Standards of measurement, physiological interpretation, and clinical use", Circulation 93(5):1043-1065, 1996. https://doi.org/10.1161/01.CIR.93.5.1043
+[33] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원," Mar. 2020. [Online]. Available: https://news.seoul.go.kr/traffic/archives/503010
 
-[34] K. Lu, A. Sjörs Dahlman, J. Karlsson, S. Candefjord, "Detecting driver fatigue using heart rate variability: A systematic review", Accident Analysis & Prevention 178:106830, 2022. https://doi.org/10.1016/j.aap.2022.106830
+[34] 정책브리핑, "페달 오조작 방지장치 보급 시작 — 택시·화물차 우선," Feb. 2026. [Online]. Available: https://www.korea.kr/news/policyNewsView.do?newsId=148959338
 
-[35] L. Hejjel, E. Roth, "What is the adequate sampling interval of the ECG signal for heart rate variability analysis in the time domain?", Physiological Measurement 25(6):1405-1411, 2004. https://doi.org/10.1088/0967-3334/25/6/006
+[35] M. Pylkkönen, M. Sihvola, H. K. Hyvärinen, S. Puttonen, C. Hublin, and M. Sallinen, "Sleepiness, sleep, and use of sleepiness countermeasures in shift-working long-haul truck drivers," *Accident Analysis & Prevention*, vol. 80, pp. 201–210, 2015, doi: 10.1016/j.aap.2015.03.031.
 
-[36] S. Béres, L. Hejjel, "The minimal sampling frequency of the photoplethysmogram for accurate pulse rate variability parameters in healthy volunteers", Biomedical Signal Processing and Control 68:102589, 2021. https://doi.org/10.1016/j.bspc.2021.102589
+[36] 한국교통연구원, "화물차 운전시간 총량제한이 필요한 이유," KOTI 카드뉴스, Sep. 20, 2024. [Online]. Available: https://www.koti.re.kr/user/bbs/cardnewsView.do?bbs_no=67068
 
-[37] M. Meier, B. U. Demirel, C. Holz, "WildPPG: A Real-World PPG Dataset of Long Continuous Recordings", Advances in Neural Information Processing Systems 37 (NeurIPS 2024) Datasets and Benchmarks Track. https://arxiv.org/abs/2412.17540
+[37] 홍다희, 한상진, "우리나라 사업용 화물차 운전자의 최소 휴게시간 준수와 위험운전행동 변화," *대한교통학회지*, vol. 44, no. 2, pp. 306–318, Apr. 2026, doi: 10.7470/jkst.2026.44.2.306.
 
-[38] European Commission, Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems), Official Journal of the European Union L 292, 2021. https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
+[38] Governors Highway Safety Association, "Drowsy driving," 2025. [Online]. Available: https://www.ghsa.org/state-laws-issues/drowsy-driving
 
-[39] D. C. Marshall, J. D. Lee, P. A. Austria, "Alerts for in-vehicle information systems: annoyance, urgency, and appropriateness", Human Factors 49(1):145-157, 2007. https://doi.org/10.1518/001872007779598145
+[39] 시사IN, "요일도 밤낮도 없는 화물차 기사의 24시간 365일 노동 [DTG 데이터 탐사보도②]," Nov. 2022. [Online]. Available: https://www.sisain.co.kr/news/articleView.html?idxno=48966
 
-[40] S. Ziyabari, V. Shah, M. Golmohammadi, I. Obeid, J. Picone, "Objective evaluation metrics for automatic classification of EEG events", arXiv:1712.10107. https://arxiv.org/abs/1712.10107
+[40] 상용차신문, "화물운송시장 '청년' 운전자가 안보인다…신규 진입자 평균 48세," Feb. 2026. [Online]. Available: https://www.cvinfo.com/news/articleView.html?idxno=30631
 
-[41] J. Dan et al., "SzCORE: Seizure Community Open-source Research Evaluation framework for the validation of electroencephalography-based automated seizure detection algorithms", Epilepsia 65(11), 2024. https://arxiv.org/abs/2402.13005
+[41] 상용차매거진, "화물운송시장 '이중 고령화' 운전자도 늙고 차량도 늙는다," Aug. 2026. [Online]. Available: https://www.cvinfo.com/news/articleView.html?idxno=31576
 
-[42] Ellcie Healthy, US 10,152,869 B2, "Personal system for the detection of a risky situation and alert", 2016 우선권. https://patents.google.com/patent/US10152869B2/en
+[42] 베타뉴스, "마스오토, 국내 트레일러 자율주행 시작," Jul. 2026. [Online]. Available: https://www.betanews.net/article/view/beta202607010036
 
-[43] TDK InvenSense, ICM-42670-P Datasheet DS-000451.
+[43] 이데일리, "트럭운전자 고령화·구인난 해법…초기투자 지원·제도정비 서둘러야," Jul. 2026. [Online]. Available: https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=01820406645519768
+
+[44] 정책브리핑, "2027년 레벨4 완전자율주행 상용화…AI 모빌리티 혁신 로드맵 가동," Mar. 2026. [Online]. Available: https://www.korea.kr/news/policyNewsView.do?newsId=148960802
+
+[45] 로컬세계, "국토부, 사업용 차량 졸음운전 방지대책," Jul. 2017. [Online]. Available: https://localsegye.co.kr/news/view/1065592300623588
+
+[46] 해사신문, "국토부, 대형 화물차 첨단안전장치 장착 의무화," Apr. 2016. [Online]. Available: http://www.haesanews.com/news/articleView.html?idxno=73724
+
+[47] Z. AlArnaout, C. Zaki, Y. Kotb, M. AlAkkoumi, and N. Mostafa, "Exploiting heart rate variability for driver drowsiness detection using wearable sensors and machine learning," *Scientific Reports*, vol. 15, Art. no. 24898, 2025, doi: 10.1038/s41598-025-08582-2.
+
+[48] G. Li and W.-Y. Chung, "Detection of driver drowsiness using wavelet analysis of heart rate variability and a support vector machine classifier," *Sensors*, vol. 13, no. 12, pp. 16494–16511, 2013, doi: 10.3390/s131216494.
+
+[49] Y. Cao, F. Li, X. Liu, S. Yang, and Y. Wang, "Towards reliable driver drowsiness detection leveraging wearables," *ACM Transactions on Sensor Networks*, vol. 19, no. 2, Art. no. 39, 2023, doi: 10.1145/3560821.
+
+[50] N. Nesseler, J.-V. Frénel, Y. Launey, J. Morcet, Y. Mallédant, and P. Seguin, "Pulse oximetry and high-dose vasopressors: a comparison between forehead reflectance and finger transmission sensors," *Intensive Care Medicine*, vol. 38, no. 10, pp. 1718–1722, Oct. 2012, doi: 10.1007/s00134-012-2659-0.
+
+[51] V. Hartmann, H. Liu, F. Chen, Q. Qiu, S. Hughes, and D. Zheng, "Quantitative comparison of photoplethysmographic waveform characteristics: Effect of measurement site," *Frontiers in Physiology*, vol. 10, Art. no. 198, Mar. 2019, doi: 10.3389/fphys.2019.00198.
+
+[52] F.-P. Desgranges, O. Desebbe, A. Ghazouani, K. Gilbert, G. Keller, P. Chiari, J. Robin, O. Bastien, J.-J. Lehot, and M. Cannesson, "Influence of the site of measurement on the ability of plethysmographic variability index to predict fluid responsiveness," *British Journal of Anaesthesia*, vol. 107, no. 3, pp. 329–335, Sep. 2011, doi: 10.1093/bja/aer165.
