@@ -9,7 +9,7 @@
 | 1. 작품명 | [1_title.md](1_title.md) | 공동 |
 | 2.1 문제 인식 및 정의 | [2.1_background.md](2.1_background.md) | 공동 |
 | 2.2 설계 목표 및 기준 | [2.2_goals_criteria.md](2.2_goals_criteria.md) | 공동 |
-| 2.3 핵심 설계 방향 | [2.3_design_direction.md](2.3_design_direction.md) | 공동 |
+| 2.3 설계 원칙 및 핵심 설계 결정 | [2.3_principles_decisions.md](2.3_principles_decisions.md) | 공동 |
 | 2.4 구현 범위 및 기술적 차별성 | [2.4_scope_differentiation.md](2.4_scope_differentiation.md) | 공동 |
 | 3.1 시스템 구성 | [3.1_architecture.md](3.1_architecture.md) | 공동 |
 | 3.2 하드웨어 블록 | 담당이 작성 | 하드웨어 |
