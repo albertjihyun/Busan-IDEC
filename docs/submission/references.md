@@ -103,3 +103,5 @@ IEEE 형식. 번호는 구글 문서 본문에 처음 나오는 순서이고, �
 [44] G. Li and W.-Y. Chung, "Detection of driver drowsiness using wavelet analysis of heart rate variability and a support vector machine classifier," *Sensors*, vol. 13, no. 12, pp. 16494–16511, 2013, doi: 10.3390/s131216494.
 
 [45] Y. Cao, F. Li, X. Liu, S. Yang, and Y. Wang, "Towards reliable driver drowsiness detection leveraging wearables," *ACM Transactions on Sensor Networks*, vol. 19, no. 2, Art. no. 39, 2023, doi: 10.1145/3560821.
+
+[46] L. El Sahmarany, M. Alkhaldi, S. I. Alzahrani, and C. Baumgartner, "Sensing technologies and physiological parameters for real-time driver drowsiness detection: A comprehensive review," *Sensors*, vol. 26, no. 11, Art. no. 3333, 2026, doi: 10.3390/s26113333.
