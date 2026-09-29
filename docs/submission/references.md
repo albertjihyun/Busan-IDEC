@@ -16,17 +16,17 @@ IEEE 형식. 번호는 구글 문서 본문에 처음 나오는 순서이고, �
 
 [7] F. Lambert, "Tesla is one step away from having to recall FSD in NHTSA visibility crash probe," *Electrek*, Mar. 19, 2026. [Online]. Available: https://electrek.co/2026/03/19/nhtsa-upgrades-tesla-fsd-visibility-investigation-3-2-million-vehicles/
 
-[8] InterRegs, "EU regulation on driver drowsiness and attention warning systems published," Sep. 2021. [Online]. Available: https://www.interregs.com/articles/spotlight/233/eu-regulation-on-driver-drowsiness-and-attention-warning-systems-published
+[8] F. Lyrheden, "DDAW and ADDW systems are now mandatory in new cars: Here's what you should know," *Smart Eye*, Jul. 8, 2024. [Online]. Available: https://smarteye.se/blog/what-to-know-about-ddaw-and-addw-systems/
 
-[9] F. Lambert, "Tesla driver caught asleep at 100 km/h — how monitoring failed," *Electrek*, Jul. 6, 2026. [Online]. Available: https://electrek.co/2026/07/06/tesla-driver-asleep-monitoring-gap/
+[9] InterRegs, "EU regulation on driver drowsiness and attention warning systems published," Sep. 2021. [Online]. Available: https://www.interregs.com/articles/spotlight/233/eu-regulation-on-driver-drowsiness-and-attention-warning-systems-published
 
-[10] F. Lyrheden, "DDAW and ADDW systems are now mandatory in new cars: Here's what you should know," *Smart Eye*, Jul. 8, 2024. [Online]. Available: https://smarteye.se/blog/what-to-know-about-ddaw-and-addw-systems/
+[10] F. Lambert, "Tesla driver caught asleep at 100 km/h — how monitoring failed," *Electrek*, Jul. 6, 2026. [Online]. Available: https://electrek.co/2026/07/06/tesla-driver-asleep-monitoring-gap/
 
 [11] Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology, "Heart rate variability: Standards of measurement, physiological interpretation, and clinical use," *Circulation*, vol. 93, no. 5, pp. 1043–1065, 1996, doi: 10.1161/01.CIR.93.5.1043.
 
-[12] J. Li *et al.*, "Multimodal phenotyping dataset of driving fatigue," *Scientific Data*, vol. 13, Art. no. 289, 2026, doi: 10.1038/s41597-026-06634-4.
+[12] K. Lu, A. Sjörs Dahlman, J. Karlsson, and S. Candefjord, "Detecting driver fatigue using heart rate variability: A systematic review," *Accident Analysis & Prevention*, vol. 178, Art. no. 106830, 2022, doi: 10.1016/j.aap.2022.106830.
 
-[13] K. Lu, A. Sjörs Dahlman, J. Karlsson, and S. Candefjord, "Detecting driver fatigue using heart rate variability: A systematic review," *Accident Analysis & Prevention*, vol. 178, Art. no. 106830, 2022, doi: 10.1016/j.aap.2022.106830.
+[13] J. Li *et al.*, "Multimodal phenotyping dataset of driving fatigue," *Scientific Data*, vol. 13, Art. no. 289, 2026, doi: 10.1038/s41597-026-06634-4.
 
 [14] L. Di Milia, N. L. Rogers, and T. Åkerstedt, "Sleepiness, long distance commuting and night work as predictors of driving performance," *PLoS ONE*, vol. 7, no. 9, Art. no. e45856, 2012, doi: 10.1371/journal.pone.0045856.
 
