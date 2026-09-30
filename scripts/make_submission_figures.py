@@ -7,7 +7,8 @@ docs/figures/ 에 PNG를 쓴다. 본문 폭(451 pt ≈ 6.27 in)에 맞춰 그리
 이 스크립트가 만들지 않는다.
 
   3.4.4_signal_models.png   (a) 사람별 졸음 효과와 각성 중 흔들림, (b) 모델별 헛경보 대 구간 민감도
-  3.4.5_baseline_alert.png  (a) 기준선 완성과 판정 보류, (b) 심박 경보 간격
+  3.4.5_baseline.png        기준선 완성과 판정 보류
+  3.4.6_alert_interval.png  심박 경보 간격
 """
 from pathlib import Path
 
@@ -137,8 +138,8 @@ def signal_models():
     return eff, band
 
 
-def baseline_alert():
-    fig, (a1, a2) = plt.subplots(2, 1, figsize=(W, 2.9), gridspec_kw={"height_ratios": [1, 1], "hspace": 0.95})
+def baseline():
+    fig, a1 = plt.subplots(figsize=(W, 1.15))
 
     # (a) 기준선: 서로 안 겹치는 1분 창, 좋은 창 3개면 완성
     for k, good in enumerate([True, False, True, True]):
@@ -162,7 +163,13 @@ def baseline_alert():
     a1.set_xticks(range(7), [f"{m}분" for m in range(7)])
     a1.set_xticks(np.arange(0, 6.01, 1 / 12), minor=True)
     a1.tick_params(axis="x", which="minor", length=1.5, width=0.4, color=MUTE)
-    panel_title(a1, "a", "기준선과 판정 보류 (작은 눈금: 5초 블록)")
+
+    fig.savefig(OUT / "3.4.5_baseline.png", bbox_inches="tight", pad_inches=0.04)
+    plt.close(fig)
+
+
+def alert_interval():
+    fig, a2 = plt.subplots(figsize=(W, 1.25))
 
     # (b) 경보 간격: 첫 졸림 판정에서 즉시, 이어지면 30초마다
     t = np.arange(0, 125, 5)
@@ -190,14 +197,14 @@ def baseline_alert():
     a2.set_xticks(range(0, 121, 20), [f"{s}초" for s in range(0, 121, 20)])
     a2.legend(loc="lower right", bbox_to_anchor=(1, 1.0), frameon=False, ncol=3,
               handletextpad=0.4, columnspacing=1.4, borderaxespad=0)
-    panel_title(a2, "b", "심박 경보 간격")
 
-    fig.savefig(OUT / "3.4.5_baseline_alert.png", bbox_inches="tight", pad_inches=0.04)
+    fig.savefig(OUT / "3.4.6_alert_interval.png", bbox_inches="tight", pad_inches=0.04)
     plt.close(fig)
 
 
 if __name__ == "__main__":
     eff, band = signal_models()
-    baseline_alert()
+    baseline()
+    alert_interval()
     print(f"사람 {len(eff)}명, 효과 중앙값 {np.median(eff):+.2f}%, 흔들림 {band:.2f}%")
-    print("docs/figures 에 2개 저장")
+    print("docs/figures 에 3개 저장")
