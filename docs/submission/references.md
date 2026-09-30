@@ -58,13 +58,13 @@ IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오
 
 [28] S. Saeb, L. Lonini, A. Jayaraman, D. C. Mohr, and K. P. Kording, "The need to approximate the use-case in clinical machine learning," *GigaScience*, vol. 6, no. 5, Art. no. gix019, 2017, doi: 10.1093/gigascience/gix019.
 
-[29] European Commission, "Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems)," *Official Journal of the European Union*, L 292, 2021. [Online]. Available: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
+[29] A. Reiss, I. Indlekofer, and P. Schmidt, "PPG-DaLiA," UCI Machine Learning Repository, 2019, doi: 10.24432/C53890.
 
-[30] A. Reiss, I. Indlekofer, and P. Schmidt, "PPG-DaLiA," UCI Machine Learning Repository, 2019, doi: 10.24432/C53890.
+[30] P. Peyrard, "Personal system for the detection of a risky situation and alert," U.S. Patent 10 152 869 B2, Dec. 11, 2018.
 
-[31] P. Peyrard, "Personal system for the detection of a risky situation and alert," U.S. Patent 10 152 869 B2, Dec. 11, 2018.
+[31] TDK InvenSense, "ICM-42670-P datasheet: High performance 6-axis MotionTracking IMU," DS-000451, Rev. 1.2, 2026.
 
-[32] TDK InvenSense, "ICM-42670-P datasheet: High performance 6-axis MotionTracking IMU," DS-000451, Rev. 1.2, 2026.
+[32] European Commission, "Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems)," *Official Journal of the European Union*, L 292, 2021. [Online]. Available: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
 
 [33] D. C. Marshall, J. D. Lee, and P. A. Austria, "Alerts for in-vehicle information systems: Annoyance, urgency, and appropriateness," *Human Factors*, vol. 49, no. 1, pp. 145–157, 2007, doi: 10.1518/001872007779598145.
 
