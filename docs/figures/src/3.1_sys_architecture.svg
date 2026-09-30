@@ -41,9 +41,7 @@
   <path d="M70,148 V168" class="wp" marker-end="url(#ap)"/>
 
   <!-- I2C 버스 -->
-  <path d="M127,189 H148 V281 H127" class="w"/>
-  <path d="M148,235 H188" class="w" marker-end="url(#ag)"/>
-  <text x="164" y="198" class="n" text-anchor="middle" transform="rotate(-90 164 198)" dy="4">I²C 100 kHz</text>
+  <text x="164" y="252" class="n" text-anchor="middle" transform="rotate(-90 164 252)" dy="4">I²C 100 kHz</text>
 
   <!-- SoC -->
   <rect x="180" y="6" width="430" height="340" rx="2" fill="none" stroke="#1a1a1a" stroke-width="2"/>
@@ -66,10 +64,8 @@
   <text x="248" y="289" class="n" text-anchor="middle">착용 방향 판별</text>
 
   <!-- 신호처리 → 판정 -->
-  <path d="M299,133 H368" class="wp" marker-end="url(#ap)"/>
   <text x="334" y="124" class="lp" text-anchor="middle">창 합 ×3</text>
   <text x="334" y="149" class="lp" text-anchor="middle">33 b / 5 s</text>
-  <path d="M299,271 H368" class="wi" marker-end="url(#ai)"/>
   <text x="334" y="262" class="li" text-anchor="middle">가속도</text>
   <text x="334" y="287" class="li" text-anchor="middle">끄덕임</text>
 
@@ -84,12 +80,8 @@
   <text x="406" y="257" class="m" text-anchor="middle">고개 떨굼</text>
   <text x="406" y="275" class="s" text-anchor="middle">숙임 · 끄덕임</text>
   <text x="406" y="291" class="s" text-anchor="middle">상시 감시</text>
-  <path d="M442,133 H452 V204 H466" class="wp"/>
-  <path d="M442,271 H452 V228 H466" class="wi"/>
-  <path d="M460,192 Q474,216 460,240 Q486,240 498,216 Q486,192 460,192 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.6"/>
   <text x="478" y="259" class="s" text-anchor="middle">경보</text>
   <text x="478" y="273" class="s" text-anchor="middle">결합</text>
-  <path d="M498,216 H541" class="w" marker-end="url(#ag)"/>
   <text x="521" y="208" class="n" text-anchor="middle">alert</text>
 
   <!-- 통신 블록 -->
@@ -100,7 +92,6 @@
   <text x="568" y="228" class="s" text-anchor="middle">9600 bps</text>
 
   <!-- 외부 -->
-  <path d="M593,216 H626" class="w" marker-end="url(#ag)"/>
   <text x="618" y="208" class="n" text-anchor="middle">TX</text>
   <rect x="628" y="188" width="86" height="56" rx="2" class="mod"/>
   <text x="671" y="206" class="m" text-anchor="middle">BLE 모듈</text>
@@ -117,4 +108,14 @@
   <text x="653" y="52" class="n">PPG 경로</text>
   <path d="M630,66 H648" class="wi"/>
   <text x="653" y="70" class="n">IMU 경로</text>
+  <!-- 연결선: 블록 바탕에 가리지 않도록 맨 마지막에 그린다 -->
+  <path d="M127,189 H148 V281 H127" class="w"/>
+  <path d="M148,209 H190" class="w" marker-end="url(#ag)"/>
+  <path d="M299,133 H369" class="wp" marker-end="url(#ap)"/>
+  <path d="M299,271 H369" class="wi" marker-end="url(#ai)"/>
+  <path d="M442,133 H452 V204 H466" class="wp"/>
+  <path d="M442,271 H452 V228 H466" class="wi"/>
+  <path d="M498,216 H542" class="w" marker-end="url(#ag)"/>
+  <path d="M593,216 H627" class="w" marker-end="url(#ag)"/>
+  <path d="M460,192 Q474,216 460,240 Q486,240 498,216 Q486,192 460,192 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.6"/>
 </svg>
