@@ -27,7 +27,7 @@
 | 그림 | 파일 | 쓰는 절 |
 |---|---|---|
 | 전체 구조 | `3.1_sys_architecture.png` (원본 `src/3.1_sys_architecture.svg`) | 3.1 |
-| 신호의 크기와 모델 성능 | `3.4.4_signal_models.png` | 3.4.4 |
+| 졸음 효과와 모델별 성능 | `3.4.4_signal_models.png` | 3.4.4 |
 | 기준선과 경보 간격 | `3.4.5_baseline_alert.png` | 3.4.5 |
 
 구조도는 `docs/figures/src/`의 SVG를 고친 뒤 브라우저로 PNG를 다시 뽑는다. 3.4 그림 두 장은 `python scripts/make_submission_figures.py`로 다시 만든다.
