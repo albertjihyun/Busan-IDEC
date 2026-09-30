@@ -50,23 +50,19 @@ IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오
 
 [24] M. Meier, B. U. Demirel, and C. Holz, "WildPPG: A real-world PPG dataset of long continuous recordings," in *Advances in Neural Information Processing Systems 37 (NeurIPS 2024), Datasets and Benchmarks Track*, 2024. [Online]. Available: https://arxiv.org/abs/2412.17540
 
-[25] A. Reiss, I. Indlekofer, and P. Schmidt, "PPG-DaLiA," UCI Machine Learning Repository, 2019, doi: 10.24432/C53890.
+[25] L. Hejjel and E. Roth, "What is the adequate sampling interval of the ECG signal for heart rate variability analysis in the time domain?," *Physiological Measurement*, vol. 25, no. 6, pp. 1405–1411, 2004, doi: 10.1088/0967-3334/25/6/006.
 
-[26] L. Hejjel and E. Roth, "What is the adequate sampling interval of the ECG signal for heart rate variability analysis in the time domain?," *Physiological Measurement*, vol. 25, no. 6, pp. 1405–1411, 2004, doi: 10.1088/0967-3334/25/6/006.
+[26] S. Béres and L. Hejjel, "The minimal sampling frequency of the photoplethysmogram for accurate pulse rate variability parameters in healthy volunteers," *Biomedical Signal Processing and Control*, vol. 68, Art. no. 102589, 2021, doi: 10.1016/j.bspc.2021.102589.
 
-[27] S. Béres and L. Hejjel, "The minimal sampling frequency of the photoplethysmogram for accurate pulse rate variability parameters in healthy volunteers," *Biomedical Signal Processing and Control*, vol. 68, Art. no. 102589, 2021, doi: 10.1016/j.bspc.2021.102589.
+[27] European Commission, "Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems)," *Official Journal of the European Union*, L 292, 2021. [Online]. Available: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
 
-[28] European Commission, "Commission Delegated Regulation (EU) 2021/1341 of 23 April 2021 (driver drowsiness and attention warning systems)," *Official Journal of the European Union*, L 292, 2021. [Online]. Available: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32021R1341
+[28] A. Reiss, I. Indlekofer, and P. Schmidt, "PPG-DaLiA," UCI Machine Learning Repository, 2019, doi: 10.24432/C53890.
 
-[29] D. C. Marshall, J. D. Lee, and P. A. Austria, "Alerts for in-vehicle information systems: Annoyance, urgency, and appropriateness," *Human Factors*, vol. 49, no. 1, pp. 145–157, 2007, doi: 10.1518/001872007779598145.
+[29] P. Peyrard, "Personal system for the detection of a risky situation and alert," U.S. Patent 10 152 869 B2, Dec. 11, 2018.
 
-[30] P. Peyrard, "Personal system for the detection of a risky situation and alert," U.S. Patent 10 152 869 B2, Dec. 11, 2018.
+[30] TDK InvenSense, "ICM-42670-P datasheet: High performance 6-axis MotionTracking IMU," DS-000451, Rev. 1.2, 2026.
 
-[31] TDK InvenSense, "ICM-42670-P datasheet: High performance 6-axis MotionTracking IMU," DS-000451, Rev. 1.2, 2026.
-
-
-
-
+[31] D. C. Marshall, J. D. Lee, and P. A. Austria, "Alerts for in-vehicle information systems: Annoyance, urgency, and appropriateness," *Human Factors*, vol. 49, no. 1, pp. 145–157, 2007, doi: 10.1518/001872007779598145.
 
 [32] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원," Mar. 2020. [Online]. Available: https://news.seoul.go.kr/traffic/archives/503010
 
