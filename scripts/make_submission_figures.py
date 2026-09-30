@@ -6,8 +6,8 @@ docs/figures/ 에 PNG를 쓴다. 본문 폭(451 pt ≈ 6.27 in)에 맞춰 그리
 시스템 구조도(3.1_sys_architecture)는 docs/figures/src/ 의 SVG를 브라우저로 렌더링한 것이라
 이 스크립트가 만들지 않는다.
 
-  3.4.3_signal_models.png   (a) 사람별 졸음 효과와 각성 중 흔들림, (b) 모델별 헛경보 대 구간 민감도
-  3.4.4_baseline_alert.png  (a) 기준선 완성과 판정 보류, (b) 심박 경보 간격
+  3.4.4_signal_models.png   (a) 사람별 졸음 효과와 각성 중 흔들림, (b) 모델별 헛경보 대 구간 민감도
+  3.4.5_baseline_alert.png  (a) 기준선 완성과 판정 보류, (b) 심박 경보 간격
 """
 from pathlib import Path
 
@@ -132,7 +132,7 @@ def signal_models():
     a2.legend(loc="upper left", frameon=False, handlelength=2.6, borderaxespad=0.2)
     panel_title(a2, "b", "모델별 성능 (50명 사람 단위 교차검증)")
 
-    fig.savefig(OUT / "3.4.3_signal_models.png", bbox_inches="tight", pad_inches=0.04)
+    fig.savefig(OUT / "3.4.4_signal_models.png", bbox_inches="tight", pad_inches=0.04)
     plt.close(fig)
     return eff, band
 
@@ -192,7 +192,7 @@ def baseline_alert():
               handletextpad=0.4, columnspacing=1.4, borderaxespad=0)
     panel_title(a2, "b", "심박 경보 간격")
 
-    fig.savefig(OUT / "3.4.4_baseline_alert.png", bbox_inches="tight", pad_inches=0.04)
+    fig.savefig(OUT / "3.4.5_baseline_alert.png", bbox_inches="tight", pad_inches=0.04)
     plt.close(fig)
 
 
