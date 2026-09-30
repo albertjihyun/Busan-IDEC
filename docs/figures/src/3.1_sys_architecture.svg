@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 352" width="720" height="352" font-family="Malgun Gothic, Apple SD Gothic Neo, sans-serif">
   <defs>
-    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3a3a38"/></marker>
-    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b23a48"/></marker>
-    <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b4a9e"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3a3a38"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b23a48"/></marker>
+    <marker id="ai" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b4a9e"/></marker>
     <style>
       .h{font-size:12.5px;font-weight:700;fill:#1a1a1a}
       .m{font-size:11.5px;font-weight:700;fill:#1a1a1a}
@@ -37,8 +37,8 @@
   <rect x="13" y="262" width="114" height="38" rx="2" class="mod"/>
   <text x="70" y="278" class="m" text-anchor="middle">IMU ICM-42670-P</text>
   <text x="70" y="293" class="s" text-anchor="middle">6축 · 100 Hz</text>
-  <path d="M70,88 V108" class="wp" marker-end="url(#ap)"/>
-  <path d="M70,148 V168" class="wp" marker-end="url(#ap)"/>
+  <path d="M70,88 V110" class="wp" marker-end="url(#ap)"/>
+  <path d="M70,148 V170" class="wp" marker-end="url(#ap)"/>
 
   <!-- I2C 버스 -->
   <text x="164" y="252" class="n" text-anchor="middle" transform="rotate(-90 164 252)" dy="4">I²C 100 kHz</text>
@@ -111,11 +111,11 @@
   <!-- 연결선: 블록 바탕에 가리지 않도록 맨 마지막에 그린다 -->
   <path d="M127,189 H148 V281 H127" class="w"/>
   <path d="M148,209 H190" class="w" marker-end="url(#ag)"/>
-  <path d="M299,133 H369" class="wp" marker-end="url(#ap)"/>
-  <path d="M299,271 H369" class="wi" marker-end="url(#ai)"/>
+  <path d="M299,133 H370" class="wp" marker-end="url(#ap)"/>
+  <path d="M299,271 H370" class="wi" marker-end="url(#ai)"/>
   <path d="M442,133 H452 V204 H466" class="wp"/>
   <path d="M442,271 H452 V228 H466" class="wi"/>
-  <path d="M498,216 H542" class="w" marker-end="url(#ag)"/>
-  <path d="M593,216 H627" class="w" marker-end="url(#ag)"/>
+  <path d="M498,216 H543" class="w" marker-end="url(#ag)"/>
+  <path d="M593,216 H628" class="w" marker-end="url(#ag)"/>
   <path d="M460,192 Q474,216 460,240 Q486,240 498,216 Q486,192 460,192 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.6"/>
 </svg>
