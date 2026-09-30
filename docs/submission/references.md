@@ -1,6 +1,6 @@
 # 참고문헌
 
-IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오는 순서이고, 절을 추가하거나 고칠 때마다 다시 매긴다. 팀원 문헌도 같은 번호 체계로 통합했다. 구글 문서 목록에는 본문에 인용된 [1]–[21]만 둔다. [22]–[35]는 이 저장소 초안(3.4, 3.7)에서 인용 순서대로 매긴 번호이고, 그 뒤는 아직 인용되지 않은 문헌이다. [50]–[52]는 하드웨어 원고에서 쓰던 문헌(Nesseler, Hartmann, Desgranges)으로, 3.2에서 인용하면 다시 번호를 매긴다.
+IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오는 순서이고, 절을 추가하거나 고칠 때마다 다시 매긴다. 팀원 문헌도 같은 번호 체계로 통합했다. 구글 문서 목록에는 본문에 인용된 [1]–[31]만 둔다. [22]–[31]은 3.4, [32]–[34]는 저장소 초안 3.7에서 인용 순서대로 매긴 번호이고, 그 뒤는 아직 인용되지 않은 문헌이다. [50]–[52]는 하드웨어 원고에서 쓰던 문헌(Nesseler, Hartmann, Desgranges)으로, 3.2에서 인용하면 다시 번호를 매긴다.
 
 [1] 조선비즈, "고속도로 교통사고 사망 70% 졸음 탓," Jun. 2026. [Online]. Available: https://v.daum.net/v/20260618102616783
 
@@ -64,13 +64,17 @@ IEEE 형식. 번호는 구글 문서 목차 순서대로 본문에 처음 나오
 
 [31] TDK InvenSense, "ICM-42670-P datasheet: High performance 6-axis MotionTracking IMU," DS-000451, Rev. 1.2, 2026.
 
-[32] G. Li and W.-Y. Chung, "A context-aware EEG headset system for early detection of driver drowsiness," *Sensors*, vol. 15, no. 8, pp. 20873–20893, 2015, doi: 10.3390/s150820873.
 
-[33] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원," Mar. 2020. [Online]. Available: https://news.seoul.go.kr/traffic/archives/503010
 
-[34] 정책브리핑, "페달 오조작 방지장치 보급 시작 — 택시·화물차 우선," Feb. 2026. [Online]. Available: https://www.korea.kr/news/policyNewsView.do?newsId=148959338
 
-[35] M. Pylkkönen, M. Sihvola, H. K. Hyvärinen, S. Puttonen, C. Hublin, and M. Sallinen, "Sleepiness, sleep, and use of sleepiness countermeasures in shift-working long-haul truck drivers," *Accident Analysis & Prevention*, vol. 80, pp. 201–210, 2015, doi: 10.1016/j.aap.2015.03.031.
+
+[32] 서울시, "졸음운전 예방 차로이탈경고장치 설치비 80% 지원," Mar. 2020. [Online]. Available: https://news.seoul.go.kr/traffic/archives/503010
+
+[33] 정책브리핑, "페달 오조작 방지장치 보급 시작 — 택시·화물차 우선," Feb. 2026. [Online]. Available: https://www.korea.kr/news/policyNewsView.do?newsId=148959338
+
+[34] M. Pylkkönen, M. Sihvola, H. K. Hyvärinen, S. Puttonen, C. Hublin, and M. Sallinen, "Sleepiness, sleep, and use of sleepiness countermeasures in shift-working long-haul truck drivers," *Accident Analysis & Prevention*, vol. 80, pp. 201–210, 2015, doi: 10.1016/j.aap.2015.03.031.
+
+[35] G. Li and W.-Y. Chung, "A context-aware EEG headset system for early detection of driver drowsiness," *Sensors*, vol. 15, no. 8, pp. 20873–20893, 2015, doi: 10.3390/s150820873.
 
 [36] 한국교통연구원, "화물차 운전시간 총량제한이 필요한 이유," KOTI 카드뉴스, Sep. 20, 2024. [Online]. Available: https://www.koti.re.kr/user/bbs/cardnewsView.do?bbs_no=67068
 
